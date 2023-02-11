@@ -1,0 +1,27 @@
+{
+  "manifest_version": 2,
+  "name": "Yangs! - Yet Another Bangs everywhere extension",
+  "description": "A lightweight Firefox extension that allows using DuckDuckGo Bangs from everywhere and in a fast manner, since requests are not redirected through DuckDuckGo.",
+  "homepage_url": "https://github.com/dmlls/yangs",
+  "version": "0.9",
+
+  "icons": {
+    "32": "icons/icon-32.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png",
+    "256": "icons/icon-256.png"
+  },
+
+  "permissions": [
+    "webRequest",
+    "webRequestBlocking",
+    "activeTab",
+    "<all_urls>"
+  ],
+
+  "background": {
+    "scripts": [
+      "background.js"
+    ]
+  }
+}
