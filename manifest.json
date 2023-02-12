@@ -1,6 +1,6 @@
 {
   "manifest_version": 2,
-  "name": "Yangs! - Yet Another Bangs everywhere extension",
+  "name": "Yangs! - Yet Another Bangs anywhere extension",
   "description": "An open-source, lightweight Firefox extension that allows using DuckDuckGo Bangs anywhere.",
   "homepage_url": "https://github.com/dmlls/yangs",
   "version": "0.9",
