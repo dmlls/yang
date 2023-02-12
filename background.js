@@ -28,18 +28,35 @@ let bangs = {};
 })();
 
 browser.webRequest.onBeforeRequest.addListener(
-  ({ url }) => {
-    const urlObj = new URL(url);
-    // Some search engines use "?q=", others "?query=".
-    const params = ["q", "query"]
-      .map((p) => urlObj.searchParams.get(p))
-      .filter((q) => q);
-    if (params.length === 0) {
+  (details) => {
+    const url = new URL(details.url);
+
+    // Skip requests for suggestions.
+    let skip = ["/ac/", "suggest", "/complete"].some((path) =>
+      url.pathname.includes(path)
+    );
+    if (skip) {
       return;
     }
+    // Different search engines use different params for the query.
+    let params = ["q", "p", "query", "text"]
+      .reduce((acc, param) => {
+        let q = url.searchParams.get(param);
+        // Some search engines include the query in the request body.
+        if (!q) {
+          let form = details?.requestBody?.formData;
+          if (form != null && form.hasOwnProperty(param))
+            q = details?.requestBody?.formData[param][0];
+        }
+        if (q != null) {
+          acc.push(q);
+        }
+        return acc;
+      }, [])
+      .filter((a) => a);
+
     let query = params[0];
     const searchTerms = query.split(" ");
-
     let bang = "";
 
     if (searchTerms) {
@@ -49,20 +66,32 @@ browser.webRequest.onBeforeRequest.addListener(
       } else if (searchTerms[searchTerms.length - 1].startsWith("!")) {
         bang = searchTerms[searchTerms.length - 1].substring(1);
         query = searchTerms.slice(0, -1).join(" ");
+      } else {
+        return;
       }
     }
 
     if (bang.length > 0 && bangs.hasOwnProperty(bang)) {
-      return {
-        redirectUrl: `${bangs[bang].replace(
-          "{{{s}}}",
-          encodeURIComponent(query)
-        )}`,
-      };
+      updateTab(
+        details.tabId,
+        `${bangs[bang].replace("{{{s}}}", encodeURIComponent(query))}`
+      );
     }
   },
   {
     urls: ["<all_urls>"],
   },
-  ["blocking"]
+  ["blocking", "requestBody"]
 );
+
+function updateTab(tabId, url) {
+  let updateProperties = {
+    loadReplace: true,
+    url: url,
+  };
+  if (tabId != null) {
+    browser.tabs.update(tabId, updateProperties);
+  } else {
+    browser.tabs.update(updateProperties);
+  }
+}
