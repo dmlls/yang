@@ -1,9 +1,15 @@
-<p align="center"><img width="256" src="https://user-images.githubusercontent.com/22967053/218261969-b8f820d5-1075-47dd-aa89-22a082f36a0e.png" alt="Yang! - Yet Another Bangs anywhere Firefox extension"></p>
+<p align="center"><img width="256" src="https://user-images.githubusercontent.com/22967053/218319779-f000b2b7-d083-4d19-89dc-ef1d60e2c8c2.png" alt="Yang! - Yet Another Bangs anywhere Firefox extension"></p>
 
 <p align="center"><a href=""><img width="202" src="https://user-images.githubusercontent.com/22967053/218262747-3ef4af48-86c6-4e10-9e07-6b64b4910031.png" alt="Available on Firefox ADD-ONS"></a></p>
 
 <h1 align="center">Yang!</h1>
 <p align="center"><b>Yet Another Bangs anywhere Firefox extension</b></p>
+
+<br>
+
+||||
+|-|-|-|
+|![Bangs! Everywhere. Anywhere. Right from the URL bar or from your favorite search engine.](https://user-images.githubusercontent.com/22967053/218325173-06ec10b6-2776-41a4-ad2e-64ce5d7460ec.png)|![Blazingly fast redirections. Bangs are resolved locally, without DuckDuckGo as an intermediary.](https://user-images.githubusercontent.com/22967053/218325183-efb34a25-1018-472e-ac34-522af9309dd2.png)|![The numbers speak for themselves. More than 15 supported search engines and 13,500 bangs to choose from.](https://user-images.githubusercontent.com/22967053/218325186-2c5f8db0-e3bf-4727-9035-88343dc43c4b.png)|
 
 <br><br>
 
