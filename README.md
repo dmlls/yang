@@ -1,6 +1,6 @@
 <p align="center"><img width="256" src="https://user-images.githubusercontent.com/22967053/218319779-f000b2b7-d083-4d19-89dc-ef1d60e2c8c2.png" alt="Yang! - Yet Another Bangs anywhere Firefox extension"></p>
 
-<p align="center"><a href=""><img width="202" src="https://user-images.githubusercontent.com/22967053/218262747-3ef4af48-86c6-4e10-9e07-6b64b4910031.png" alt="Available on Firefox ADD-ONS"></a></p>
+<p align="center"><a href="https://addons.mozilla.org/addon/yang-addon/"><img width="202" src="https://user-images.githubusercontent.com/22967053/218262747-3ef4af48-86c6-4e10-9e07-6b64b4910031.png" alt="Available on Firefox ADD-ONS"></a></p>
 
 <h1 align="center">Yang!</h1>
 <p align="center"><b>Yet Another Bangs anywhere Firefox extension</b></p>
