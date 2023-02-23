@@ -84,6 +84,7 @@ sites**:
 | Yandex | https://yandex.com/
 | AOL | https://www.aol.com/
 | Dogpile | https://www.dogpile.com/
+| Gigablast | https://www.gigablast.com/
 
 <br>
 
