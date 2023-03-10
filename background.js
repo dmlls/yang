@@ -74,7 +74,7 @@ browser.webRequest.onBeforeRequest.addListener(
     if (bang.length > 0 && bangs.hasOwnProperty(bang)) {
       updateTab(
         details.tabId,
-        `${bangs[bang].replace("{{{s}}}", encodeURIComponent(query))}`
+        `${bangs[bang].replace("{{{s}}}", query)}`
       );
     }
   },
