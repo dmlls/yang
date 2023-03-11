@@ -3,7 +3,7 @@
   "name": "Yang! - Yet Another Bangs anywhere extension",
   "description": "An open-source, lightweight Firefox extension that allows using DuckDuckGo Bangs anywhere.",
   "homepage_url": "https://github.com/dmlls/yang",
-  "version": "0.9.3",
+  "version": "0.9.4",
 
   "icons": {
     "32": "icons/icon-32.png",
