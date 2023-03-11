@@ -25,6 +25,9 @@ let bangs = {};
   // Remap bangs to: bang -> target.
   bangs = bangs.map((item) => ({ [item.t]: item.u }));
   bangs = Object.assign({}, ...bangs);
+  // "bang!" is mapped to the relative URL "/bang?q={{{s}}}"
+  // "bangs!" correctly points to "https://duckduckgo.com/bang?q={{{s}}}"
+  bangs["bang"] = bangs["bangs"];
 })();
 
 browser.webRequest.onBeforeRequest.addListener(
