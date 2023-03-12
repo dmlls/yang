@@ -30,7 +30,7 @@ let bangs = {};
   bangs["bang"] = bangs["bangs"];
 })();
 
-browser.webRequest.onBeforeRequest.addListener(
+chrome.webRequest.onBeforeRequest.addListener(
   (details) => {
     const url = new URL(details.url);
 
@@ -93,8 +93,8 @@ function updateTab(tabId, url) {
     url: url,
   };
   if (tabId != null) {
-    browser.tabs.update(tabId, updateProperties);
+    chrome.tabs.update(tabId, updateProperties);
   } else {
-    browser.tabs.update(updateProperties);
+    chrome.tabs.update(updateProperties);
   }
 }
