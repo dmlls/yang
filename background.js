@@ -20,7 +20,7 @@ let bangs = {};
 
 // Fetch Bangs from DuckDuckGo.
 (async () => {
-  const res = await fetch(new Request("https://duckduckgo.com/bang.js"));
+  const res = await fetch("https://duckduckgo.com/bang.js");
   bangs = await res.json();
   // Remap bangs to: bang -> target.
   bangs = bangs.map((item) => ({ [item.t]: item.u }));
@@ -58,6 +58,10 @@ browser.webRequest.onBeforeRequest.addListener(
       }, [])
       .filter((a) => a);
 
+    if (params.length == 0) {
+      return;
+    }
+
     let query = params[0];
     const searchTerms = query.split(" ");
     let bang = "";
@@ -73,7 +77,6 @@ browser.webRequest.onBeforeRequest.addListener(
         return;
       }
     }
-
     if (bang.length > 0 && bangs.hasOwnProperty(bang)) {
       updateTab(
         details.tabId,
