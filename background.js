@@ -87,7 +87,7 @@ browser.webRequest.onBeforeRequest.addListener(
   {
     urls: ["<all_urls>"],
   },
-  ["blocking", "requestBody"]
+  ["requestBody"]
 );
 
 function updateTab(tabId, url) {
