@@ -95,3 +95,9 @@ function updateTab(tabId, url) {
     browser.tabs.update(updateProperties);
   }
 }
+
+browser.browserAction.onClicked.addListener(function() {
+  browser.tabs.create({
+    url: browser.extension.getURL("options/options.html")
+  });
+});
