@@ -5,6 +5,13 @@
   "homepage_url": "https://github.com/dmlls/yang",
   "version": "0.9.2",
 
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "yang@diegomiguel.me",
+      "strict_min_version": "78.0"
+    }
+  },
+
   "icons": {
     "32": "icons/icon-32.png",
     "64": "icons/icon-64.png",
@@ -16,6 +23,7 @@
     "webRequest",
     "webRequestBlocking",
     "activeTab",
+    "storage",
 
     "https://www.google.com/search*",
     "https://www.google.ad/search*",
@@ -357,6 +365,10 @@
     "scripts": [
       "background.js"
     ]
+  },
+
+  "browser_action": {
+    "default_title": "Yang!"
   },
 
   "options_ui": {
