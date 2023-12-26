@@ -1,5 +1,4 @@
 function onGot(allBangs) {
-    console.log(allBangs);
     // Get only the bang values, sorted by order.
     let sortedBangs = Object.entries(allBangs).sort((a, b) => a[1].order - b[1].order).map(entry => entry[0]);
     for (const b of sortedBangs) {

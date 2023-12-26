@@ -1,0 +1,163 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f5f5f5;
+}
+
+.container {
+    max-width: 60%;
+    margin: 50px auto;
+    text-align: center;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    padding: 2em;
+    overflow: hidden;
+}
+
+h1 {
+    color: #333;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    text-align: start;
+    width: 100%;
+}
+
+input {
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+}
+
+button {
+    margin-top: 10px;
+    background: linear-gradient(to right, #7814ae, #dd5533);
+    color: #ffffff;
+    font-weight: bold;
+    padding: 15px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: border-radius 0.5s ease;
+}
+
+button:hover {
+    background: linear-gradient(to right, #671394, #a53f25);
+    border-radius: 10px;
+}
+
+.form {
+    width: 50%;
+    margin: 0 auto;
+    margin-bottom: 15px;
+    box-sizing: border-box;
+}
+
+.back-container {
+    text-align: left;
+    font-size: small;
+}
+
+.input-container {
+    display: block;
+}
+
+.error-input-border {
+    border: 1px solid #FF0000;
+}
+
+.checkbox-container {
+    display: flex;
+}
+
+.input-container, .checkbox-container {
+    margin-bottom: 20px;
+}
+
+
+.checkbox-container input {
+    width: auto;
+    margin-right: 10px;
+}
+
+.styled-table {
+    border-collapse: collapse;
+    margin: 25px auto;
+    font-size: 0.9em;
+    font-family: sans-serif;
+    text-align: left;
+    min-width: 50%;
+    width: 80%;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
+.styled-table {
+    border-radius: 8px 8px 0px 0px;
+    overflow: hidden;
+}
+
+.styled-table th,
+.styled-table td {
+    padding: 12px 15px;
+    max-width: 2vw;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.styled-table th:last-child,
+.styled-table td:last-child {
+    width: 15%;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.styled-table tbody tr {
+    border-bottom: 1px solid #dddddd;
+}
+
+.styled-table tbody tr:nth-of-type(even) {
+    background-color: #f3f3f3;
+}
+
+.styled-table tbody tr:last-of-type {
+    border-bottom: 2px solid #dd5533;
+}
+
+.styled-table tbody tr:hover {
+    color: #361149;
+    background-color: #f5f0f8;
+}
+
+.styled-table .edit-button,
+.styled-table .delete-button {
+    border: none;
+    background: none;
+    padding: 0px 8px;
+    margin: 2px;
+    cursor: pointer;
+    color: #494949;
+}
+
+.styled-table .edit-button:hover {
+    color: #7814ae;
+}
+
+.styled-table .delete-button:hover {
+    color: #c01010;
+}
+
+.error-message {
+    display: block;
+    visibility: hidden;
+    margin-top: 4px;
+    text-align: start;
+    width: 100%;
+    color: red;
+    font-size: small;
+}

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="add_edit_bang.css">
+    <script src="add_edit_bang.js" defer></script>
+    <title>Settings</title>
+</head>
+<body>
+    <div class="container">
+        <div class="back-container">
+            <a href="options.html">&#8592; Cancel and go back</a>
+        </div>
+        <h1>Add Custom Bang</h1>
+        <div class="form">
+            <form id="customBangForm">
+                <div class="input-container">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" class="input-field" name="name" required><br>
+                    <span id="error-name" class="error-message">🐥</span>
+                </div>
+
+                <div class="input-container">
+                    <label for="url">URL</label>
+                    <input type="text" id="url" class="input-field" name="url" required><br>
+                    <span id="error-url" class="error-message">🐥</span>
+                </div>
+
+                <div class="input-container">
+                    <label for="bang">Bang</label>
+                    <input type="text" id="bang" class="input-field" name="bang" required><br>
+                    <span id="error-bang" class="error-message">🐥</span>
+                </div>
+
+                <div class="checkbox-container">
+                    <input type="checkbox" id="urlEncodeQuery" name="urlEncodeQuery">
+                    <label for="urlEncodeQuery">URL Encode Query</label>
+                </div>
+
+                <button type="button" id="save">Save</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
