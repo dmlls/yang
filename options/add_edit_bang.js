@@ -25,7 +25,7 @@ function validateEmpty(inputElement) {
         return;
     } else {
         hideErrorMessage(inputElement);
-        return textValue;
+        return textValue.trim();
     }
 }
 
@@ -33,14 +33,14 @@ function validateUrl(inputElement) {
     let url;
     let urlString = inputElement.value.trim();
     try {
-        url = new URL(urlString);
+        url = decodeURIComponent(new URL(urlString));
     } catch (_) {
         showErrorMessage(inputElement, "Invalid URL (don't forget to include the scheme, e.g., 'https://').");
         return;
     }
     // Valid.
     hideErrorMessage(inputElement);
-    return decodeURIComponent(url);
+    return url;
 }
 
 async function validateDuplicatedBang(inputElement) {
