@@ -136,7 +136,7 @@ browser.storage.sync.set({
         name: "Yang! Yet Another Bangs anywhere extension",
         url: "https://github.com/dmlls/yang",
         bang: "yang",
-        encodeQuery: false,
+        urlEncodeQuery: false,
         order: 0
     }
 });

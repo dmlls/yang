@@ -17,14 +17,29 @@
  */
 
 let bangs = {};
-
-// Fetch Bangs from DuckDuckGo.
+// Fetch Bangs from DuckDuckGo and load custom Bangs.
 (async () => {
   const res = await fetch(new Request("https://duckduckgo.com/bang.js"));
-  bangs = await res.json();
-  // Remap bangs to: bang -> target.
-  bangs = bangs.map((item) => ({ [item.t]: item.u }));
-  bangs = Object.assign({}, ...bangs);
+  ddgBangs = await res.json();
+  for (const bang of ddgBangs) {
+    bangs[bang.t] = {
+      url: bang.u,
+      urlEncodeQuery: false  // default to false since we don't have this info
+    }
+  }
+  await browser.storage.sync.get().then(
+    function onGot(customBangs) {
+      for (const [, bang] of Object.entries(customBangs)) {
+        bangs[bang.bang] = {
+          url: bang.url,
+          urlEncodeQuery: bang.urlEncodeQuery  // default to true since we don't have this info
+        }
+      }
+    },
+    function onError(error) {
+      // TODO: Handle errors.
+    }
+  );
 })();
 
 browser.webRequest.onBeforeRequest.addListener(
@@ -55,10 +70,12 @@ browser.webRequest.onBeforeRequest.addListener(
       }, [])
       .filter((a) => a);
 
-    let query = params[0];
-    const searchTerms = query.split(" ");
+    if (params[0] === undefined) {
+      return;
+    }
     let bang = "";
-
+    let query = "";
+    const searchTerms = params[0].split(" ");
     if (searchTerms) {
       if (searchTerms[0].startsWith("!")) {
         bang = searchTerms[0].substring(1);
@@ -72,10 +89,13 @@ browser.webRequest.onBeforeRequest.addListener(
     }
 
     if (bang.length > 0 && bangs.hasOwnProperty(bang)) {
-      updateTab(
-        details.tabId,
-        `${bangs[bang].replace("{{{s}}}", query)}`
-      );
+      const bangUrl = bangs[bang].url;
+      let targetUrl = new URL(bangUrl.replace("{{{s}}}", query));
+      // When using URL() the url will be encoded.
+      if (!bangs[bang].urlEncodeQuery) {
+        targetUrl = decodeURIComponent(targetUrl);
+      }
+      updateTab(details.tabId, targetUrl.toString());
     }
   },
   {
@@ -101,3 +121,12 @@ browser.browserAction.onClicked.addListener(function() {
     url: browser.extension.getURL("options/options.html")
   });
 });
+
+// Update custom bangs.
+function updateCustomBangs(changes) {
+  const modifiedBangs = Object.keys(changes);
+  for (const bang of modifiedBangs) {
+    bangs[bang] = changes[bang].newValue;
+  }
+}
+browser.storage.sync.onChanged.addListener(updateCustomBangs);

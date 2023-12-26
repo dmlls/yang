@@ -161,3 +161,7 @@ button:hover {
     color: red;
     font-size: small;
 }
+
+input::placeholder {
+    color: #666666;
+}

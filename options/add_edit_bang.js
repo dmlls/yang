@@ -40,7 +40,7 @@ function validateUrl(inputElement) {
     }
     // Valid.
     hideErrorMessage(inputElement);
-    return url;
+    return decodeURIComponent(url);
 }
 
 async function validateDuplicatedBang(inputElement) {
