@@ -165,3 +165,16 @@ button:hover {
 input::placeholder {
     color: #666666;
 }
+
+@media screen and (max-width: 1000px) {
+    .container {
+        max-width: 100%;
+        height: 100vh;
+        margin: 0;
+        padding: 0;
+    }
+
+    .back-container {
+        padding: 20px;
+    }
+}
