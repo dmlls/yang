@@ -8,6 +8,7 @@
 
 body {
     font-family: 'InterVariable', sans-serif;
+    font-size: 1.1em;
     margin: 0;
     padding: 0;
     background-color: #f5f5f5;
@@ -29,6 +30,16 @@ h1 {
     margin-top: 5px;
     margin-bottom: 30px;
     font-weight: normal;
+}
+
+.bang {
+    font-family: monospace;
+    background-color: #f4f4f4;
+    padding: 0.2em;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    color: #7914ad;
+    font-weight: bold;
 }
 
 .button-container {
@@ -154,11 +165,12 @@ h1 {
     display: flex;
     justify-content: space-between;
     margin-top: 50px;
+    font-size: medium;
 }
 
 #version a:link,
 #version a:visited {
-    color: #666666;
+    color: #4e4e4e;
 }
 
 .toast-container {

@@ -11,7 +11,9 @@ function onGot(allBangs) {
         let name = document.createTextNode(allBangs[b].name);
         nameCell.appendChild(name);
 
-        let bang = document.createTextNode(`!${allBangs[b].bang}`);
+        let bang = document.createElement("code");
+        bang.classList.add("bang");
+        bang.textContent = `!${allBangs[b].bang}`;
         bangCell.appendChild(bang);
 
         let editButton = document.createElement("button");

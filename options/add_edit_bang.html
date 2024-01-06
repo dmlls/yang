@@ -22,7 +22,13 @@
                 </div>
 
                 <div class="input-container">
-                    <label for="url">URL <small>({{{s}}} will be replaced)</small></label>
+                    <div class="url-label">
+                        <label for="url">URL</label>
+                        <div class="tooltip">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-info"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                        </div>
+                        <span class="tooltip-text">The <code>{{{s}}}</code> in the URL will be replaced with your bang.</span>
+                    </div>
                     <input type="text" id="url" class="input-field" name="url" placeholder="https://en.wikipedia.org/wiki/Bang/{{{s}}}" required><br>
                     <span id="error-url" class="error-message">🐥</span>
                 </div>
@@ -38,7 +44,12 @@
                     <label for="urlEncodeQuery">URL Encode Query</label>
                 </div>
 
-                <button type="button" id="save">Save</button>
+                <div class="button-container">
+                    <button type="button" id="save">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-save" version="1.1" id="svg2" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg"> <path id="polyline2" d="m 7,3 v 5 h 8 m 2,13 V 13 H 7 v 8 m 12,0 H 5 A 2,2 0 0 1 3,19 V 5 A 2,2 0 0 1 5,3 h 11 l 5,5 v 11 a 2,2 0 0 1 -2,2 z" style="stroke-width:1.7;stroke-dasharray:none" /></svg>
+                        Save
+                    </button>
+                </div>
             </form>
         </div>
     </div>
