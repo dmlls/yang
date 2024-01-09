@@ -30,12 +30,12 @@ async function importSettings(file) {
             await browser.storage.sync.set({ [bangName]: bangInfo });
         }
         alert("Settings imported successfully!");
+        window.location.href = "options.html";
       } catch (error) {
         console.error("Error importing settings:", error);
         alert("Error importing settings. Please make sure the file is a valid Yang backup.");
       }
     };
-  
     reader.readAsText(file);
   }
 
