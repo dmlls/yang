@@ -25,11 +25,53 @@ body {
     overflow-x: hidden;
 }
 
-h1 {
+h1, h3 {
     color: #333333;
-    margin-top: 5px;
-    margin-bottom: 40px;
     font-weight: normal;
+}
+
+h2 {
+    color: #7914ad;
+}
+
+p {
+    text-align: justify;
+    line-height: 1.5em;
+}
+
+li {
+    text-align: justify;
+    line-height: 1.2em;
+    margin-bottom: 1em;
+}
+
+hr {
+    width: 30%;
+    border: none;
+    height: 1px;
+    background-color: #6a6a6a;
+}
+
+code {
+    font-family: monospace;
+    background-color: #f4f4f4;
+    padding: 0.2em;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+img {
+    width: 95%;
+    display: block;
+    margin: 50px auto;
+    margin-bottom: 100px;
+    filter: drop-shadow(0px 12px 20px rgba(88, 88, 88, 0.3)); 
+}
+
+#v1-0-add-custom-bang,
+#v1-0-backup-recover {
+    width: 70%;
 }
 
 .bang {
@@ -48,9 +90,32 @@ h1 {
     margin: 10px 0;
 }
 
+.header {
+    display: flex;
+    justify-content: end;
+    padding: 20px;
+}
+
+#homepage {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    font-size: 0.9em;
+}
+
+.logo-container {
+    margin-top: 50px;
+    margin-bottom: 100px;
+}
+
+#github-logo {
+    margin-bottom: 2px;
+}
+
 #yang-logo {
     width: 15%;
-    margin-top: 20px;
+    margin: 0px auto;
 }
 
 #add-bang {
@@ -169,10 +234,10 @@ h1 {
     margin: 10px 0;
 }
 
-.footer {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 50px;
+.update {
+    width: 75%;
+    text-align: start;
+    margin: 50px auto;
     font-size: medium;
 }
 
@@ -213,9 +278,12 @@ h1 {
         padding: 0;
     }
 
-    .footer {
-        padding: 20px;
-        margin-top: 35px;
+    .update {
+        width: 85%;
+    }
+
+    p, li {
+        text-align: start;
     }
 
     .toast-container {
@@ -224,7 +292,7 @@ h1 {
 
     #yang-logo {
         width: 25%;
-        margin-top: 30px;
+        margin-top: 20px;
     }
 
     .table-container {

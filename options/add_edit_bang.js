@@ -155,6 +155,9 @@ const mode = urlParams.get("mode");
 let last = Number(urlParams.get("last"));
 let bangName;
 if (mode === "edit") {
+    let title = document.getElementById("title");
+    title.innerHTML = "Edit Custom Bang";
+    document.title = "Yang! – Edit Bang";
     bangName = stripExclamation(urlParams.get("bang"));
     browser.storage.sync.get(bangName).then(
         function onGot(item) {
