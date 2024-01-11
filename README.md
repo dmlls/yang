@@ -78,7 +78,6 @@ sites**:
 | Mojeek | https://www.mojeek.com/
 | Qwant | https://www.qwant.com/
 | You.com | https://you.com/
-| Neeva | https://neeva.com/
 | Kagi | https://kagi.com/
 | Naver | https://www.naver.com/
 | Yandex | https://yandex.com/
