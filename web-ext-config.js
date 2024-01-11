@@ -1,7 +1,3 @@
 module.exports = {
-  ignoreFiles: [
-    'img/',
-    'icons/icon.svg',
-    'web-ext-config.js',
-  ],
+  ignoreFiles: ["img/", "icons/icon.svg", "web-ext-config.js"],
 };

@@ -24,7 +24,7 @@ let bangs = {};
   for (const bang of ddgBangs) {
     bangs[bang.t] = {
       url: bang.u,
-      urlEncodeQuery: false  // default to false since we don't have this info
+      urlEncodeQuery: false, // default to false since we don't have this info
     };
   }
   await browser.storage.sync.get().then(
@@ -32,13 +32,13 @@ let bangs = {};
       for (const [, bang] of Object.entries(customBangs)) {
         bangs[bang.bang] = {
           url: bang.url,
-          urlEncodeQuery: bang.urlEncodeQuery
+          urlEncodeQuery: bang.urlEncodeQuery,
         };
       }
     },
     function onError(error) {
       // TODO: Handle errors.
-    }
+    },
   );
 })();
 
@@ -48,7 +48,7 @@ browser.webRequest.onBeforeRequest.addListener(
 
     // Skip requests for suggestions.
     const skip = ["/ac/", "suggest", "/complete"].some((path) =>
-      url.pathname.includes(path)
+      url.pathname.includes(path),
     );
     if (skip) {
       return null;
@@ -101,7 +101,7 @@ browser.webRequest.onBeforeRequest.addListener(
   {
     urls: ["<all_urls>"],
   },
-  ["blocking", "requestBody"]
+  ["blocking", "requestBody"],
 );
 
 function updateTab(tabId, url) {
@@ -116,9 +116,9 @@ function updateTab(tabId, url) {
   }
 }
 
-browser.browserAction.onClicked.addListener(function() {
+browser.browserAction.onClicked.addListener(function () {
   browser.tabs.create({
-    url: browser.extension.getURL("options/options.html")
+    url: browser.extension.getURL("options/options.html"),
   });
 });
 

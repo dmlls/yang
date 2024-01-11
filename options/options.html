@@ -1,42 +1,58 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="options.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="options.css" />
     <script src="options.js" defer></script>
     <title>Yang! – Custom Bangs</title>
-    <link rel="icon" type="image/png" href="../icons/icon-32.png"/>
-</head>
-<body>
+    <link rel="icon" type="image/png" href="../icons/icon-32.png" />
+  </head>
+  <body>
     <div class="container">
-        <img id="yang-logo" src="../icons/icon.svg"/>
-        <h1>Custom Bangs</h1>
-        <div class="table-container">
-            <div class="button-container">
-                <button type="button" id="add-bang">
-                    <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="12" y1="5" x2="12" y2="19"></line>
-                        <line x1="5" y1="12" x2="19" y2="12"></line>
-                    </svg>
-                    Add Bang
-                </button>
-            </div>
-            <table id="bangs-table">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Bang</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-            <div id="no-bangs">You still don't have any custom bangs.</div>
+      <img id="yang-logo" src="../icons/icon.svg" />
+      <h1>Custom Bangs</h1>
+      <div class="table-container">
+        <div class="button-container">
+          <button type="button" id="add-bang">
+            <svg
+              class="icon"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              width="24"
+              height="24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Add Bang
+          </button>
         </div>
-        <div class="footer">
-            <code id="version"><a href="https://github.com/dmlls/yang/releases/tag/v0.9.5">v0.9.5</a></code>
-            <a href="backup_restore.html">Backup / Restore</a>
-        </div>
+        <table id="bangs-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Bang</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <div id="no-bangs">You still don't have any custom bangs.</div>
+      </div>
+      <div class="footer">
+        <code id="version"
+          ><a href="https://github.com/dmlls/yang/releases/tag/v0.9.5"
+            >v0.9.5</a
+          ></code
+        >
+        <a href="backup_restore.html">Backup / Restore</a>
+      </div>
     </div>
+  </body>
 </html>
