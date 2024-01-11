@@ -32,7 +32,7 @@ let bangs = {};
       for (const [, bang] of Object.entries(customBangs)) {
         bangs[bang.bang] = {
           url: bang.url,
-          urlEncodeQuery: bang.urlEncodeQuery  // default to true since we don't have this info
+          urlEncodeQuery: bang.urlEncodeQuery
         }
       }
     },
