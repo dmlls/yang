@@ -355,9 +355,7 @@
     "https://search.aol.com/*/search*",
     "https://suche.aol.de/*/search*",
 
-    "https://www.dogpile.com/serp*",
-
-    "https://gigablast.com/search*"
+    "https://www.dogpile.com/serp*"
   ],
 
   "background": {
