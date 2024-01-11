@@ -97,6 +97,7 @@ browser.webRequest.onBeforeRequest.addListener(
       }
       updateTab(details.tabId, targetUrl.toString());
     }
+    return null;
   },
   {
     urls: ["<all_urls>"],
