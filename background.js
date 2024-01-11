@@ -20,12 +20,12 @@ let bangs = {};
 // Fetch Bangs from DuckDuckGo and load custom Bangs.
 (async () => {
   const res = await fetch(new Request("https://duckduckgo.com/bang.js"));
-  ddgBangs = await res.json();
+  const ddgBangs = await res.json();
   for (const bang of ddgBangs) {
     bangs[bang.t] = {
       url: bang.u,
       urlEncodeQuery: false  // default to false since we don't have this info
-    }
+    };
   }
   await browser.storage.sync.get().then(
     function onGot(customBangs) {
@@ -33,7 +33,7 @@ let bangs = {};
         bangs[bang.bang] = {
           url: bang.url,
           urlEncodeQuery: bang.urlEncodeQuery
-        }
+        };
       }
     },
     function onError(error) {
@@ -47,20 +47,20 @@ browser.webRequest.onBeforeRequest.addListener(
     const url = new URL(details.url);
 
     // Skip requests for suggestions.
-    let skip = ["/ac/", "suggest", "/complete"].some((path) =>
+    const skip = ["/ac/", "suggest", "/complete"].some((path) =>
       url.pathname.includes(path)
     );
     if (skip) {
-      return;
+      return null;
     }
     // Different search engines use different params for the query.
-    let params = ["q", "p", "query", "text"]
+    const params = ["q", "p", "query", "text"]
       .reduce((acc, param) => {
         let q = url.searchParams.get(param);
         // Some search engines include the query in the request body.
         if (!q) {
-          let form = details?.requestBody?.formData;
-          if (form != null && form.hasOwnProperty(param))
+          const form = details?.requestBody?.formData;
+          if (form != null && Object.prototype.hasOwnProperty.call(form, param))
             q = details?.requestBody?.formData[param][0];
         }
         if (q != null) {
@@ -71,7 +71,7 @@ browser.webRequest.onBeforeRequest.addListener(
       .filter((a) => a);
 
     if (params[0] === undefined) {
-      return;
+      return null;
     }
     let bang = "";
     let query = "";
@@ -84,11 +84,11 @@ browser.webRequest.onBeforeRequest.addListener(
         bang = searchTerms[searchTerms.length - 1].substring(1);
         query = searchTerms.slice(0, -1).join(" ");
       } else {
-        return;
+        return null;
       }
     }
 
-    if (bang.length > 0 && bangs.hasOwnProperty(bang)) {
+    if (bang.length > 0 && Object.prototype.hasOwnProperty.call(bangs, bang)) {
       const bangUrl = bangs[bang].url;
       let targetUrl = new URL(bangUrl.replace("{{{s}}}", query));
       // When using URL() the url will be encoded.
@@ -105,7 +105,7 @@ browser.webRequest.onBeforeRequest.addListener(
 );
 
 function updateTab(tabId, url) {
-  let updateProperties = {
+  const updateProperties = {
     loadReplace: true,
     url: url,
   };

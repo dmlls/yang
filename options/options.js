@@ -1,26 +1,26 @@
 function onGot(allBangs) {
     // Get only the bang values, sorted by order.
-    let sortedBangs = Object.entries(allBangs).sort((a, b) => a[1].order - b[1].order).map(entry => entry[0]);
-    if (sortedBangs.length == 0) {
+    const sortedBangs = Object.entries(allBangs).sort((a, b) => a[1].order - b[1].order).map(entry => entry[0]);
+    if (sortedBangs.length === 0) {
         const noBangsLabel = document.getElementById("no-bangs");
         noBangsLabel.style.visibility = "visible";
     } else {
         for (const b of sortedBangs) {
-            let tableBody = document.querySelector("#bangs-table tbody");
-            let row = tableBody.insertRow();
-            let nameCell = row.insertCell(0);
-            let bangCell = row.insertCell(1);
-            let actionsCell = row.insertCell(2);
+            const tableBody = document.querySelector("#bangs-table tbody");
+            const row = tableBody.insertRow();
+            const nameCell = row.insertCell(0);
+            const bangCell = row.insertCell(1);
+            const actionsCell = row.insertCell(2);
 
-            let name = document.createTextNode(allBangs[b].name);
+            const name = document.createTextNode(allBangs[b].name);
             nameCell.appendChild(name);
 
-            let bang = document.createElement("code");
+            const bang = document.createElement("code");
             bang.classList.add("bang");
             bang.textContent = `!${allBangs[b].bang}`;
             bangCell.appendChild(bang);
 
-            let editButton = document.createElement("button");
+            const editButton = document.createElement("button");
             editButton.className = "edit-button";
             editButton.title = "Edit";
             editButton.innerHTML = `
@@ -29,7 +29,7 @@ function onGot(allBangs) {
                 </svg>`;
             editButton.addEventListener("click", editBang, false);
 
-            let deleteButton = document.createElement("button");
+            const deleteButton = document.createElement("button");
             deleteButton.className = "delete-button";
             deleteButton.title = "Delete";
             deleteButton.innerHTML = `
@@ -41,8 +41,8 @@ function onGot(allBangs) {
             actionsCell.appendChild(editButton);
             actionsCell.appendChild(deleteButton);
         }
-        let last = allBangs[sortedBangs.at(-1)].order; // order of the most recent bang
-        let addBangButton = document.getElementById("add-bang");
+        const last = allBangs[sortedBangs.at(-1)].order; // order of the most recent bang
+        const addBangButton = document.getElementById("add-bang");
         addBangButton.last = last;
     }
 }
@@ -61,19 +61,19 @@ function stripExclamation(string) {
 }
 
 function editBang(e) {
-    let row = e.currentTarget.parentNode.parentNode;
-    let bang = row.cells[1].textContent;
-    let addBangButton = document.getElementById("add-bang");
+    const row = e.currentTarget.parentNode.parentNode;
+    const bang = row.cells[1].textContent;
+    const addBangButton = document.getElementById("add-bang");
     window.location.replace(`add_edit_bang.html?mode=edit&bang=${bang}&last=${addBangButton.last}`);
 }
 
 function deleteBang(e) {
-    let row = e.currentTarget.parentNode.parentNode;
-    let bangName = stripExclamation(row.cells[1].textContent);
+    const row = e.currentTarget.parentNode.parentNode;
+    const bangName = stripExclamation(row.cells[1].textContent);
     // Retrieve bang to be able to undo deletion.
     browser.storage.sync.get(bangName).then(
         function onGot(item) {
-            bang = item[bangName];
+            let bang = item[bangName];
             browser.storage.sync.remove(bangName).then(
                 function onRemoved() {
                     row.remove();
@@ -83,19 +83,19 @@ function deleteBang(e) {
                         "Undo",
                         undoDeletion,
                         bang
-                    )
+                    );
                 },
                 function onError() {
                     // TODO: Handle errors.
                 }
-            )
+            );
         },
         function onError(error) {
             // TODO: Handle error.
         }
     );
     const table = document.getElementById("bangs-table");
-    if (table.rows.length == 2) { // Empty table.
+    if (table.rows.length === 2) { // Empty table.
         window.location.reload();
     }
 }
@@ -113,7 +113,7 @@ function undoDeletion(bang) {
 function displayToast(toastId, message, actionText, actionCallback, argsCallback) {
     hideToast(toastId);
     const buttonId = `undo-button-${toastId}`;
-    let body = document.getElementsByTagName("body")[0];
+    const body = document.getElementsByTagName("body")[0];
     body.insertAdjacentHTML(
         "beforeend",
         `<div id="${toastId}" class="toast-container">
@@ -121,7 +121,7 @@ function displayToast(toastId, message, actionText, actionCallback, argsCallback
             <button id="${buttonId}">${actionText}</button>
         </div></body>`
     );
-    let undoButton = document.getElementById(buttonId);
+    const undoButton = document.getElementById(buttonId);
     undoButton.addEventListener("click", function () {
         actionCallback(argsCallback);
     });
@@ -132,7 +132,7 @@ function displayToast(toastId, message, actionText, actionCallback, argsCallback
 }
 
 function hideToast(toastId) {
-    let toast = document.getElementById(toastId);
+    const toast = document.getElementById(toastId);
     if (toast !== null) {
         toast.remove();
     }
@@ -143,5 +143,5 @@ function undoAction() {
 }
 
 browser.storage.sync.get().then(onGot, onError);
-let addBangButton = document.getElementById("add-bang");
+const addBangButton = document.getElementById("add-bang");
 addBangButton.addEventListener("click", addBang, false);

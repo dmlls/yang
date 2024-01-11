@@ -7,7 +7,7 @@
 }
 
 body {
-    font-family: 'InterVariable', sans-serif;
+    font-family: InterVariable, sans-serif;
     margin: 0;
     padding: 0;
     background-color: #f5f5f5;
@@ -18,14 +18,14 @@ body {
     margin: 50px auto;
     text-align: center;
     background-color: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 10px rgba(0 0 0 0.1);
     border-radius: 8px;
     padding: 2em;
     overflow: hidden;
 }
 
 h1 {
-    color: #333333;
+    color: #333;
     margin-top: 30px;
     margin-bottom: 40px;
     font-weight: normal;
@@ -54,9 +54,8 @@ button {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 10px;
     background: #e15e49;
-    color: #ffffff;
+    color: #fff;
     padding: 15px 25px;
     border: none;
     border-radius: 8px;
@@ -90,7 +89,7 @@ button svg {
 }
 
 .error-input-border {
-    border: 1px solid #FF0000;
+    border: 1px solid #f00;
 }
 
 .checkbox-container {
@@ -101,7 +100,6 @@ button svg {
     margin-bottom: 20px;
 }
 
-
 .checkbox-container input {
     width: auto;
     margin-right: 10px;
@@ -109,74 +107,6 @@ button svg {
 
 .checkbox-container label {
     margin: 0;
-}
-
-.styled-table {
-    border-collapse: collapse;
-    margin: 25px auto;
-    font-size: 0.9em;
-    font-family: sans-serif;
-    text-align: left;
-    min-width: 50%;
-    width: 80%;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
-}
-
-.styled-table {
-    border-radius: 8px 8px 0px 0px;
-    overflow: hidden;
-}
-
-.styled-table th,
-.styled-table td {
-    padding: 12px 15px;
-    max-width: 2vw;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.styled-table th:last-child,
-.styled-table td:last-child {
-    width: 15%;
-    text-align: center;
-    white-space: nowrap;
-    overflow: hidden;
-}
-
-.styled-table tbody tr {
-    border-bottom: 1px solid #dddddd;
-}
-
-.styled-table tbody tr:nth-of-type(even) {
-    background-color: #f3f3f3;
-}
-
-.styled-table tbody tr:last-of-type {
-    border-bottom: 2px solid #dd5533;
-}
-
-.styled-table tbody tr:hover {
-    color: #361149;
-    background-color: #f5f0f8;
-}
-
-.styled-table .edit-button,
-.styled-table .delete-button {
-    border: none;
-    background: none;
-    padding: 0px 8px;
-    margin: 2px;
-    cursor: pointer;
-    color: #494949;
-}
-
-.styled-table .edit-button:hover {
-    color: #7814ae;
-}
-
-.styled-table .delete-button:hover {
-    color: #c01010;
 }
 
 .error-message {
@@ -190,18 +120,7 @@ button svg {
 }
 
 input::placeholder {
-    color: #666666;
-}
-
-.tooltip:hover + .tooltip-text,
-.tooltip:active + .tooltip-text {
-    visibility: visible;
-}
-
-.tooltip {
-    position: relative;
-    display: inline-block;
-    text-align: center;
+    color: #666;
 }
 
 .tooltip-text {
@@ -213,8 +132,19 @@ input::placeholder {
     background-color: #525252;
     border-radius: 5px;
     padding: 10px 15px;
-    margin: -10px 10px 0 10px;
+    margin: -10px 10px 0;
     line-height: 2em;
+}
+
+.tooltip:hover + .tooltip-text,
+.tooltip:active + .tooltip-text {
+    visibility: visible;
+}
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+    text-align: center;
 }
 
 .url-label {
@@ -236,7 +166,7 @@ code {
     font-weight: bold;
 }
 
-@media screen and (max-width: 1000px) {
+@media screen and (width < 1000px) {
     .container {
         max-width: 100%;
         height: 100vh;

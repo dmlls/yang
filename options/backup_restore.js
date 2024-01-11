@@ -1,6 +1,6 @@
 function exportSettings(settings) {
     const jsonString = JSON.stringify(settings, null, 2);
-    const timestamp = new Date().toISOString().replace(/[-T:\.Z]/g, "");
+    const timestamp = new Date().toISOString().replace(/[-T:.Z]/g, "");
     const filename = `yang-backup_${timestamp}.json`;
   
     const blob = new Blob([jsonString], { type: "application/json" });
@@ -16,7 +16,7 @@ function exportSettings(settings) {
     URL.revokeObjectURL(url);
 }
 
-async function importSettings(file) {
+function importSettings(file) {
     const reader = new FileReader();
   
     reader.onload = async (event) => {

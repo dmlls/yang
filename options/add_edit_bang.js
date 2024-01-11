@@ -6,7 +6,7 @@ const FormFields = Object.freeze({
 });
 
 function showErrorMessage(inputField, message) {
-    let errorMsg = document.getElementById(`error-${inputField.id}`);
+    const errorMsg = document.getElementById(`error-${inputField.id}`);
     errorMsg.textContent = message;
     errorMsg.style.visibility = "visible";
     inputField.classList.add("error-input-border");
@@ -19,10 +19,10 @@ function hideErrorMessage(inputField) {
 }
 
 function validateEmpty(inputElement) {
-    let textValue = inputElement.value.trim();
+    const textValue = inputElement.value.trim();
     if (textValue === "") {
         showErrorMessage(inputElement, "This field cannot be empty.");
-        return;
+        return null;
     } else {
         hideErrorMessage(inputElement);
         return textValue.trim();
@@ -31,12 +31,12 @@ function validateEmpty(inputElement) {
 
 function validateUrl(inputElement) {
     let url;
-    let urlString = inputElement.value.trim();
+    const urlString = inputElement.value.trim();
     try {
         url = decodeURIComponent(new URL(urlString));
     } catch (_) {
         showErrorMessage(inputElement, "Invalid URL (don't forget to include the scheme, e.g., 'https://').");
-        return;
+        return null;
     }
     // Valid.
     hideErrorMessage(inputElement);
@@ -44,8 +44,8 @@ function validateUrl(inputElement) {
 }
 
 async function validateDuplicatedBang(inputElement) {
-    let bang = inputElement.value.trim();
-    valid = await browser.storage.sync.get(bang).then(
+    const bang = inputElement.value.trim();
+    let valid = await browser.storage.sync.get(bang).then(
         function onGot(item) {
             if (Object.keys(item).length > 0) {
                 showErrorMessage(inputElement, "Bang already exists.");
@@ -64,7 +64,7 @@ async function validateDuplicatedBang(inputElement) {
 
 function getInputValue(inputId) {
     let value;
-    let inputElement = document.getElementById(inputId);
+    const inputElement = document.getElementById(inputId);
     switch (inputElement.type) {
         case "text":
             switch(inputId) {
@@ -73,7 +73,7 @@ function getInputValue(inputId) {
                     break;
                 case FormFields.URL:
                     value = validateEmpty(inputElement);
-                    if (value !== undefined) {
+                    if (value !== null) {
                         value = validateUrl(inputElement);
                     }
                     break;
@@ -87,6 +87,8 @@ function getInputValue(inputId) {
         case "checkbox":
             value = inputElement.checked;
             break;
+        default:
+            break;
     }
     return value;
 }
@@ -95,7 +97,8 @@ function getInputtedBang(last, mode) {
     let newBang = {};
     const inputIds = Object.values(FormFields);
     const inputtedValues = inputIds.map(inputId => getInputValue(inputId));
-    for (var i = 0; i < inputIds.length; i++) {
+    let i;
+    for (i = 0; i < inputIds.length; i++) {
         newBang[inputIds[i]] = inputtedValues[i];
     }
     newBang.order = (mode === "add") ? last + 1 : last;
@@ -117,10 +120,10 @@ function setItem() {
 function onError() {}
 
 async function saveCustomBang() {
-    let saveButton = document.getElementById("save");
+    const saveButton = document.getElementById("save");
     const customBang = getInputtedBang(saveButton.last, saveButton.mode);
     let validBang;
-    let bangElement = document.getElementById(FormFields.BANG);
+    const bangElement = document.getElementById(FormFields.BANG);
     switch (saveButton.mode) {
         case "add":
             validBang = await validateDuplicatedBang(bangElement);
@@ -138,38 +141,49 @@ async function saveCustomBang() {
                         function onError() {
                             // TODO: Handle errors.
                         }
-                    )
+                    );
                 }
             } else {
                 validBang = true;
             }
+            break;
+        default:
+            break;
     }
     if (isInputtedBangValid(customBang) && validBang) {
         browser.storage.sync.set({ [customBang.bang]: customBang }).then(setItem, onError);
     }
 }
 
-let saveButton = document.getElementById("save");
+function saveOnCtrlEnter(e) {
+    if ((e.ctrlKey || e.metaKey) && (e.keyCode === 13 || e.keyCode === 10)) {
+        saveCustomBang();
+    }
+}
+
+const saveButton = document.getElementById("save");
 const urlParams = new URLSearchParams(window.location.search);
 const mode = urlParams.get("mode");
-let last = Number(urlParams.get("last"));
+const last = Number(urlParams.get("last"));
 let bangName;
 if (mode === "edit") {
-    let title = document.getElementById("title");
+    const title = document.getElementById("title");
     title.innerHTML = "Edit Custom Bang";
     document.title = "Yang! – Edit Bang";
     bangName = stripExclamation(urlParams.get("bang"));
     browser.storage.sync.get(bangName).then(
         function onGot(item) {
-            let bang = item[bangName];
+            const bang = item[bangName];
             for (const field of Object.values(FormFields)) {
-                let inputElement = document.getElementById(field);
+                const inputElement = document.getElementById(field);
                 switch (inputElement.type) {
                     case "text":
                         inputElement.value = bang[field];
                         break;
                     case "checkbox":
                         inputElement.checked = bang[field];
+                        break;
+                    default:
                         break;
                 }
             }
@@ -185,11 +199,7 @@ saveButton.bangName = bangName;
 saveButton.addEventListener("click", saveCustomBang, false);
 
 // Save with Ctrl+Enter or Cmd+Enter.
-let inputFields = document.getElementsByClassName("input-field");
-for (let field of inputFields) {
-    field.onkeydown = (e) => {
-        if ((e.ctrlKey || e.metaKey) && (e.keyCode == 13 || e.keyCode == 10)) {
-            saveCustomBang();
-        }
-    }
+const inputFields = document.getElementsByClassName("input-field");
+for (const field of inputFields) {
+    field.onkeydown = saveOnCtrlEnter;
 }

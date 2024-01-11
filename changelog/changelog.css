@@ -3,11 +3,11 @@
     font-style: normal;
     font-weight: 100 900;
     font-display: swap;
-    src: url("fonts/Inter-4.0/InterVariable.woff2") format("woff2");
+    src: url("../options/fonts/Inter-4.0/InterVariable.woff2") format("woff2");
 }
 
 body {
-    font-family: 'InterVariable', sans-serif;
+    font-family: InterVariable, sans-serif;
     font-size: 1.1em;
     margin: 0;
     padding: 0;
@@ -18,15 +18,15 @@ body {
     max-width: 60%;
     margin: 50px auto;
     text-align: center;
-    background-color: #ffffff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0 0 0 0.1);
     border-radius: 8px;
     padding: 2em;
     overflow-x: hidden;
 }
 
 h1, h3 {
-    color: #333333;
+    color: #333;
     font-weight: normal;
 }
 
@@ -66,28 +66,12 @@ img {
     display: block;
     margin: 50px auto;
     margin-bottom: 100px;
-    filter: drop-shadow(0px 12px 20px rgba(88, 88, 88, 0.3)); 
+    filter: drop-shadow(0 12px 20px #5858584d);
 }
 
 #v1-0-add-custom-bang,
 #v1-0-backup-recover {
     width: 70%;
-}
-
-.bang {
-    font-family: monospace;
-    background-color: #f4f4f4;
-    padding: 0.2em;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    color: #7914ad;
-    font-weight: bold;
-}
-
-.button-container {
-    display: flex;
-    justify-content: end;
-    margin: 10px 0;
 }
 
 .header {
@@ -115,123 +99,7 @@ img {
 
 #yang-logo {
     width: 15%;
-    margin: 0px auto;
-}
-
-#add-bang {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 10px;
-    background: #e15e49;
-    color: #ffffff;
-    padding: 15px 20px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: medium;
-    transition: border-radius 0.5s ease, background 0.3s ease;
-}
-
-#add-bang svg {
-    margin-right: 5px;
-}
-
-#add-bang:hover {
-    background: #a84636;
-    border-radius: 12px;
-}
-
-.form {
-    width: 50%;
     margin: 0 auto;
-    margin-bottom: 15px;
-    box-sizing: border-box;
-}
-
-.table-container {
-    margin: 25px auto;
-    min-width: 50%;
-    width: 80%;
-}
-
-#bangs-table {
-    width: 100%;
-    border-collapse: collapse;
-    border-radius: 8px 8px 0px 0px;
-    font-size: 0.9em;
-    font-family: sans-serif;
-    text-align: left;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
-    overflow: hidden;
-}
-
-#bangs-table thead tr {
-    background: linear-gradient(to right, #7814ae, #dd5533);
-    color: #ffffff;
-}
-
-#bangs-table th,
-#bangs-table td {
-    padding: 12px 15px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-#bangs-table th:first-child,
-#bangs-table td:first-child {
-    max-width: 200px;
-}
-
-#bangs-table th:last-child,
-#bangs-table td:last-child {
-    text-align: end;
-    padding-right: 10px;
-    padding-left: 0;
-    overflow: visible;
-}
-
-#bangs-table tbody tr {
-    border-bottom: 1px solid #dddddd;
-}
-
-#bangs-table tbody tr:nth-of-type(even) {
-    background-color: #f3f3f3;
-}
-
-#bangs-table tbody tr:last-of-type {
-    border-bottom: 2px solid #dd5533;
-}
-
-#bangs-table tbody tr:hover {
-    color: #361149;
-    background-color: #f5f0f8;
-}
-
-#bangs-table .edit-button,
-#bangs-table .delete-button {
-    border: none;
-    background: none;
-    padding: 0px 8px;
-    margin: 2px;
-    cursor: pointer;
-    color: #494949;
-}
-
-#bangs-table .edit-button:hover {
-    color: #7814ae;
-}
-
-#bangs-table .delete-button:hover {
-    color: #c01010;
-}
-
-#no-bangs {
-    visibility: hidden;
-    color: #414141;
-    font-size: 0.9em;
-    margin: 10px 0;
 }
 
 .update {
@@ -241,36 +109,7 @@ img {
     font-size: medium;
 }
 
-#version a:link,
-#version a:visited {
-    color: #4e4e4e;
-}
-
-.toast-container {
-    position: fixed;
-    width: 50%;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: #1a1a1a;
-    color: #fff;
-    padding: 15px;
-    border-radius: 5px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.toast-container button {
-    background-color: transparent;
-    color: yellow;
-    border: none;
-    text-decoration: underline;
-    font-size: 16px;
-    cursor: pointer;
-}
-
-@media screen and (max-width: 1000px) {
+@media screen and (width < 1000px) {
     .container {
         max-width: 100%;
         height: 100vh;
@@ -286,34 +125,8 @@ img {
         text-align: start;
     }
 
-    .toast-container {
-        width: 90%;
-    }
-
     #yang-logo {
         width: 25%;
         margin-top: 20px;
-    }
-
-    .table-container {
-        margin: 10px auto;
-        width: 95%;
-    }
-
-    .button-container {
-        justify-content: center;
-        margin-bottom: 20px;
-    }
-
-    #bangs-table th:first-child,
-    #bangs-table td:first-child {
-        max-width: 100px;
-    }
-
-    #bangs-table th:last-child,
-    #bangs-table td:last-child {
-        min-width: 25%;
-        padding-right: 0;
-        padding-left: 0;
     }
 }
