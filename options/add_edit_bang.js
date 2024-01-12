@@ -18,10 +18,16 @@ function hideErrorMessage(inputField) {
   errorMsg.style.visibility = "hidden";
 }
 
-function validateEmpty(inputElement) {
+function validateEmptyOrTooLong(inputElement, maxLength) {
   const textValue = inputElement.value.trim();
   if (textValue === "") {
     showErrorMessage(inputElement, "This field cannot be empty.");
+    return null;
+  } else if (maxLength !== undefined && textValue.length > maxLength) {
+    showErrorMessage(
+      inputElement,
+      `The input is too long (max. ${maxLength} characters allowed).`,
+    );
     return null;
   } else {
     hideErrorMessage(inputElement);
@@ -72,16 +78,16 @@ function getInputValue(inputId) {
     case "text":
       switch (inputId) {
         case FormFields.NAME:
-          value = validateEmpty(inputElement);
+          value = validateEmptyOrTooLong(inputElement, 100);
           break;
         case FormFields.URL:
-          value = validateEmpty(inputElement);
+          value = validateEmptyOrTooLong(inputElement, 250);
           if (value !== null) {
             value = validateUrl(inputElement);
           }
           break;
         case FormFields.BANG:
-          value = validateEmpty(inputElement);
+          value = validateEmptyOrTooLong(inputElement, 8);
           // Remove leading or trailing "!".
           value = stripExclamation(value);
           break;
