@@ -3,7 +3,14 @@
   "name": "Yang! - Yet Another Bangs anywhere extension",
   "description": "An open-source, lightweight Firefox extension that allows using DuckDuckGo Bangs anywhere.",
   "homepage_url": "https://github.com/dmlls/yang",
-  "version": "0.9.4",
+  "version": "0.9.5",
+
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "yang@diegomiguel.me",
+      "strict_min_version": "78.0"
+    }
+  },
 
   "icons": {
     "32": "icons/icon-32.png",
@@ -16,6 +23,7 @@
     "webRequest",
     "webRequestBlocking",
     "activeTab",
+    "storage",
 
     "https://www.google.com/search*",
     "https://www.google.ad/search*",
@@ -278,7 +286,6 @@
     "https://searx.esmailelbob.xyz/search*",
     "https://search.affusio.com/search*",
     "https://paulgo.io/search*",
-    "https://spot.murena.io/search*",
     "https://s.zhaocloud.net/search*",
     "https://searx.cthd.icu/search*",
     "https://search.neet.works/search*",
@@ -338,8 +345,6 @@
 
     "https://you.com/search*",
 
-    "https://neeva.com/search*",
-
     "https://kagi.com/search*",
 
     "https://search.naver.com/search.naver*",
@@ -347,15 +352,27 @@
     "https://yandex.com/search*",
 
     "https://search.aol.com/*/search*",
+    "https://suche.aol.de/*/search*",
 
-    "https://www.dogpile.com/serp*",
+    "https://spot.ecloud.global/search*",
+    "https://spot.murena.io/search*",
 
-    "https://gigablast.com/search*"
+    "https://metager.de/meta/*",
+
+    "https://www.dogpile.com/serp*"
   ],
 
   "background": {
-    "scripts": [
-      "background.js"
-    ]
+    "scripts": ["background.js"]
+  },
+
+  "browser_action": {
+    "default_title": "Yang!"
+  },
+
+  "options_ui": {
+    "page": "options/options.html",
+    "open_in_tab": true,
+    "browser_style": true
   }
 }

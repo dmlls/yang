@@ -17,38 +17,49 @@
  */
 
 let bangs = {};
-
-// Fetch Bangs from DuckDuckGo.
+// Fetch Bangs from DuckDuckGo and load custom Bangs.
 (async () => {
   const res = await fetch(new Request("https://duckduckgo.com/bang.js"));
-  bangs = await res.json();
-  // Remap bangs to: bang -> target.
-  bangs = bangs.map((item) => ({ [item.t]: item.u }));
-  bangs = Object.assign({}, ...bangs);
-  // "bang!" is mapped to the relative URL "/bang?q={{{s}}}"
-  // "bangs!" correctly points to "https://duckduckgo.com/bang?q={{{s}}}"
-  bangs["bang"] = bangs["bangs"];
+  const ddgBangs = await res.json();
+  for (const bang of ddgBangs) {
+    bangs[bang.t] = {
+      url: bang.u,
+      urlEncodeQuery: false, // default to false since we don't have this info
+    };
+  }
+  await browser.storage.sync.get().then(
+    function onGot(customBangs) {
+      for (const [, bang] of Object.entries(customBangs)) {
+        bangs[bang.bang] = {
+          url: bang.url,
+          urlEncodeQuery: bang.urlEncodeQuery,
+        };
+      }
+    },
+    function onError(error) {
+      // TODO: Handle errors.
+    },
+  );
 })();
 
 browser.webRequest.onBeforeRequest.addListener(
   (details) => {
     const url = new URL(details.url);
-
     // Skip requests for suggestions.
-    let skip = ["/ac/", "suggest", "/complete"].some((path) =>
-      url.pathname.includes(path)
+    const skip = ["/ac", "suggest", "/complete", "/autocompleter"].some(
+      (path) => url.pathname.includes(path),
     );
     if (skip) {
-      return;
+      return null;
     }
     // Different search engines use different params for the query.
-    let params = ["q", "p", "query", "text"]
+    const params = ["q", "p", "query", "text", "eingabe"]
       .reduce((acc, param) => {
         let q = url.searchParams.get(param);
         // Some search engines include the query in the request body.
         if (!q) {
-          let form = details?.requestBody?.formData;
-          if (form != null && form.hasOwnProperty(param))
+          const form = details?.requestBody?.formData;
+          if (form != null && Object.prototype.hasOwnProperty.call(form, param))
             q = details?.requestBody?.formData[param][0];
         }
         if (q != null) {
@@ -58,10 +69,12 @@ browser.webRequest.onBeforeRequest.addListener(
       }, [])
       .filter((a) => a);
 
-    let query = params[0];
-    const searchTerms = query.split(" ");
+    if (params[0] === undefined) {
+      return null;
+    }
     let bang = "";
-
+    let query = "";
+    const searchTerms = params[0].split(" ");
     if (searchTerms) {
       if (searchTerms[0].startsWith("!")) {
         bang = searchTerms[0].substring(1);
@@ -70,26 +83,30 @@ browser.webRequest.onBeforeRequest.addListener(
         bang = searchTerms[searchTerms.length - 1].substring(1);
         query = searchTerms.slice(0, -1).join(" ");
       } else {
-        return;
+        return null;
       }
     }
 
-    if (bang.length > 0 && bangs.hasOwnProperty(bang)) {
-      updateTab(
-        details.tabId,
-        `${bangs[bang].replace("{{{s}}}", query)}`
-      );
+    if (bang.length > 0 && Object.prototype.hasOwnProperty.call(bangs, bang)) {
+      const bangUrl = bangs[bang].url;
+      let targetUrl = new URL(bangUrl.replace("{{{s}}}", query));
+      // When using URL() the url will be encoded.
+      if (!bangs[bang].urlEncodeQuery) {
+        targetUrl = decodeURIComponent(targetUrl);
+      }
+      updateTab(details.tabId, targetUrl.toString());
     }
+    return null;
   },
   {
     urls: ["<all_urls>"],
   },
-  ["blocking", "requestBody"]
+  ["blocking", "requestBody"],
 );
 
 function updateTab(tabId, url) {
-  let updateProperties = {
-    loadReplace: true,
+  const updateProperties = {
+    loadReplace: false,
     url: url,
   };
   if (tabId != null) {
@@ -98,3 +115,18 @@ function updateTab(tabId, url) {
     browser.tabs.update(updateProperties);
   }
 }
+
+browser.browserAction.onClicked.addListener(function () {
+  browser.tabs.create({
+    url: browser.runtime.getURL("options/options.html"),
+  });
+});
+
+// Update custom bangs.
+function updateCustomBangs(changes) {
+  const modifiedBangs = Object.keys(changes);
+  for (const bang of modifiedBangs) {
+    bangs[bang] = changes[bang].newValue;
+  }
+}
+browser.storage.sync.onChanged.addListener(updateCustomBangs);

@@ -78,13 +78,13 @@ sites**:
 | Mojeek | https://www.mojeek.com/
 | Qwant | https://www.qwant.com/
 | You.com | https://you.com/
-| Neeva | https://neeva.com/
 | Kagi | https://kagi.com/
 | Naver | https://www.naver.com/
 | Yandex | https://yandex.com/
 | AOL | https://www.aol.com/
+| Murena | https://spot.ecloud.global/ <br> https://spot.murena.io/
+| MetaGer | https://metager.de/
 | Dogpile | https://www.dogpile.com/
-| Gigablast | https://www.gigablast.com/
 
 <br>
 
