@@ -1,7 +1,6 @@
 module.exports = {
   ignoreFiles: [
     "img/",
-    "icons/icon.svg",
     "changelog/",
     "node_modules/",
     "package.json",
