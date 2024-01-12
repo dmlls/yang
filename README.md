@@ -82,6 +82,8 @@ sites**:
 | Naver | https://www.naver.com/
 | Yandex | https://yandex.com/
 | AOL | https://www.aol.com/
+| Murena | https://spot.ecloud.global/ <br> https://spot.murena.io/
+| MetaGer | https://metager.de/
 | Dogpile | https://www.dogpile.com/
 
 <br>

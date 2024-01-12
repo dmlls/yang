@@ -355,6 +355,11 @@
     "https://search.aol.com/*/search*",
     "https://suche.aol.de/*/search*",
 
+    "https://spot.ecloud.global/search*",
+    "https://spot.murena.io/search*",
+
+    "https://metager.de/meta/*",
+
     "https://www.dogpile.com/serp*"
   ],
 

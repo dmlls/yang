@@ -45,7 +45,6 @@ let bangs = {};
 browser.webRequest.onBeforeRequest.addListener(
   (details) => {
     const url = new URL(details.url);
-
     // Skip requests for suggestions.
     const skip = ["/ac", "suggest", "/complete", "/autocompleter"].some(
       (path) => url.pathname.includes(path),
@@ -54,7 +53,7 @@ browser.webRequest.onBeforeRequest.addListener(
       return null;
     }
     // Different search engines use different params for the query.
-    const params = ["q", "p", "query", "text"]
+    const params = ["q", "p", "query", "text", "eingabe"]
       .reduce((acc, param) => {
         let q = url.searchParams.get(param);
         // Some search engines include the query in the request body.
