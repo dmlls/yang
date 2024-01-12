@@ -350,7 +350,7 @@
     "type": "module"
   },
 
-  "browser_action": {
+  "action": {
     "default_title": "Yang!"
   },
 
