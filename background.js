@@ -19,7 +19,7 @@
 let bangs = {};
 // Fetch Bangs from DuckDuckGo and load custom Bangs.
 (async () => {
-  const res = await fetch(new Request("https://duckduckgo.com/bang.js"));
+  const res = await fetch("https://duckduckgo.com/bang.js");
   const ddgBangs = await res.json();
   for (const bang of ddgBangs) {
     bangs[bang.t] = {
@@ -86,7 +86,6 @@ browser.webRequest.onBeforeRequest.addListener(
         return null;
       }
     }
-
     if (bang.length > 0 && Object.prototype.hasOwnProperty.call(bangs, bang)) {
       const bangUrl = bangs[bang].url;
       let targetUrl = new URL(bangUrl.replace("{{{s}}}", query));
@@ -101,7 +100,7 @@ browser.webRequest.onBeforeRequest.addListener(
   {
     urls: ["<all_urls>"],
   },
-  ["blocking", "requestBody"],
+  ["requestBody"],
 );
 
 function updateTab(tabId, url) {
@@ -116,7 +115,7 @@ function updateTab(tabId, url) {
   }
 }
 
-browser.browserAction.onClicked.addListener(function () {
+browser.action.onClicked.addListener(function () {
   browser.tabs.create({
     url: browser.runtime.getURL("options/options.html"),
   });
