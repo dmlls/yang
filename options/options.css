@@ -32,16 +32,6 @@ h1 {
   font-weight: normal;
 }
 
-.bang {
-  font-family: monospace;
-  background-color: #f4f4f4;
-  padding: 0.2em;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  color: #7914ad;
-  font-weight: bold;
-}
-
 .button-container {
   display: flex;
   justify-content: end;
@@ -86,6 +76,7 @@ h1 {
 
 #bangs-table {
   width: 100%;
+  table-layout: fixed;
   border-collapse: collapse;
   border-radius: 8px 8px 0 0;
   font-size: 0.9em;
@@ -110,7 +101,7 @@ h1 {
 
 #bangs-table th:first-child,
 #bangs-table td:first-child {
-  max-width: 200px;
+  width: 25vw;
 }
 
 #bangs-table th:last-child,
@@ -154,6 +145,16 @@ h1 {
 
 #bangs-table .delete-button:hover {
   color: #c01010;
+}
+
+.bang {
+  font-family: monospace;
+  background-color: #f4f4f4;
+  padding: 0.2em;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  color: #7914ad;
+  font-weight: bold;
 }
 
 #no-bangs {
@@ -233,7 +234,7 @@ h1 {
 
   #bangs-table th:first-child,
   #bangs-table td:first-child {
-    max-width: 100px;
+    width: 30vw;
   }
 
   #bangs-table th:last-child,
