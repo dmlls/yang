@@ -21,7 +21,8 @@
 
   "permissions": [
     "webRequest",
-    "activeTab"
+    "activeTab",
+    "storage"
   ],
 
   "host_permissions": [
@@ -346,8 +347,6 @@
 
     "*://you.com/search*",
 
-    "*://neeva.com/search*",
-
     "*://kagi.com/search*",
 
     "*://search.naver.com/search.naver*",
@@ -355,15 +354,27 @@
     "*://yandex.com/search*",
 
     "*://search.aol.com/*/search*",
+    "*://suche.aol.de/*/search*",
 
-    "*://www.dogpile.com/serp*",
+    "*://spot.ecloud.global/search*",
+    "*://spot.murena.io/search*",
 
-    "*://gigablast.com/search*"
+    "*://metager.de/meta/*",
+
+    "*://www.dogpile.com/serp*"
   ],
 
   "background": {
-    "scripts": [
-      "background.js"
-    ]
+    "scripts": ["background.js"]
+  },
+
+  "browser_action": {
+    "default_title": "Yang!"
+  },
+
+  "options_ui": {
+    "page": "options/options.html",
+    "open_in_tab": true,
+    "browser_style": true
   }
 }
