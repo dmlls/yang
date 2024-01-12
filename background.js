@@ -106,7 +106,6 @@ browser.webRequest.onBeforeRequest.addListener(
 
 function updateTab(tabId, url) {
   const updateProperties = {
-    loadReplace: false,
     url: url,
   };
   if (tabId != null) {
