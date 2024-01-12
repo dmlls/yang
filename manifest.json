@@ -7,7 +7,7 @@
 
   "browser_specific_settings": {
     "gecko": {
-      "id": "yang-addon@diegomiguel.me",
+      "id": "{0a3250b1-58e0-48cb-9383-428f5adc3dc1}",
       "strict_min_version": "101.0"
     }
   },
@@ -19,11 +19,7 @@
     "256": "icons/icon-256.png"
   },
 
-  "permissions": [
-    "webRequest",
-    "activeTab",
-    "storage"
-  ],
+  "permissions": ["webRequest", "activeTab", "storage"],
 
   "host_permissions": [
     "*://www.google.com/search*",
@@ -367,7 +363,7 @@
     "scripts": ["background.js"]
   },
 
-  "browser_action": {
+  "action": {
     "default_title": "Yang!"
   },
 
