@@ -200,14 +200,16 @@ if (mode === "edit") {
             break;
         }
       }
+      saveButton.last = bang.order;
     },
     function onError(error) {
       // TODO: Handle error.
     },
   );
+} else {
+  saveButton.last = last;
 }
 saveButton.mode = mode;
-saveButton.last = last;
 saveButton.bangName = bangName;
 saveButton.addEventListener("click", saveCustomBang, false);
 
