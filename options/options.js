@@ -128,14 +128,18 @@ function displayToast(
 ) {
   hideToast(toastId);
   const buttonId = `undo-button-${toastId}`;
-  const body = document.getElementsByTagName("body")[0];
-  body.insertAdjacentHTML(
-    "beforeend",
-    `<div id="${toastId}" class="toast-container">
-            <div class="toast-message">${message}</div> 
-            <button id="${buttonId}">${actionText}</button>
-        </div></body>`,
-  );
+  const toastContainer = document.createElement("div");
+  toastContainer.id = toastId;
+  toastContainer.classList.add("toast-container");
+  const toastMessage = document.createElement("div");
+  toastMessage.classList.add("toast-message");
+  toastMessage.textContent = message;
+  const actionButton = document.createElement("button");
+  actionButton.id = buttonId;
+  actionButton.textContent = actionText;
+  toastContainer.appendChild(toastMessage);
+  toastContainer.appendChild(actionButton);
+  document.body.appendChild(toastContainer);
   const undoButton = document.getElementById(buttonId);
   undoButton.addEventListener("click", function () {
     actionCallback(argsCallback);
