@@ -47,8 +47,8 @@ browser.webRequest.onBeforeRequest.addListener(
     const url = new URL(details.url);
 
     // Skip requests for suggestions.
-    const skip = ["/ac", "suggest", "/complete", "/autocompleter"].some((path) =>
-      url.pathname.includes(path),
+    const skip = ["/ac", "suggest", "/complete", "/autocompleter"].some(
+      (path) => url.pathname.includes(path),
     );
     if (skip) {
       return null;

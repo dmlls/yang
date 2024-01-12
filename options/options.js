@@ -83,6 +83,12 @@ function deleteBang(e) {
       browser.storage.sync.remove(bangName).then(
         function onRemoved() {
           row.remove();
+          const table = document.getElementById("bangs-table");
+          if (table.rows.length === 1) {
+            // Empty table.
+            const noBangsLabel = document.getElementById("no-bangs");
+            noBangsLabel.style.visibility = "visible";
+          }
           displayToast(
             bangName,
             `Bang '${bangName}' deleted.`,
@@ -100,11 +106,6 @@ function deleteBang(e) {
       // TODO: Handle error.
     },
   );
-  const table = document.getElementById("bangs-table");
-  if (table.rows.length === 2) {
-    // Empty table.
-    window.location.reload();
-  }
 }
 
 function undoDeletion(bang) {
