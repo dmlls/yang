@@ -42,7 +42,7 @@ let bangs = {};
   );
 })();
 
-browser.webRequest.onBeforeRequest.addListener(
+chrome.webRequest.onBeforeRequest.addListener(
   (details) => {
     const url = new URL(details.url);
     // Skip requests for suggestions.
@@ -109,9 +109,9 @@ function updateTab(tabId, url) {
     url: url,
   };
   if (tabId != null) {
-    browser.tabs.update(tabId, updateProperties);
+    chrome.tabs.update(tabId, updateProperties);
   } else {
-    browser.tabs.update(updateProperties);
+    chrome.tabs.update(updateProperties);
   }
 }
 
