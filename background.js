@@ -30,7 +30,7 @@ let bangs = {};
   await browser.storage.sync.get().then(
     function onGot(customBangs) {
       for (const [, bang] of Object.entries(customBangs)) {
-        bangs[bang.bang] = {
+        bangs[bang.bang.toLowerCase()] = {
           url: bang.url,
           urlEncodeQuery: bang.urlEncodeQuery,
         };
@@ -86,7 +86,7 @@ browser.webRequest.onBeforeRequest.addListener(
         return null;
       }
     }
-
+    bang = bang.toLowerCase();
     if (bang.length > 0 && Object.prototype.hasOwnProperty.call(bangs, bang)) {
       const bangUrl = bangs[bang].url;
       let targetUrl = new URL(bangUrl.replace("{{{s}}}", query));
@@ -125,7 +125,7 @@ browser.browserAction.onClicked.addListener(function () {
 function updateCustomBangs(changes) {
   const modifiedBangs = Object.keys(changes);
   for (const bang of modifiedBangs) {
-    bangs[bang] = changes[bang].newValue;
+    bangs[bang.toLowerCase()] = changes[bang].newValue;
   }
 }
 browser.storage.sync.onChanged.addListener(updateCustomBangs);
