@@ -25,6 +25,7 @@ let bangs = {};
     bangs[bang.t] = {
       url: bang.u,
       urlEncodeQuery: false, // default to false since we don't have this info
+      openBaseUrl: false, // default to false since we don't have this info
     };
   }
   await browser.storage.sync.get().then(
@@ -33,6 +34,7 @@ let bangs = {};
         bangs[bang.bang.toLowerCase()] = {
           url: bang.url,
           urlEncodeQuery: bang.urlEncodeQuery,
+          openBaseUrl: bang?.openBaseUrl ?? false,
         };
       }
     },
@@ -87,12 +89,17 @@ browser.webRequest.onBeforeRequest.addListener(
       }
     }
     bang = bang.toLowerCase();
-    if (bang.length > 0 && Object.prototype.hasOwnProperty.call(bangs, bang)) {
+    if (Object.prototype.hasOwnProperty.call(bangs, bang)) {
       const bangUrl = bangs[bang].url;
-      let targetUrl = new URL(bangUrl.replace("{{{s}}}", query));
-      // When using URL() the url will be encoded.
-      if (!bangs[bang].urlEncodeQuery) {
-        targetUrl = decodeURIComponent(targetUrl);
+      let targetUrl = "";
+      if (query.length == 0 && bangs[bang].openBaseUrl) {
+        targetUrl = new URL(bangUrl).origin;
+      } else {
+        targetUrl = new URL(bangUrl.replace("{{{s}}}", query));
+        // When using URL() the url will be encoded.
+        if (!bangs[bang].urlEncodeQuery) {
+          targetUrl = decodeURIComponent(targetUrl);
+        }
       }
       updateTab(details.tabId, targetUrl.toString());
     }
