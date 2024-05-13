@@ -52,15 +52,15 @@ function validateUrl(inputElement) {
   return url;
 }
 
-async function validateDuplicatedBang(inputElement) {
-  const bang = inputElement.value.trim();
+async function validateDuplicatedBang(bang) {
+  const bangElement = document.getElementById(FormFields.BANG);
   const valid = await browser.storage.sync.get(bang).then(
     function onGot(item) {
       if (Object.keys(item).length > 0) {
-        showErrorMessage(inputElement, "Bang already exists.");
+        showErrorMessage(bangElement, "Bang already exists.");
         return false;
       } else {
-        hideErrorMessage(inputElement);
+        hideErrorMessage(bangElement);
         return true;
       }
     },
@@ -89,7 +89,7 @@ function getInputValue(inputId) {
         case FormFields.BANG:
           value = validateEmptyOrTooLong(inputElement, 8);
           // Remove leading or trailing "!".
-          value = stripExclamation(value);
+          value = stripExclamation(value).trim().toLowerCase();
           break;
       }
       break;
@@ -132,14 +132,13 @@ async function saveCustomBang() {
   const saveButton = document.getElementById("save");
   const customBang = getInputtedBang(saveButton.last, saveButton.mode);
   let validBang;
-  const bangElement = document.getElementById(FormFields.BANG);
   switch (saveButton.mode) {
     case "add":
-      validBang = await validateDuplicatedBang(bangElement);
+      validBang = await validateDuplicatedBang(customBang.bang);
       break;
     case "edit":
       if (saveButton.bangName !== customBang.bang) {
-        validBang = await validateDuplicatedBang(bangElement);
+        validBang = await validateDuplicatedBang(customBang.bang);
         // If the bang has changed and does not already exist ->
         // Delete the previous one.
         if (validBang) {

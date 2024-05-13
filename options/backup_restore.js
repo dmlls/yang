@@ -27,7 +27,8 @@ function importSettings(file) {
         if (!neededFields.every((key) => Object.keys(bangInfo).includes(key))) {
           throw new SyntaxError("Malformed backup file.");
         }
-        await browser.storage.sync.set({ [bangName]: bangInfo });
+        bangInfo.bang = bangInfo.bang.toLowerCase();
+        await browser.storage.sync.set({ [bangName.toLowerCase()]: bangInfo });
       }
       alert("Settings imported successfully!");
       window.location.href = "options.html";
