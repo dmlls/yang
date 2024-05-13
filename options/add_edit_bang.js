@@ -3,6 +3,7 @@ const FormFields = Object.freeze({
   URL: "url",
   BANG: "bang",
   URL_ENCODE_QUERY: "urlEncodeQuery",
+  OPEN_BASE_URL: "openBaseUrl",
 });
 
 function showErrorMessage(inputField, message) {
@@ -193,7 +194,7 @@ if (mode === "edit") {
             inputElement.value = bang[field];
             break;
           case "checkbox":
-            inputElement.checked = bang[field];
+            inputElement.checked = bang[field] ?? false;
             break;
           default:
             break;

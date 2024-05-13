@@ -44,7 +44,30 @@ function importSettings(file) {
 
 const exportButton = document.getElementById("export");
 exportButton.addEventListener("click", async () => {
-  const settings = await browser.storage.sync.get();
+  const settings = await browser.storage.sync.get().then(
+    function onGot(customBangs) {
+      const sortedBangs = Object.entries(customBangs)
+      .sort((a, b) => a[1].order - b[1].order)
+      .map((entry) => entry[1]);
+      let loadedBangs = {};
+      let order = 0;
+      for (const [, bang] of Object.entries(sortedBangs)) {
+        loadedBangs[bang.bang.toLowerCase()] = {
+          name: bang.name,
+          url: bang.url,
+          bang: bang.bang.toLowerCase(),
+          urlEncodeQuery: bang.urlEncodeQuery,
+          openBaseUrl: bang?.openBaseUrl ?? false,
+          order: order,
+        };
+        order++;
+      }
+      return loadedBangs;
+    },
+    function onError(error) {
+      // TODO: Handle errors.
+    },
+  );
   exportSettings(settings);
 });
 
