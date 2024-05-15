@@ -116,7 +116,7 @@ function getInputtedBang(last, mode) {
 }
 
 function isInputtedBangValid(bang) {
-  return !Object.values(bang).includes(undefined);
+  return !Object.values(bang).includes(null);
 }
 
 function stripExclamation(string) {
