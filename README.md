@@ -22,9 +22,10 @@ Extensions](#related-extensions)).
 **BUT**, I wasn't able to find one that simultaneously:
 
 1. Supported bangs directly from the URL bar.
-2. Redirected directly, without querying to DuckDuckGo to resolve the
+2. Allowed to set custom bangs.
+3. Redirected directly, without querying to DuckDuckGo to resolve the
    bang<sup>1</sup>.
-3. Worked on every major search engine out there.
+4. Worked on every major search engine out there.
 
 Yang! is an add-on that doesn't feel old.
 
@@ -77,14 +78,18 @@ sites**:
 | SearX(NG) | https://searx.space/
 | Mojeek | https://www.mojeek.com/
 | Qwant | https://www.qwant.com/
-| You.com | https://you.com/
 | Kagi | https://kagi.com/
+| You.com | https://you.com/
+| Perplexity AI | https://www.perplexity.ai/
 | Naver | https://www.naver.com/
+| Baidu | https://www.baidu.com/
 | Yandex | https://yandex.com/
 | AOL | https://www.aol.com/
 | Murena | https://spot.ecloud.global/ <br> https://spot.murena.io/
 | MetaGer | https://metager.de/
 | Dogpile | https://www.dogpile.com/
+| Ask.com | https://www.ask.com/
+| Seznam.cz | https://search.seznam.cz/
 
 <br>
 

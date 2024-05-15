@@ -362,7 +362,16 @@
 
     "https://metager.de/meta/*",
 
-    "https://www.dogpile.com/serp*"
+    "https://www.dogpile.com/serp*",
+
+    "https://www.ask.com/*",
+    "https://www.askjeeves.com/*",
+
+    "https://www.baidu.com/*",
+
+    "https://search.seznam.cz/*",
+
+    "https://www.perplexity.ai/*"
   ],
 
   "background": {

@@ -53,14 +53,14 @@ browser.webRequest.onBeforeRequest.addListener(
   (details) => {
     const url = new URL(details.url);
     // Skip requests for suggestions.
-    const skip = ["/ac", "suggest", "/complete", "/autocompleter"].some(
+    const skip = ["/ac", "suggest", "/complete", "/autocompleter", "/sugrec"].some(
       (path) => url.pathname.includes(path),
-    );
+    ) || url.searchParams.get("mod") === "1"; // hack for Baidu
     if (skip) {
       return null;
     }
     // Different search engines use different params for the query.
-    const params = ["q", "p", "query", "text", "eingabe"]
+    const params = ["q", "p", "query", "text", "eingabe", "wd"]
       .reduce((acc, param) => {
         let q = url.searchParams.get(param);
         // Some search engines include the query in the request body.
