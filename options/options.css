@@ -203,14 +203,20 @@ h1 {
 @media screen and (width < 1000px) {
   .container {
     max-width: 100%;
-    height: 100vh;
+    display: flex;
+    flex-direction: column;
     margin: 0;
     padding: 0;
   }
 
   .footer {
-    padding: 20px;
-    margin-top: 35px;
+    width: 100%;
+    bottom: 0;
+    margin: 0;
+  }
+
+  .footer * {
+    margin: 0 25px 35px 15px;
   }
 
   .toast-container {
@@ -219,7 +225,7 @@ h1 {
 
   #yang-logo {
     width: 25%;
-    margin-top: 30px;
+    margin: 30px auto 10px;
   }
 
   .table-container {
