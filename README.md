@@ -21,11 +21,12 @@ Extensions](#related-extensions)).
 
 **BUT**, I wasn't able to find one that simultaneously:
 
-1. Supported bangs directly from the URL bar.
-2. Allowed to set custom bangs.
-3. Redirected directly, without querying to DuckDuckGo to resolve the
+1. Allowed to set custom bangs.
+2. Worked on my phone.
+3. Supported bangs directly from the URL bar.
+4. Redirected immediately, without querying to DuckDuckGo to resolve the
    bang<sup>1</sup>.
-4. Worked on every major search engine out there.
+5. Worked on every major search engine out there.
 
 Yang! is an add-on that doesn't feel old.
 
@@ -41,7 +42,7 @@ bangs](https://duckduckgo.com/bangs).
 
 <br>
 
-Bangs can be used at the **beginning or at the end** of the query, e.g.:
+Bangs can be used at the beginning or at the end of the query, e.g.:
 
 ```console
 !deepl I love bangs and I'm not talking about hair.
@@ -52,6 +53,10 @@ is equivalent to
 ```console
 I love bangs and I'm not talking about hair. !deepl
 ```
+
+<br>
+
+You can of course always create your own **custom bangs**!
 
 <br>
 
@@ -91,13 +96,26 @@ sites**:
 | Ask.com | https://www.ask.com/
 | Seznam.cz | https://search.seznam.cz/
 
+Is your favorite search engine not on the list?
+[Open an issue](https://github.com/dmlls/yang/issues/new/choose) and we'll add
+it!
+
 <br>
 
 ## FAQs
 
 <details>
+  <summary><b>Why does Yang! need permissions on a 300+ sites?</b></summary>
+  <p>Instead of requesting data access on <i>all</i> sites, we granularly
+  specify the search-engine sites that Yang! supports (which yeah, they're quite
+  a few). You can find which sites we request permissions for in the
+  <a href="https://github.com/dmlls/yang/blob/main/manifest.json">
+  <code>manifest.json</code></a>.</p>
+</details>
+
+<details>
   <summary><b>Does it work on Google Chrome?</b></summary>
-  <p><br>No clue, I don't have that package installed on my system. I will not
+  <p>No clue, I don't have that package installed on my system. I will not
   give support to it myself, but PRs are welcome.</p>
 </details>
 
