@@ -19,15 +19,20 @@
 let bangs = {};
 // Fetch Bangs from DuckDuckGo and load custom Bangs.
 (async () => {
+  // Add DDG bangs.
   const res = await fetch(new Request("https://duckduckgo.com/bang.js"));
   const ddgBangs = await res.json();
   for (const bang of ddgBangs) {
     bangs[bang.t] = {
       url: bang.u,
-      urlEncodeQuery: false, // default to false since we don't have this info
-      openBaseUrl: false, // default to false since we don't have this info
+      urlEncodeQuery: true, // default value
+      openBaseUrl: true, // default value
     };
   }
+  // Exceptions (unfortunately, DDG does not expose this info).
+  bangs.wayback.urlEncodeQuery = false;
+  bangs.waybackmachine.urlEncodeQuery = false;
+  // Add custom bangs.
   await browser.storage.sync.get().then(
     function onGot(customBangs) {
       for (const [, bang] of Object.entries(customBangs)) {
@@ -95,11 +100,10 @@ browser.webRequest.onBeforeRequest.addListener(
       if (query.length == 0 && bangs[bang].openBaseUrl) {
         targetUrl = new URL(bangUrl).origin;
       } else {
-        targetUrl = new URL(bangUrl.replace("{{{s}}}", query));
-        // When using URL() the url will be encoded.
-        if (!bangs[bang].urlEncodeQuery) {
-          targetUrl = decodeURIComponent(targetUrl);
+        if (bangs[bang].urlEncodeQuery) {
+          query = encodeURIComponent(query);
         }
+        targetUrl = new URL(bangUrl.replace("{{{s}}}", query));
       }
       updateTab(details.tabId, targetUrl.toString());
     }
