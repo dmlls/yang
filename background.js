@@ -16,7 +16,7 @@
  * For license information on the libraries used, see LICENSE.
  */
 
-let bangs = {};
+const bangs = {};
 // Fetch Bangs from DuckDuckGo and load custom Bangs.
 (async () => {
   // Add DDG bangs.
@@ -53,9 +53,10 @@ browser.webRequest.onBeforeRequest.addListener(
   (details) => {
     const url = new URL(details.url);
     // Skip requests for suggestions.
-    const skip = ["/ac", "suggest", "/complete", "/autocompleter", "/sugrec"].some(
-      (path) => url.pathname.includes(path),
-    ) || url.searchParams.get("mod") === "1"; // hack for Baidu
+    const skip =
+      ["/ac", "suggest", "/complete", "/autocompleter", "/sugrec"].some(
+        (path) => url.pathname.includes(path),
+      ) || url.searchParams.get("mod") === "1"; // hack for Baidu
     if (skip) {
       return null;
     }
@@ -97,7 +98,7 @@ browser.webRequest.onBeforeRequest.addListener(
     if (Object.prototype.hasOwnProperty.call(bangs, bang)) {
       const bangUrl = bangs[bang].url;
       let targetUrl = "";
-      if (query.length == 0 && bangs[bang].openBaseUrl) {
+      if (query.length === 0 && bangs[bang].openBaseUrl) {
         targetUrl = new URL(bangUrl).origin;
       } else {
         if (bangs[bang].urlEncodeQuery) {
@@ -116,9 +117,7 @@ browser.webRequest.onBeforeRequest.addListener(
 );
 
 function updateTab(tabId, url) {
-  const updateProperties = {
-    url: url,
-  };
+  const updateProperties = { url };
   if (tabId != null) {
     browser.tabs.update(tabId, updateProperties);
   } else {
