@@ -47,9 +47,9 @@ exportButton.addEventListener("click", async () => {
   const settings = await browser.storage.sync.get().then(
     function onGot(customBangs) {
       const sortedBangs = Object.entries(customBangs)
-      .sort((a, b) => a[1].order - b[1].order)
-      .map((entry) => entry[1]);
-      let loadedBangs = {};
+        .sort((a, b) => a[1].order - b[1].order)
+        .map((entry) => entry[1]);
+      const loadedBangs = {};
       let order = 0;
       for (const [, bang] of Object.entries(sortedBangs)) {
         loadedBangs[bang.bang.toLowerCase()] = {
@@ -58,7 +58,7 @@ exportButton.addEventListener("click", async () => {
           bang: bang.bang.toLowerCase(),
           urlEncodeQuery: bang.urlEncodeQuery,
           openBaseUrl: bang?.openBaseUrl ?? false,
-          order: order,
+          order,
         };
         order++;
       }

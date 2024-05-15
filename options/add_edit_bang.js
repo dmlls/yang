@@ -104,7 +104,7 @@ function getInputValue(inputId) {
 }
 
 function getInputtedBang(last, mode) {
-  let newBang = {};
+  const newBang = {};
   const inputIds = Object.values(FormFields);
   const inputtedValues = inputIds.map((inputId) => getInputValue(inputId));
   let i;
