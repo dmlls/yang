@@ -54,9 +54,15 @@ browser.webRequest.onBeforeRequest.addListener(
     const url = new URL(details.url);
     // Skip requests for suggestions.
     const skip =
-      ["/ac", "suggest", "/complete", "/autocompleter", "/sugrec"].some(
-        (path) => url.pathname.includes(path),
-      ) || url.searchParams.get("mod") === "1"; // hack for Baidu
+      [
+        "/ac",
+        "suggest",
+        "/complete",
+        "/autocompleter",
+        "/autocomplete",
+        "/sugrec",
+      ].some((path) => url.pathname.includes(path)) ||
+      url.searchParams.get("mod") === "1"; // hack for Baidu
     if (skip) {
       return null;
     }
