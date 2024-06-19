@@ -49,7 +49,7 @@ const bangs = {};
   );
 })();
 
-browser.webRequest.onBeforeRequest.addListener(
+chrome.webRequest.onBeforeRequest.addListener(
   (details) => {
     const url = new URL(details.url);
     // Skip requests for suggestions.
@@ -125,9 +125,9 @@ browser.webRequest.onBeforeRequest.addListener(
 function updateTab(tabId, url) {
   const updateProperties = { url };
   if (tabId != null) {
-    browser.tabs.update(tabId, updateProperties);
+    chrome.tabs.update(tabId, updateProperties);
   } else {
-    browser.tabs.update(updateProperties);
+    chrome.tabs.update(updateProperties);
   }
 }
 
