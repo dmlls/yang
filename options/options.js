@@ -1,3 +1,23 @@
+/* Copyright (C) 2023 Diego Miguel Lozano <hello@diegomiguel.me>
+ *
+ * This program is free software: you can redistribute it and//or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * For license information on the libraries used, see LICENSE.
+ */
+
+import { getBangKey } from "../utils.js";
+
 function onGot(allBangs) {
   // Get only the bang values, sorted by order.
   const sortedBangs = Object.entries(allBangs)
@@ -75,12 +95,12 @@ function editBang(e) {
 
 function deleteBang(e) {
   const row = e.currentTarget.parentNode.parentNode;
-  const bangName = stripExclamation(row.cells[1].textContent);
+  const bangKey = getBangKey(stripExclamation(row.cells[1].textContent));
   // Retrieve bang to be able to undo deletion.
-  browser.storage.sync.get(bangName).then(
+  browser.storage.sync.get(bangKey).then(
     function onGot(item) {
-      const bang = item[bangName];
-      browser.storage.sync.remove(bangName).then(
+      const bang = item[bangKey];
+      browser.storage.sync.remove(bangKey).then(
         function onRemoved() {
           row.remove();
           const table = document.getElementById("bangs-table");
@@ -90,8 +110,8 @@ function deleteBang(e) {
             noBangsLabel.style.visibility = "visible";
           }
           displayToast(
-            bangName,
-            `Bang '${bangName}' deleted.`,
+            bangKey,
+            `Bang '${bang.bang}' deleted.`,
             "Undo",
             undoDeletion,
             bang,
@@ -109,7 +129,7 @@ function deleteBang(e) {
 }
 
 function undoDeletion(bang) {
-  browser.storage.sync.set({ [bang.bang]: bang }).then(
+  browser.storage.sync.set({ [getBangKey(bang.bang)]: bang }).then(
     function setItem() {
       window.location.reload();
     },
@@ -141,13 +161,9 @@ function displayToast(
   toastContainer.appendChild(actionButton);
   document.body.appendChild(toastContainer);
   const undoButton = document.getElementById(buttonId);
-  undoButton.addEventListener("click", function () {
-    actionCallback(argsCallback);
-  });
+  undoButton.addEventListener("click", () => actionCallback(argsCallback));
   // Remove toast after a delay.
-  setTimeout(function () {
-    hideToast(toastId);
-  }, 5000);
+  setTimeout(() => hideToast(toastId), 5000);
 }
 
 function hideToast(toastId) {
