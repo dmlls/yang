@@ -16,6 +16,8 @@
  * For license information on the libraries used, see LICENSE.
  */
 
+import { PreferencePrefix, getBangKey } from "./utils.js";
+
 const bangs = {};
 // Fetch Bangs from DuckDuckGo and load custom Bangs.
 (async () => {
@@ -34,14 +36,16 @@ const bangs = {};
   bangs.waybackmachine.urlEncodeQuery = false;
   // Add custom bangs.
   await browser.storage.sync.get().then(
-    function onGot(customBangs) {
-      for (const [, bang] of Object.entries(customBangs)) {
-        bangs[bang.bang.toLowerCase()] = {
-          url: bang.url,
-          urlEncodeQuery: bang.urlEncodeQuery,
-          openBaseUrl: bang?.openBaseUrl ?? false,
-        };
-      }
+    function onGot(preferences) {
+      Object.entries(preferences).forEach(([prefKey, pref]) => {
+        if (!prefKey.startsWith(PreferencePrefix.SEARCH_ENGINE)) {
+          bangs[pref.bang] = {
+            url: pref.url,
+            urlEncodeQuery: pref.urlEncodeQuery,
+            openBaseUrl: pref?.openBaseUrl ?? false,
+          };
+        }
+      });
     },
     function onError(error) {
       // TODO: Handle errors.
@@ -90,18 +94,20 @@ browser.webRequest.onBeforeRequest.addListener(
     let query = "";
     const searchTerms = params[0].split(" ");
     if (searchTerms) {
-      if (searchTerms[0].startsWith("!")) {
-        bang = searchTerms[0].substring(1);
+      const firstTerm = searchTerms[0].trim();
+      const lastTerm = searchTerms[searchTerms.length - 1].trim();
+      if (firstTerm.startsWith("!")) {
+        bang = firstTerm.substring(1);
         query = searchTerms.slice(1).join(" ");
-      } else if (searchTerms[searchTerms.length - 1].startsWith("!")) {
-        bang = searchTerms[searchTerms.length - 1].substring(1);
+      } else if (lastTerm.startsWith("!")) {
+        bang = lastTerm.substring(1);
         query = searchTerms.slice(0, -1).join(" ");
       } else {
         return null;
       }
     }
     bang = bang.toLowerCase();
-    if (Object.prototype.hasOwnProperty.call(bangs, bang)) {
+    if (Object.hasOwn(bangs, bang)) {
       const bangUrl = bangs[bang].url;
       let targetUrl = "";
       if (query.length === 0 && bangs[bang].openBaseUrl) {
@@ -139,9 +145,64 @@ browser.browserAction.onClicked.addListener(function () {
 
 // Update custom bangs.
 function updateCustomBangs(changes) {
-  const modifiedBangs = Object.keys(changes);
-  for (const bang of modifiedBangs) {
-    bangs[bang.toLowerCase()] = changes[bang].newValue;
+  for (const changedKey of Object.keys(changes)) {
+    if (!changedKey.startsWith(PreferencePrefix.SEARCH_ENGINE)) {
+      const changedValue = changes[changedKey];
+      if (Object.hasOwn(changedValue, "newValue")) {
+        bangs[changedValue.newValue.bang] = changedValue.newValue;
+      } else if (Object.hasOwn(changedValue, "oldValue")) {
+        // removed bang
+        delete bangs[changedValue.oldValue.bang];
+      }
+    }
   }
 }
 browser.storage.sync.onChanged.addListener(updateCustomBangs);
+
+// Temporal function to migrate storage schema.
+async function updateStorageSchema() {
+  const customBangs = {};
+  await browser.storage.sync.get().then(
+    function onGot(preferences) {
+      for (const [prefKey, pref] of Object.entries(preferences)) {
+        if (
+          !prefKey.startsWith(PreferencePrefix.BANG) &&
+          !prefKey.startsWith(PreferencePrefix.SEARCH_ENGINE)
+        ) {
+          customBangs[getBangKey(pref.bang)] = pref;
+        }
+      }
+    },
+    function onError(error) {
+      // TODO: Handle errors.
+    },
+  );
+  if (Object.keys(customBangs).length > 0) {
+    await browser.storage.sync.clear().then(
+      async function onCleared() {
+        await browser.storage.sync.set(customBangs).then(
+          function onSet() {
+            // Success
+          },
+          async function onError(error) {
+            await browser.storage.sync.set(customBangs); // Retry
+          },
+        );
+      },
+      function onError(error) {
+        // TODO: Handle errors.
+      },
+    );
+  }
+}
+
+browser.runtime.onInstalled.addListener(async ({ reason, temporary }) => {
+  // if (temporary) return; // skip during development
+  switch (reason) {
+    case "update":
+      updateStorageSchema();
+      break;
+    default:
+      break;
+  }
+});
