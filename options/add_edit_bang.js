@@ -1,4 +1,4 @@
-/* Copyright (C) 2023 Diego Miguel Lozano <hello@diegomiguel.me>
+/* Copyright (C) 2023-2024 Diego Miguel Lozano <hello@diegomiguel.me>
  *
  * This program is free software: you can redistribute it and//or modify
  * it under the terms of the GNU General Public License as published by
