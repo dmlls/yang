@@ -73,9 +73,14 @@ function validateUrl(inputElement) {
   return url;
 }
 
-async function validateDuplicatedBang(bangKey) {
+async function validateDuplicatedBang(oldBangKey, newBangKey) {
+  if (newBangKey == null) {
+    return false;
+  } else if (oldBangKey === newBangKey) {
+    return true;
+  }
   const bangElement = document.getElementById(FormFields.BANG);
-  const valid = await browser.storage.sync.get(bangKey).then(
+  const valid = await browser.storage.sync.get(newBangKey).then(
     function onGot(item) {
       if (Object.keys(item).length > 0) {
         showErrorMessage(bangElement, "Bang already exists.");
@@ -131,9 +136,6 @@ function getInputtedBang(last, mode) {
   const newBang = {};
   const inputIds = Object.values(FormFields);
   const inputtedValues = inputIds.map((inputId) => getInputValue(inputId));
-  if (inputtedValues.includes(null)) {
-    return null;
-  }
   for (let i = 0; i < inputIds.length; i++) {
     newBang[inputIds[i]] = inputtedValues[i];
   }
@@ -158,42 +160,17 @@ function onError() {}
 async function saveCustomBang() {
   const saveButton = document.getElementById("save");
   const inputtedBang = getInputtedBang(saveButton.last, saveButton.mode);
-  if (inputtedBang != null) {
-    const inputtedBangKey = getBangKey(inputtedBang.bang);
-    let validBang;
-    switch (saveButton.mode) {
-      case "add":
-        validBang = await validateDuplicatedBang(inputtedBangKey);
-        break;
-      case "edit":
-        if (saveButton.bangKey !== inputtedBangKey) {
-          validBang = await validateDuplicatedBang(inputtedBangKey);
-          // If the bang has changed and does not already exist ->
-          // Delete the previous one.
-          if (validBang) {
-            validBang = await browser.storage.sync
-              .remove(saveButton.bangKey)
-              .then(
-                function onRemoved() {
-                  return true;
-                },
-                function onError() {
-                  // TODO: Handle errors.
-                },
-              );
-          }
-        } else {
-          validBang = true;
-        }
-        break;
-      default:
-        break;
+  const inputtedBangKey = getBangKey(inputtedBang.bang);
+  // Note: The single "&" is deliberate.
+  if (isInputtedBangValid(inputtedBang) & await validateDuplicatedBang(saveButton.bangKey, inputtedBangKey)) {
+    if (saveButton.mode == "edit") {
+      // If the bang has changed and does not already exist ->
+      // Delete the previous one first.
+      await browser.storage.sync.remove(saveButton.bangKey);
     }
-    if (isInputtedBangValid(inputtedBang) && validBang) {
-      browser.storage.sync
-        .set({ [inputtedBangKey]: inputtedBang })
-        .then(setItem, onError);
-    }
+    browser.storage.sync
+      .set({ [inputtedBangKey]: inputtedBang })
+      .then(setItem, onError);
   }
 }
 
