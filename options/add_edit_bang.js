@@ -73,17 +73,20 @@ function validateUrl(inputElement) {
   return url;
 }
 
-async function validateDuplicatedBang(oldBangKey, newBangKey) {
+async function validateBangKey(oldBangKey, newBangKey) {
+  const bangElement = document.getElementById(FormFields.BANG);
   if (newBangKey == null) {
+    return false;
+  } else if (/\s/.test(newBangKey)) {
+    showErrorMessage(bangElement, "The bang cannot contain whitespaces.");
     return false;
   } else if (oldBangKey === newBangKey) {
     return true;
   }
-  const bangElement = document.getElementById(FormFields.BANG);
   const valid = await browser.storage.sync.get(newBangKey).then(
     function onGot(item) {
       if (Object.keys(item).length > 0) {
-        showErrorMessage(bangElement, "Bang already exists.");
+        showErrorMessage(bangElement, "This bang already exists.");
         return false;
       } else {
         hideErrorMessage(bangElement);
@@ -162,8 +165,11 @@ async function saveCustomBang() {
   const inputtedBang = getInputtedBang(saveButton.last, saveButton.mode);
   const inputtedBangKey = getBangKey(inputtedBang.bang);
   // Note: The single "&" is deliberate.
-  if (isInputtedBangValid(inputtedBang) & await validateDuplicatedBang(saveButton.bangKey, inputtedBangKey)) {
-    if (saveButton.mode == "edit") {
+  if (
+    isInputtedBangValid(inputtedBang) &
+    (await validateBangKey(saveButton.bangKey, inputtedBangKey))
+  ) {
+    if (saveButton.mode === "edit") {
       // If the bang has changed and does not already exist ->
       // Delete the previous one first.
       await browser.storage.sync.remove(saveButton.bangKey);

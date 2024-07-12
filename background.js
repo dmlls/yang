@@ -164,17 +164,18 @@ async function updateStorageSchema() {
   const customBangs = await browser.storage.sync.get();
   if (Object.keys(customBangs).length > 0) {
     const sortedBangs = Object.fromEntries(
-      Object.entries(customBangs).sort(([,a], [,b]) => a.order - b.order)
-      .map(([bangKey, bang], index) => {
-        if (
-          !bangKey.startsWith(PreferencePrefix.BANG) &&
-          !bangKey.startsWith(PreferencePrefix.SEARCH_ENGINE)
-        ) {
-          bangKey = getBangKey(pref.bang);
-        }
-        bang.order = index;
-        return [bangKey, bang];
-      })
+      Object.entries(customBangs)
+        .sort(([, a], [, b]) => a.order - b.order)
+        .map(([bangKey, bang], index) => {
+          if (
+            !bangKey.startsWith(PreferencePrefix.BANG) &&
+            !bangKey.startsWith(PreferencePrefix.SEARCH_ENGINE)
+          ) {
+            bangKey = getBangKey(bang.bang);
+          }
+          bang.order = index;
+          return [bangKey, bang];
+        }),
     );
     await browser.storage.sync.clear().then(
       async function onCleared() {

@@ -76,9 +76,7 @@ function onError(error) {
 
 function addBang(e) {
   const last = e.currentTarget.last == null ? -1 : e.currentTarget.last;
-  window.location.replace(
-    `add_edit_bang.html?mode=add&last=${last}`,
-  );
+  window.location.replace(`add_edit_bang.html?mode=add&last=${last}`);
 }
 
 function stripExclamation(string) {
