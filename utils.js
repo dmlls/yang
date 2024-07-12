@@ -26,5 +26,8 @@ const PreferencePrefix = Object.freeze({
 });
 
 function getBangKey(bang) {
+  if (bang == null) {
+    return null;
+  }
   return `${PreferencePrefix.BANG}${bang.toLowerCase()}`;
 }
