@@ -161,31 +161,29 @@ browser.storage.sync.onChanged.addListener(updateCustomBangs);
 
 // Temporal function to migrate storage schema.
 async function updateStorageSchema() {
-  const customBangs = {};
-  await browser.storage.sync.get().then(
-    function onGot(preferences) {
-      for (const [prefKey, pref] of Object.entries(preferences)) {
-        if (
-          !prefKey.startsWith(PreferencePrefix.BANG) &&
-          !prefKey.startsWith(PreferencePrefix.SEARCH_ENGINE)
-        ) {
-          customBangs[getBangKey(pref.bang)] = pref;
-        }
-      }
-    },
-    function onError(error) {
-      // TODO: Handle errors.
-    },
-  );
+  const customBangs = await browser.storage.sync.get();
   if (Object.keys(customBangs).length > 0) {
+    const sortedBangs = Object.fromEntries(
+      Object.entries(customBangs).sort(([,a], [,b]) => a.order - b.order)
+      .map(([bangKey, bang], index) => {
+        if (
+          !bangKey.startsWith(PreferencePrefix.BANG) &&
+          !bangKey.startsWith(PreferencePrefix.SEARCH_ENGINE)
+        ) {
+          bangKey = getBangKey(pref.bang);
+        }
+        bang.order = index;
+        return [bangKey, bang];
+      })
+    );
     await browser.storage.sync.clear().then(
       async function onCleared() {
-        await browser.storage.sync.set(customBangs).then(
+        await browser.storage.sync.set(sortedBangs).then(
           function onSet() {
             // Success
           },
           async function onError(error) {
-            await browser.storage.sync.set(customBangs); // Retry
+            await browser.storage.sync.set(sortedBangs); // Retry
           },
         );
       },
