@@ -16,6 +16,11 @@
  * For license information on the libraries used, see LICENSE.
  */
 
+// Support for Chrome
+if (typeof browser === "undefined") {
+  var browser = chrome;
+}
+
 let bangs = {};
 // Fetch Bangs from DuckDuckGo and load custom Bangs.
 (async () => {
@@ -104,10 +109,7 @@ browser.webRequest.onBeforeRequest.addListener(
 );
 
 function updateTab(tabId, url) {
-  const updateProperties = {
-    loadReplace: false,
-    url: url,
-  };
+  const updateProperties = { url };
   if (tabId != null) {
     browser.tabs.update(tabId, updateProperties);
   } else {
@@ -115,7 +117,7 @@ function updateTab(tabId, url) {
   }
 }
 
-browser.action.onClicked.addListener(function () {
+browser.action.onClicked.addListener(() => {
   browser.tabs.create({
     url: browser.runtime.getURL("options/options.html"),
   });
