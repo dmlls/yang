@@ -22,7 +22,7 @@ const bangs = {};
 // Fetch Bangs from DuckDuckGo and load custom Bangs.
 (async () => {
   // Add DDG bangs.
-  const res = await fetch(new Request("https://duckduckgo.com/bang.js"));
+  const res = await fetch(new Request("https://raw.githubusercontent.com/kagisearch/bangs/main/data/bangs.json"));
   const ddgBangs = await res.json();
   for (const bang of ddgBangs) {
     bangs[bang.t] = {
