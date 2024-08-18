@@ -18,7 +18,13 @@
 
 import { PreferencePrefix, getBangKey } from "./utils.js";
 
+// Support for Chrome.
+if (typeof browser === "undefined") {
+  globalThis.browser = chrome;
+}
+
 const bangs = {};
+
 // Fetch Bangs from DuckDuckGo and load custom Bangs.
 (async () => {
   // Add DDG bangs.
@@ -137,7 +143,7 @@ function updateTab(tabId, url) {
   }
 }
 
-browser.browserAction.onClicked.addListener(function () {
+browser.action.onClicked.addListener(() => {
   browser.tabs.create({
     url: browser.runtime.getURL("options/options.html"),
   });
