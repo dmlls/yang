@@ -27,17 +27,25 @@ const bangs = {};
 
 // Fetch Bangs from DuckDuckGo and load custom Bangs.
 (async () => {
-  // Add DDG bangs.
-  const res = await fetch(new Request("https://duckduckgo.com/bang.js"));
-  const ddgBangs = await res.json();
-  for (const bang of ddgBangs) {
+  let res;
+  let defaultBangs = [];
+  try {
+    res = await fetch(new Request("https://raw.githubusercontent.com/kagisearch/bangs/main/data/bangs.json"));
+    defaultBangs = await res.json();
+  } catch (error) {
+    // Fallback to DDG bangs.
+    console.warn(`Error fetching Kagi Bangs (${error.message}). Falling back to DuckDuckGo Bangs.`);
+    res = await fetch(new Request("https://duckduckgo.com/bang.js"));
+    defaultBangs = await res.json();
+  }
+  for (const bang of defaultBangs) {
     bangs[bang.t] = {
       url: bang.u,
       urlEncodeQuery: true, // default value
       openBaseUrl: true, // default value
     };
   }
-  // Exceptions (unfortunately, DDG does not expose this info).
+  // Exceptions (unfortunately, default bangs do not expose this info).
   bangs.wayback.urlEncodeQuery = false;
   bangs.waybackmachine.urlEncodeQuery = false;
   // Add custom bangs.
