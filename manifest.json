@@ -22,12 +22,7 @@
     "256": "icons/icon-256.png"
   },
 
-  "permissions": [
-    "webRequest",
-    "webRequestBlocking",
-    "activeTab",
-    "storage"
-  ],
+  "permissions": ["webRequest", "webRequestBlocking", "activeTab", "storage"],
 
   "host_permissions": [
     "*://www.google.com/search*",

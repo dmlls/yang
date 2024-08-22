@@ -22,6 +22,7 @@ export { PreferencePrefix, getBangKey };
 // of settings.
 const PreferencePrefix = Object.freeze({
   BANG: "#bang#",
+  BANG_SYMBOL: "#symbol#",
   SEARCH_ENGINE: "#engine#",
 });
 

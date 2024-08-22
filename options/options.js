@@ -16,11 +16,13 @@
  * For license information on the libraries used, see LICENSE.
  */
 
-import { getBangKey } from "../utils.js";
+import { PreferencePrefix, getBangKey } from "../utils.js";
 
 function onGot(allBangs) {
+  const bangSymbol = allBangs[PreferencePrefix.BANG_SYMBOL] || "!";
   // Get only the bang values, sorted by order.
   const sortedBangs = Object.entries(allBangs)
+    .filter((entry) => entry[0].startsWith(PreferencePrefix.BANG))
     .sort((a, b) => a[1].order - b[1].order)
     .map((entry) => entry[0]);
   if (sortedBangs.length === 0) {
@@ -39,7 +41,7 @@ function onGot(allBangs) {
 
       const bang = document.createElement("code");
       bang.classList.add("bang");
-      bang.textContent = `!${allBangs[b].bang}`;
+      bang.textContent = `${bangSymbol}${allBangs[b].bang}`;
       bangCell.appendChild(bang);
 
       const editButton = document.createElement("button");
@@ -79,10 +81,6 @@ function addBang(e) {
   window.location.replace(`add_edit_bang.html?mode=add&last=${last}`);
 }
 
-function stripExclamation(string) {
-  return string.replace(/^!+|!+$/g, "");
-}
-
 function editBang(e) {
   const row = e.currentTarget.parentNode.parentNode;
   const bang = row.cells[1].textContent;
@@ -94,7 +92,7 @@ function editBang(e) {
 
 function deleteBang(e) {
   const row = e.currentTarget.parentNode.parentNode;
-  const bangKey = getBangKey(stripExclamation(row.cells[1].textContent));
+  const bangKey = getBangKey(row.cells[1].textContent);
   // Retrieve bang to be able to undo deletion.
   browser.storage.sync.get(bangKey).then(
     function onGot(item) {

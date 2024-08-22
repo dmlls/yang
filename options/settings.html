@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="settings.css" />
+    <script src="settings.js" type="module" defer></script>
+    <title>Yang! – Settings</title>
+    <link rel="icon" type="image/png" href="../icons/icon-32.png" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="back-container">
+        <a href="options.html">&#8592; Cancel and go back</a>
+      </div>
+      <h1 id="title">Settings</h1>
+      <div class="form">
+        <form id="setting-form">
+          <h2 class="setting-group">Bangs</h2>
+          <div class="input-container">
+            <label for="bang-symbol">Bang Symbol</label>
+            <input
+              type="text"
+              id="bang-symbol"
+              class="input-field"
+              name="bang-symbol"
+              placeholder="!"
+              maxlength="3"
+            />
+          </div>
+          <h2 class="setting-group">Search Engines</h2>
+          <div class="input-container">
+            <label for="search-engines">🆕 Coming soon!</label>
+          </div>
+          <div class="button-container">
+            <button type="button" id="save">
+              <svg
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="feather feather-save"
+                version="1.1"
+                id="svg2"
+                xmlns="http://www.w3.org/2000/svg"
+                xmlns:svg="http://www.w3.org/2000/svg"
+              >
+                <path
+                  id="polyline2"
+                  d="m 7,3 v 5 h 8 m 2,13 V 13 H 7 v 8 m 12,0 H 5 A 2,2 0 0 1 3,19 V 5 A 2,2 0 0 1 5,3 h 11 l 5,5 v 11 a 2,2 0 0 1 -2,2 z"
+                  style="stroke-width: 1.7; stroke-dasharray: none"
+                />
+              </svg>
+              Save
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>

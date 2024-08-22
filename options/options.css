@@ -35,37 +35,58 @@ h1 {
 .button-container {
   display: flex;
   justify-content: end;
+  justify-content: space-between;
   margin: 10px 0;
 }
 
-#yang-logo {
-  width: 15%;
-  margin-top: 20px;
+.button-container a {
+  text-decoration: none;
+}
+
+.button-container button {
+  display: flex;
+  align-items: center;
+  font-size: medium;
+}
+
+.button-container button svg {
+  margin-right: 5px;
 }
 
 #add-bang {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   background: #e15e49;
   color: #fff;
   padding: 15px 20px;
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  font-size: medium;
   transition:
     border-radius 0.5s ease,
     background 0.3s ease;
 }
 
-#add-bang svg {
-  margin-right: 5px;
-}
-
 #add-bang:hover {
   background: #a84636;
   border-radius: 12px;
+}
+
+#settings {
+  color: #454545;
+  fill: #454545;
+  border: none;
+  background: none;
+}
+
+#settings:hover {
+  color: #2a2a2a;
+  fill: #2a2a2a;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+#yang-logo {
+  width: 15%;
+  margin-top: 20px;
 }
 
 .table-container {
@@ -234,7 +255,7 @@ h1 {
   }
 
   .button-container {
-    justify-content: center;
+    justify-content: space-between;
     margin-bottom: 20px;
   }
 
