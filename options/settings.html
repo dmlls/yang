@@ -17,8 +17,10 @@
       <div class="form">
         <form id="setting-form">
           <h2 class="setting-group">Bangs</h2>
-          <div class="input-container">
-            <label for="bang-symbol">Bang Symbol</label>
+          <div class="setting-container">
+            <div class="setting-label">
+              <label for="bang-symbol">Bang Symbol(s)</label>
+            </div>
             <input
               type="text"
               id="bang-symbol"
@@ -28,10 +30,56 @@
               maxlength="3"
             />
           </div>
-          <h2 class="setting-group">Search Engines</h2>
-          <div class="input-container">
-            <label for="search-engines">🆕 Coming soon!</label>
+          <h2 class="setting-group">Backups</h2>
+          <div class="setting-container">
+            <div class="setting-label">
+              <label for="export-data">Export custom bangs and settings</label>
+            </div>
+            <button type="button" id="export-button" class="setting-button">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="feather feather-download"
+              >
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              <div class="button-label">Save Bangs</div>
+            </button>
           </div>
+          <div class="setting-container">
+            <div class="setting-label">
+              <label for="import-data">Import bangs and settings</label>
+              <p class="setting-detail">Existent bangs and settings will be updated.</p>
+            </div>
+            <button type="button" id="import-button" class="setting-button">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="feather feather-rotate-cw"
+              >
+                <polyline points="23 4 23 10 17 10"></polyline>
+                <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+              </svg>
+              <div class="button-label">Load Bangs</div>
+            </button>
+          </div>
+          <input type="file" id="fileInput" accept=".json" style="display: none" />
           <div class="button-container">
             <button type="button" id="save">
               <svg

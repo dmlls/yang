@@ -28,14 +28,14 @@ body {
 h1 {
   color: #333;
   margin-top: 5px;
-  margin-bottom: 40px;
+  margin-bottom: 4vw;
   font-weight: normal;
 }
 
 .button-container {
   display: flex;
-  justify-content: end;
   justify-content: space-between;
+  align-items: center;
   margin: 10px 0;
 }
 
@@ -188,7 +188,15 @@ h1 {
 .footer {
   display: flex;
   justify-content: space-between;
-  margin-top: 50px;
+  font-size: small;
+}
+
+.footer a {
+  color: blue;
+}
+
+
+#version {
   font-size: medium;
 }
 

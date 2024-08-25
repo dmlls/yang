@@ -19,7 +19,6 @@
 import { PreferencePrefix, getBangKey } from "../utils.js";
 
 function onGot(allBangs) {
-  const bangSymbol = allBangs[PreferencePrefix.BANG_SYMBOL] || "!";
   // Get only the bang values, sorted by order.
   const sortedBangs = Object.entries(allBangs)
     .filter((entry) => entry[0].startsWith(PreferencePrefix.BANG))
@@ -41,7 +40,7 @@ function onGot(allBangs) {
 
       const bang = document.createElement("code");
       bang.classList.add("bang");
-      bang.textContent = `${bangSymbol}${allBangs[b].bang}`;
+      bang.textContent = allBangs[b].bang;
       bangCell.appendChild(bang);
 
       const editButton = document.createElement("button");

@@ -16,13 +16,16 @@
  * For license information on the libraries used, see LICENSE.
  */
 
+export { BACKUP_VERSION, BackupFields, exportSettings, importSettings };
 import { PreferencePrefix, getBangKey } from "../utils.js";
 
-const BACKUP_VERSION = "1.0";
+const BACKUP_VERSION = "1.1";
 
 const BackupFields = Object.freeze({
   BACKUP_VERSION: "backupVersion",
   BANGS: "bangs",
+  SETTINGS: "settings",
+  BANG_SYMBOL: "bangSymbol",
   SEARCH_ENGINES: "searchEngines",
 });
 
@@ -44,22 +47,34 @@ function exportSettings(settings) {
   URL.revokeObjectURL(url);
 }
 
-function importSettings(file) {
+async function importSettings(file) {
+  // Read existent bang symbol (if any).
+  let bangSymbol = await browser.storage.sync.get(PreferencePrefix.BANG_SYMBOL).then(
+    function onGot(item) {
+      return item[PreferencePrefix.BANG_SYMBOL];
+    },
+    function onError(error) {
+      return "!";  // default
+    },
+  );
   const reader = new FileReader();
-
   reader.onload = async (event) => {
     const preferences = new Map();
     try {
       const neededFields = ["name", "url", "bang", "urlEncodeQuery"];
-      let readBangs = JSON.parse(event.target.result);
-      // New backup schema.
-      const backupKeys = Object.keys(readBangs);
-      if (
-        Object.values(BackupFields).every((val) => backupKeys.includes(val))
-      ) {
-        readBangs = readBangs.bangs;
+      let readBackup = JSON.parse(event.target.result);
+      let readBangs = {};
+      const backupKeys = Object.keys(readBackup);
+      // Backup version < 1.0.
+      if (!backupKeys.includes(BackupFields.BACKUP_VERSION)) {
+        readBangs = readBackup;
+      } else {
+        readBangs = readBackup[BackupFields.BANGS];
       }
-      // Old backup schema.
+      // Backup version >= 1.1.
+      if (backupKeys.includes(BackupFields.SETTINGS)) {
+        bangSymbol = readBackup[BackupFields.SETTINGS][BackupFields.BANG_SYMBOL];
+      }
       let order = 0;
       for (const [bangName, bangInfo] of Object.entries(readBangs)) {
         if (!neededFields.every((key) => Object.keys(bangInfo).includes(key))) {
@@ -71,16 +86,16 @@ function importSettings(file) {
           bangInfo.openBaseUrl = false;
         }
         let key;
-        // New storage schema.
+        // Backup version >= 1.0.
         if (bangName.startsWith(PreferencePrefix.BANG)) {
           key = bangInfo.bang;
-        } else if (!bangName.startsWith(PreferencePrefix.SEARCH_ENGINE)) {
-          // Old storage schema.
+        } else {
           key = getBangKey(bangInfo.bang);
         }
         preferences.set(key, bangInfo);
         order++;
       }
+      preferences.set(PreferencePrefix.BANG_SYMBOL, bangSymbol);
       await browser.storage.sync.set(Object.fromEntries(preferences));
       alert("Settings imported successfully!");
       window.location.href = "options.html";
@@ -94,44 +109,3 @@ function importSettings(file) {
   reader.readAsText(file);
 }
 
-const exportButton = document.getElementById("export");
-exportButton.addEventListener("click", async () => {
-  const settings = await browser.storage.sync.get().then(
-    function onGot(customBangs) {
-      const sortedBangs = Object.entries(customBangs)
-        .sort((a, b) => a[1].order - b[1].order)
-        .map((entry) => entry[1]);
-      const loadedSettings = {};
-      loadedSettings[BackupFields.BACKUP_VERSION] = BACKUP_VERSION;
-      loadedSettings[BackupFields.BANGS] = {};
-      loadedSettings[BackupFields.SEARCH_ENGINES] = {};
-      for (const [, bang] of Object.entries(sortedBangs)) {
-        loadedSettings[BackupFields.BANGS][bang.bang.toLowerCase()] = {
-          name: bang.name,
-          url: bang.url,
-          bang: bang.bang.toLowerCase(),
-          urlEncodeQuery: bang.urlEncodeQuery,
-          openBaseUrl: bang?.openBaseUrl ?? false,
-        };
-      }
-      return loadedSettings;
-    },
-    function onError(error) {
-      // TODO: Handle errors.
-    },
-  );
-  exportSettings(settings);
-});
-
-const importButton = document.getElementById("import");
-const fileInput = document.getElementById("fileInput");
-importButton.addEventListener("click", () => {
-  fileInput.click();
-});
-fileInput.addEventListener("change", (event) => {
-  const file = event.target.files[0];
-
-  if (file) {
-    importSettings(file);
-  }
-});
