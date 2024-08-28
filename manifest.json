@@ -3,7 +3,7 @@
   "name": "Yang! - Yet Another Bangs anywhere extension",
   "description": "An open-source, lightweight Firefox extension that allows using DuckDuckGo Bangs anywhere.",
   "homepage_url": "https://github.com/dmlls/yang",
-  "version": "0.9.23",
+  "version": "0.9.24",
 
   "browser_specific_settings": {
     "gecko": {
@@ -22,12 +22,7 @@
     "256": "icons/icon-256.png"
   },
 
-  "permissions": [
-    "webRequest",
-    "webRequestBlocking",
-    "activeTab",
-    "storage"
-  ],
+  "permissions": ["webRequest", "webRequestBlocking", "activeTab", "storage"],
 
   "host_permissions": [
     "*://www.google.com/search*",

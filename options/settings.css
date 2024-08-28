@@ -31,16 +31,33 @@ h1 {
   font-weight: normal;
 }
 
-input {
+h2 {
+  color: #e15e49;
+  font-weight: normal;
+  text-align: start;
+}
+
+label {
+  margin-bottom: 5px;
+  text-align: start;
   width: 100%;
+}
+
+input {
+  width: 15%;
   padding: 8px;
   box-sizing: border-box;
+  text-align: center;
+}
+
+.setting-group:nth-child(n + 2) {
+  margin-top: 50px;
 }
 
 .button-container {
   display: flex;
   justify-content: center;
-  margin: 35px 0;
+  margin-top: 55px;
 }
 
 button {
@@ -68,8 +85,56 @@ button svg {
   margin-right: 8px;
 }
 
+.setting-button {
+  color: #e15e49;
+  margin-left: 15px;
+  padding: 5px 10px;
+  background: white;
+  border: solid 2px;
+  border-color: #e15e49;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.setting-button svg {
+  width: 1.1rem;
+}
+
+.setting-button:hover {
+  background: #e15e49;
+  color: white;
+  border-radius: 8px;
+}
+
+.form {
+  width: 75%;
+  margin: 0 auto;
+  margin-bottom: 15px;
+  box-sizing: border-box;
+}
+
 .back-container {
   text-align: left;
+}
+
+.setting-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.setting-label {
+  text-align: start;
+}
+
+.setting-label p {
+  margin: 7px 0 0;
+  color: #454545;
+}
+
+.setting-detail {
+  font-size: small;
 }
 
 input::placeholder {
@@ -84,7 +149,20 @@ input::placeholder {
     padding: 0;
   }
 
+  .form {
+    width: 90%;
+  }
+
   .back-container {
     padding: 20px;
+  }
+
+  .button-label {
+    display: none;
+  }
+
+  .setting-button svg {
+    margin-right: 0;
+    width: 1.1rem;
   }
 }

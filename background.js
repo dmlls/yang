@@ -24,32 +24,49 @@ if (typeof browser === "undefined") {
 }
 
 const bangs = {};
+let bangSymbol = "!";
 
 // Fetch Bangs from DuckDuckGo and load custom Bangs.
 (async () => {
-  // Add DDG bangs.
-  const res = await fetch(new Request("https://duckduckgo.com/bang.js"));
-  const ddgBangs = await res.json();
-  for (const bang of ddgBangs) {
+  let res;
+  let defaultBangs = [];
+  try {
+    res = await fetch(
+      new Request(
+        "https://raw.githubusercontent.com/kagisearch/bangs/main/data/bangs.json",
+      ),
+    );
+    defaultBangs = await res.json();
+  } catch (error) {
+    // Fallback to DDG bangs.
+    console.warn(
+      `Error fetching Kagi Bangs (${error.message}). Falling back to DuckDuckGo Bangs.`,
+    );
+    res = await fetch(new Request("https://duckduckgo.com/bang.js"));
+    defaultBangs = await res.json();
+  }
+  for (const bang of defaultBangs) {
     bangs[bang.t] = {
       url: bang.u,
       urlEncodeQuery: true, // default value
       openBaseUrl: true, // default value
     };
   }
-  // Exceptions (unfortunately, DDG does not expose this info).
+  // Exceptions (unfortunately, default bangs do not expose this info).
   bangs.wayback.urlEncodeQuery = false;
   bangs.waybackmachine.urlEncodeQuery = false;
   // Add custom bangs.
   await browser.storage.sync.get().then(
     function onGot(preferences) {
       Object.entries(preferences).forEach(([prefKey, pref]) => {
-        if (!prefKey.startsWith(PreferencePrefix.SEARCH_ENGINE)) {
+        if (prefKey.startsWith(PreferencePrefix.BANG)) {
           bangs[pref.bang] = {
             url: pref.url,
             urlEncodeQuery: pref.urlEncodeQuery,
             openBaseUrl: pref?.openBaseUrl ?? false,
           };
+        } else if (prefKey.startsWith(PreferencePrefix.BANG_SYMBOL)) {
+          bangSymbol = pref;
         }
       });
     },
@@ -102,11 +119,11 @@ browser.webRequest.onBeforeRequest.addListener(
     if (searchTerms) {
       const firstTerm = searchTerms[0].trim();
       const lastTerm = searchTerms[searchTerms.length - 1].trim();
-      if (firstTerm.startsWith("!")) {
-        bang = firstTerm.substring(1);
+      if (firstTerm.startsWith(bangSymbol)) {
+        bang = firstTerm.substring(bangSymbol.length);
         query = searchTerms.slice(1).join(" ");
-      } else if (lastTerm.startsWith("!")) {
-        bang = lastTerm.substring(1);
+      } else if (lastTerm.startsWith(bangSymbol)) {
+        bang = lastTerm.substring(bangSymbol.length);
         query = searchTerms.slice(0, -1).join(" ");
       } else {
         return null;
@@ -149,21 +166,26 @@ browser.action.onClicked.addListener(() => {
   });
 });
 
-// Update custom bangs.
-function updateCustomBangs(changes) {
+// Update custom bangs and settings.
+function updateSettings(changes) {
   for (const changedKey of Object.keys(changes)) {
-    if (!changedKey.startsWith(PreferencePrefix.SEARCH_ENGINE)) {
+    if (changedKey.startsWith(PreferencePrefix.BANG)) {
       const changedValue = changes[changedKey];
       if (Object.hasOwn(changedValue, "newValue")) {
         bangs[changedValue.newValue.bang] = changedValue.newValue;
       } else if (Object.hasOwn(changedValue, "oldValue")) {
-        // removed bang
+        // Removed bang.
         delete bangs[changedValue.oldValue.bang];
+      }
+    } else if (changedKey.startsWith(PreferencePrefix.BANG_SYMBOL)) {
+      const changedValue = changes[changedKey];
+      if (Object.hasOwn(changedValue, "newValue")) {
+        bangSymbol = changedValue.newValue;
       }
     }
   }
 }
-browser.storage.sync.onChanged.addListener(updateCustomBangs);
+browser.storage.sync.onChanged.addListener(updateSettings);
 
 // Temporal function to migrate storage schema.
 async function updateStorageSchema() {
@@ -175,14 +197,23 @@ async function updateStorageSchema() {
         .map(([bangKey, bang], index) => {
           if (
             !bangKey.startsWith(PreferencePrefix.BANG) &&
+            !bangKey.startsWith(PreferencePrefix.BANG_SYMBOL) &&
             !bangKey.startsWith(PreferencePrefix.SEARCH_ENGINE)
           ) {
             bangKey = getBangKey(bang.bang);
           }
-          bang.order = index;
+          if (
+            !bangKey.startsWith(PreferencePrefix.BANG_SYMBOL) &&
+            !bangKey.startsWith(PreferencePrefix.SEARCH_ENGINE)
+          ) {
+            bang.order = index;
+          }
           return [bangKey, bang];
         }),
     );
+    if (!customBangs.hasOwnProperty(PreferencePrefix.BANG_SYMBOL)) {
+      customBangs[PreferencePrefix.BANG_SYMBOL] = "!";
+    }
     await browser.storage.sync.clear().then(
       async function onCleared() {
         await browser.storage.sync.set(sortedBangs).then(
