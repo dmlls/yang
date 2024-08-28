@@ -49,14 +49,16 @@ function exportSettings(settings) {
 
 async function importSettings(file) {
   // Read existent bang symbol (if any).
-  let bangSymbol = await browser.storage.sync.get(PreferencePrefix.BANG_SYMBOL).then(
-    function onGot(item) {
-      return item[PreferencePrefix.BANG_SYMBOL];
-    },
-    function onError(error) {
-      return "!";  // default
-    },
-  );
+  let bangSymbol = await browser.storage.sync
+    .get(PreferencePrefix.BANG_SYMBOL)
+    .then(
+      function onGot(item) {
+        return item[PreferencePrefix.BANG_SYMBOL];
+      },
+      function onError(error) {
+        return "!"; // default
+      },
+    );
   const reader = new FileReader();
   reader.onload = async (event) => {
     const preferences = new Map();
@@ -73,7 +75,8 @@ async function importSettings(file) {
       }
       // Backup version >= 1.1.
       if (backupKeys.includes(BackupFields.SETTINGS)) {
-        bangSymbol = readBackup[BackupFields.SETTINGS][BackupFields.BANG_SYMBOL];
+        bangSymbol =
+          readBackup[BackupFields.SETTINGS][BackupFields.BANG_SYMBOL];
       }
       let order = 0;
       for (const [bangName, bangInfo] of Object.entries(readBangs)) {
@@ -108,4 +111,3 @@ async function importSettings(file) {
   };
   reader.readAsText(file);
 }
-

@@ -195,7 +195,6 @@ h1 {
   color: blue;
 }
 
-
 #version {
   font-size: medium;
 }
@@ -230,6 +229,10 @@ h1 {
 }
 
 @media screen and (width < 1000px) {
+  h1 {
+    margin-bottom: 5vw;
+  }
+
   .container {
     max-width: 100%;
     display: flex;

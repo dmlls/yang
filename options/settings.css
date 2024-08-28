@@ -129,7 +129,7 @@ button svg {
 }
 
 .setting-label p {
-  margin: 7px 0 0 0;
+  margin: 7px 0 0;
   color: #454545;
 }
 
@@ -162,7 +162,7 @@ input::placeholder {
   }
 
   .setting-button svg {
-    margin-right: 0px;
+    margin-right: 0;
     width: 1.1rem;
   }
 }

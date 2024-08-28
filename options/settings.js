@@ -17,7 +17,12 @@
  */
 
 import { PreferencePrefix } from "../utils.js";
-import { BACKUP_VERSION, BackupFields, exportSettings, importSettings } from "./export_import.js";
+import {
+  BACKUP_VERSION,
+  BackupFields,
+  exportSettings,
+  importSettings,
+} from "./export_import.js";
 
 let storedSettings = new Map();
 storedSettings.set(PreferencePrefix.BANG_SYMBOL, {
@@ -77,12 +82,16 @@ exportButton.addEventListener("click", async () => {
       const loadedSettings = {};
       loadedSettings[BackupFields.BACKUP_VERSION] = BACKUP_VERSION;
       loadedSettings[BackupFields.SETTINGS] = {};
-      loadedSettings[BackupFields.SETTINGS][BackupFields.BANG_SYMBOL] = storedData[PreferencePrefix.BANG_SYMBOL];
-      loadedSettings[BackupFields.SETTINGS][BackupFields.SEARCH_ENGINES] = {}
+      loadedSettings[BackupFields.SETTINGS][BackupFields.BANG_SYMBOL] =
+        storedData[PreferencePrefix.BANG_SYMBOL] || "!";
+      loadedSettings[BackupFields.SETTINGS][BackupFields.SEARCH_ENGINES] = {};
       const sortedBangs = Object.entries(storedData)
         .filter((entry) => entry[0].startsWith(PreferencePrefix.BANG))
         .sort((a, b) => a[1].order - b[1].order)
-        .map((entry) => {delete entry[1].order; return entry[1];});
+        .map((entry) => {
+          delete entry[1].order;
+          return entry[1];
+        });
       loadedSettings[BackupFields.BANGS] = sortedBangs;
       return loadedSettings;
     },

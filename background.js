@@ -211,6 +211,9 @@ async function updateStorageSchema() {
           return [bangKey, bang];
         }),
     );
+    if (!customBangs.hasOwnProperty(PreferencePrefix.BANG_SYMBOL)) {
+      customBangs[PreferencePrefix.BANG_SYMBOL] = "!";
+    }
     await browser.storage.sync.clear().then(
       async function onCleared() {
         await browser.storage.sync.set(sortedBangs).then(
