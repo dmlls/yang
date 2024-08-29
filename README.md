@@ -1,7 +1,7 @@
   <a href="https://addons.mozilla.org/addon/yang-addon/">
     <picture>
       <source srcset="https://i.imgur.com/ZluoP7T.png" media="(prefers-color-scheme: dark)">
-      <img height="65" src="https://i.imgur.com/4PobQqE.png" alt="Firefox add-ons"></picture></a>
+      <img height="75" src="https://i.imgur.com/4PobQqE.png" alt="Firefox add-ons"></picture></a>
   <a/>
 
 
