@@ -5,36 +5,47 @@
   <a/>
 
 
+**Yang - Bringing DuckDuckGo-Style Bangs to Any Search Engine**
 
-Yang! brings DuckDuckGo-style bangs to any search engine, right from your Firefox URL bar.
+### Key Features
+- **Universal Bang Usage**: Use bangs in your Firefox URL bar or any supported search engine.
+- **Instant Results**: Local bang resolution for faster search experiences.
+- **Extensive Support**: Supports over 15 search engines and more than 13,500 bangs.
+- **Custom Bangs**: Create and use your own custom bangs.
+- **Mobile Compatibility**: Fully functional on mobile devices.
 
-## 🚀 Key Features
+### How It Works
+1. **Install**: Download Yang from the Firefox Add-ons page.
+2. **Use**: Simply add a bang to the beginning or end of your search query. For example, `deepl I love bangs and I'm not talking about hair.` or `I love bangs and I'm not talking about hair. !deepl`.
 
-- Use bangs in your URL bar or any search engine
-- Local bang resolution for instant results
-- 15+ search engines and 13,500+ bangs supported
-- Create and use your own custom bangs
-- Fully functional on mobile devices
+### Supported Search Engines
+- **Google**
+- **Bing**
+- **Yahoo**
+- **Ecosia**
+- **DuckDuckGo**
+- **Brave Search**
+- **Startpage**
+- **Swisscows**
+- **SearX(NG)**
+- **Mojeek**
+- **Qwant**
+- **Kagi**
+- **You.com**
+- **Perplexity AI**
+- **Naver**
+- **Baidu**
+- **Yandex**
+- **AOL**
+- **Murena**
+- **MetaGer**
+- **Dogpile**
+- **Ask.com**
+- **Seznam.cz**.
 
-## 🔧 How It Works
+### FAQs
+#### Why does Yang need permissions for 300+ sites?
+Yang explicitly specifies the supported search engine sites in its permissions, rather than requesting data access for all sites. You can view the exact sites in the `manifest.json` file.
 
-1. **Install**: Get Yang! from the [Firefox ADD-ONS](https://addons.mozilla.org/addon/yang-addon/) page
-2. **Use**: Add a bang to the beginning or end of a search query
-
-## 🌐 Supported Search Engines
-
-Google, Bing, Yahoo, Ecosia, DuckDuckGo, Brave Search, Startpage, Swisscows, SearX(NG), Mojeek, Qwant, Kagi, You.com, Perplexity AI, Naver, Baidu, Yandex, AOL, Murena, MetaGer, Dogpile, Ask.com, Seznam.cz
-
-
-## ❓ FAQs
-
-<details>
-<summary>Why does Yang! need permissions for 300+ sites?</summary>
-Instead of requesting data access for all sites, we explicitly specify the supported search engine sites in the permissions. While this list is extensive, you can view the exact sites in the manifest.json file.
-</details>
-
-<details>
-<summary>Is Yang! available for Google Chrome?</summary>
-No idea, I don't have this package installed on my system. I will not support it myself, but Pull Requests are welcome.
-</details>
-
+#### Is Yang available for Google Chrome?
+No, Yang is not currently supported on Google Chrome. However, the developer welcomes Pull Requests to add this functionality.
