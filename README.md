@@ -45,7 +45,7 @@
 
 ### FAQs
 #### Why does Yang need permissions for 300+ sites?
-Yang explicitly specifies the supported search engine sites in its permissions, rather than requesting data access for all sites. You can view the exact sites in the `manifest.json` file.
+Instead of requesting data access for all sites, we explicitly specify the supported search engine sites in the permissions. While this list is extensive, you can view the exact sites in the manifest.json file.
 
 #### Is Yang available for Google Chrome?
 No, Yang is not currently supported on Google Chrome. However, the developer welcomes Pull Requests to add this functionality.
