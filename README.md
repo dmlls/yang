@@ -22,7 +22,7 @@
 ### 💡 Example Bang Usages
 
 - **!g**: Search on Google
-  Example: `g text rephraser online`
+  Example: `!g text rephraser online`
 - **!yt**: Search on YouTube
   Example: `!yt how to fix your posture`
 - **!a**: Search on Amazon
