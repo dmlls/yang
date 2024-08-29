@@ -1,9 +1,11 @@
   <a href="https://addons.mozilla.org/addon/yang-addon/">
     <picture>
       <source srcset="https://i.imgur.com/ZluoP7T.png" media="(prefers-color-scheme: dark)">
-      <img height="58" src="https://i.imgur.com/4PobQqE.png" alt="Firefox add-ons"></picture></a>
+      <img height="65" src="https://i.imgur.com/4PobQqE.png" alt="Firefox add-ons"></picture></a>
   <a/>
-    
+
+
+
 Yang! brings DuckDuckGo-style bangs to any search engine, right from your Firefox URL bar.
 
 ## 🚀 Key Features
