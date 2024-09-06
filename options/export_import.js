@@ -17,7 +17,7 @@
  */
 
 export { BACKUP_VERSION, BackupFields, exportSettings, importSettings };
-import { PreferencePrefix, getBangKey } from "../utils.js";
+import { PreferencePrefix, fetchSettings, getBangKey } from "../utils.js";
 
 const BACKUP_VERSION = "1.1";
 
@@ -64,7 +64,7 @@ async function importSettings(file) {
     const preferences = new Map();
     try {
       const neededFields = ["name", "url", "bang", "urlEncodeQuery"];
-      let readBackup = JSON.parse(event.target.result);
+      const readBackup = JSON.parse(event.target.result);
       let readBangs = {};
       const backupKeys = Object.keys(readBackup);
       // Backup version < 1.0.
@@ -99,9 +99,14 @@ async function importSettings(file) {
         order++;
       }
       preferences.set(PreferencePrefix.BANG_SYMBOL, bangSymbol);
-      await browser.storage.sync.set(Object.fromEntries(preferences));
-      alert("Settings imported successfully!");
-      window.location.href = "options.html";
+      browser.storage.sync.set(Object.fromEntries(preferences)).then(
+        async function onSet() {
+          await fetchSettings(true);
+          alert("Settings imported successfully!");
+          window.location.href = "options.html";
+        },
+        function onError(error) {},
+      );
     } catch (error) {
       console.error("Error importing settings:", error);
       alert(

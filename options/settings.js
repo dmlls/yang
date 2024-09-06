@@ -34,15 +34,20 @@ function success() {
   window.location.replace("options.html");
 }
 
-async function saveSettings() {
+function saveSettings() {
   const settings = {};
   for (const [settingName, settingValue] of storedSettings) {
     settings[settingName] = settingValue.element.value || settingValue.default;
   }
-  browser.storage.sync.set(settings).then(success, onError);
+  browser.storage.sync.set(settings).then(
+    function onSet() {
+      browser.storage.session.set(settings).then(success, onError);
+    },
+    function onError(error) {},
+  );
 }
 
-function onError() {}
+function onError(error) {}
 
 function saveOnCtrlEnter(e) {
   if ((e.ctrlKey || e.metaKey) && (e.keyCode === 13 || e.keyCode === 10)) {
@@ -55,7 +60,7 @@ function saveOnCtrlEnter(e) {
 browser.storage.sync.get(Array.from(storedSettings.keys())).then(
   function onGot(items) {
     for (const [settingName, settingValue] of storedSettings) {
-      if (items.hasOwnProperty(settingName)) {
+      if (Object.hasOwn(items, settingName)) {
         settingValue.element.setAttribute("value", items[settingName]);
       } else {
         settingValue.element.setAttribute("value", settingValue.default);

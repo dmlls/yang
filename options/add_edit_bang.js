@@ -173,10 +173,22 @@ async function saveCustomBang() {
       // If the bang has changed and does not already exist ->
       // Delete the previous one first.
       await browser.storage.sync.remove(saveButton.bangKey);
+      await browser.storage.session.remove(saveButton.bangKey);
     }
-    browser.storage.sync
-      .set({ [inputtedBangKey]: inputtedBang })
-      .then(setItem, onError);
+    await browser.storage.sync.set({ [inputtedBangKey]: inputtedBang }).then(
+      function onSet() {
+        browser.storage.session
+          .set({
+            [inputtedBangKey]: {
+              url: inputtedBang.url,
+              urlEncodeQuery: inputtedBang.urlEncodeQuery,
+              openBaseUrl: inputtedBang.openBaseUrl,
+            },
+          })
+          .then(setItem, onError);
+      },
+      function onError(error) {},
+    );
   }
 }
 
@@ -220,6 +232,7 @@ if (mode === "edit") {
   );
 } else {
   saveButton.last = last;
+  document.getElementById("name").focus(); // focus first field
 }
 saveButton.mode = mode;
 saveButton.bangKey = bangKey;

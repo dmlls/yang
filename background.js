@@ -16,74 +16,46 @@
  * For license information on the libraries used, see LICENSE.
  */
 
-import { PreferencePrefix, getBangKey } from "./utils.js";
+import {
+  PreferencePrefix,
+  Defaults,
+  fetchSettings,
+  getBangKey,
+} from "./utils.js";
 
 // Support for Chrome.
 if (typeof browser === "undefined") {
   globalThis.browser = chrome;
 }
 
-const bangs = {};
-let bangSymbol = "!";
-
-// Fetch Bangs from DuckDuckGo and load custom Bangs.
 (async () => {
-  let res;
-  let defaultBangs = [];
-  try {
-    res = await fetch(
-      new Request(
-        "https://raw.githubusercontent.com/kagisearch/bangs/main/data/bangs.json",
-      ),
-    );
-    defaultBangs = await res.json();
-  } catch (error) {
-    // Fallback to DDG bangs.
-    console.warn(
-      `Error fetching Kagi Bangs (${error.message}). Falling back to DuckDuckGo Bangs.`,
-    );
-    res = await fetch(new Request("https://duckduckgo.com/bang.js"));
-    defaultBangs = await res.json();
-  }
-  for (const bang of defaultBangs) {
-    bangs[bang.t] = {
-      url: bang.u,
-      urlEncodeQuery: true, // default value
-      openBaseUrl: true, // default value
-    };
-  }
-  // Exceptions (unfortunately, default bangs do not expose this info).
-  bangs.wayback.urlEncodeQuery = false;
-  bangs.waybackmachine.urlEncodeQuery = false;
-  // Add custom bangs.
-  await browser.storage.sync.get().then(
-    function onGot(preferences) {
-      Object.entries(preferences).forEach(([prefKey, pref]) => {
-        if (prefKey.startsWith(PreferencePrefix.BANG)) {
-          bangs[pref.bang] = {
-            url: pref.url,
-            urlEncodeQuery: pref.urlEncodeQuery,
-            openBaseUrl: pref?.openBaseUrl ?? false,
-          };
-        } else if (prefKey.startsWith(PreferencePrefix.BANG_SYMBOL)) {
-          bangSymbol = pref;
-        }
-      });
-    },
-    function onError(error) {
-      // TODO: Handle errors.
-    },
-  );
+  await fetchSettings(false);
 })();
 
 browser.webRequest.onBeforeRequest.addListener(
-  (details) => {
+  async (details) => {
     const url = new URL(details.url);
+    // Only consider certain requests.
+    const include = [
+      "/search",
+      "duckduckgo.com/",
+      "/web", // swisscows & ask.com
+      "qwant.com/",
+      "/entry/should-show-feedback", // perplexity
+      "/s", // Baidu
+      "/meta", // metaGer
+      "/serp", // dogpile
+      "/search.seznam.cz",
+    ].some((value) => url.href.includes(value));
+    if (!include) {
+      return null;
+    }
     // Skip requests for suggestions.
     const skip =
       [
         "/ac",
         "suggest",
+        "/autosuggest",
         "/complete",
         "/autocompleter",
         "/autocomplete",
@@ -94,55 +66,83 @@ browser.webRequest.onBeforeRequest.addListener(
       return null;
     }
     // Different search engines use different params for the query.
-    const params = ["q", "p", "query", "text", "eingabe", "wd"]
-      .reduce((acc, param) => {
-        let q = url.searchParams.get(param);
-        // Some search engines include the query in the request body.
-        if (!q) {
-          const form = details?.requestBody?.formData;
-          if (form != null && Object.prototype.hasOwnProperty.call(form, param))
-            q = details?.requestBody?.formData[param][0];
+    const params = ["q", "p", "query", "text", "eingabe", "wd"];
+    let searchQuery = null;
+    for (const param of params) {
+      searchQuery = url.searchParams.get(param);
+      // Some search engines include the query in the request body.
+      if (!searchQuery) {
+        const form = details?.requestBody?.formData;
+        if (form != null && Object.hasOwn(form, param)) {
+          searchQuery = form[param][0];
+        } else if (details?.requestBody?.raw) {
+          const decodedBody = JSON.parse(
+            decodeURIComponent(
+              String.fromCharCode.apply(
+                null,
+                new Uint8Array(details.requestBody.raw[0].bytes),
+              ),
+            ),
+          );
+          if (Object.hasOwn(decodedBody, param)) {
+            searchQuery = decodedBody[param];
+          }
         }
-        if (q != null) {
-          acc.push(q);
-        }
-        return acc;
-      }, [])
-      .filter((a) => a);
-
-    if (params[0] === undefined) {
+      }
+      if (searchQuery != null) {
+        break;
+      }
+    }
+    if (!searchQuery) {
       return null;
     }
-    let bang = "";
-    let query = "";
-    const searchTerms = params[0].split(" ");
-    if (searchTerms) {
-      const firstTerm = searchTerms[0].trim();
-      const lastTerm = searchTerms[searchTerms.length - 1].trim();
-      if (firstTerm.startsWith(bangSymbol)) {
-        bang = firstTerm.substring(bangSymbol.length);
-        query = searchTerms.slice(1).join(" ");
-      } else if (lastTerm.startsWith(bangSymbol)) {
-        bang = lastTerm.substring(bangSymbol.length);
-        query = searchTerms.slice(0, -1).join(" ");
-      } else {
-        return null;
-      }
-    }
-    bang = bang.toLowerCase();
-    if (Object.hasOwn(bangs, bang)) {
-      const bangUrl = bangs[bang].url;
-      let targetUrl = "";
-      if (query.length === 0 && bangs[bang].openBaseUrl) {
-        targetUrl = new URL(bangUrl).origin;
-      } else {
-        if (bangs[bang].urlEncodeQuery) {
-          query = encodeURIComponent(query);
+    browser.storage.session.get(PreferencePrefix.BANG_SYMBOL).then(
+      function onGot(item) {
+        const bangSymbol =
+          item[PreferencePrefix.BANG_SYMBOL] || Defaults.BANG_SYMBOL;
+        let bang = null;
+        let query = null;
+        const searchTerms = searchQuery.split(" ");
+        if (searchTerms) {
+          const firstTerm = searchTerms[0].trim();
+          const lastTerm = searchTerms[searchTerms.length - 1].trim();
+          if (firstTerm.startsWith(bangSymbol)) {
+            bang = firstTerm.substring(bangSymbol.length);
+            query = searchTerms.slice(1).join(" ");
+          } else if (lastTerm.startsWith(bangSymbol)) {
+            bang = lastTerm.substring(bangSymbol.length);
+            query = searchTerms.slice(0, -1).join(" ");
+          }
         }
-        targetUrl = new URL(bangUrl.replace("{{{s}}}", query));
-      }
-      updateTab(details.tabId, targetUrl.toString());
-    }
+        if (bang) {
+          const bangKey = getBangKey(bang);
+          browser.storage.session.get(bangKey).then(
+            function onGot(item) {
+              // Any matches?
+              if (Object.hasOwn(item, bangKey)) {
+                const bangInfo = item[bangKey];
+                let targetUrl;
+                if (query.length === 0 && bangInfo.openBaseUrl) {
+                  targetUrl = new URL(bangInfo.url).origin;
+                } else {
+                  if (bangInfo.urlEncodeQuery) {
+                    query = encodeURIComponent(query);
+                  }
+                  targetUrl = new URL(bangInfo.url.replace("{{{s}}}", query));
+                }
+                updateTab(details.tabId, targetUrl.toString());
+              }
+            },
+            function onError(error) {
+              // TODO: Handle error.
+            },
+          );
+        }
+      },
+      function onError(error) {
+        // TODO: Handle error.
+      },
+    );
     return null;
   },
   {
@@ -165,27 +165,6 @@ browser.action.onClicked.addListener(() => {
     url: browser.runtime.getURL("options/options.html"),
   });
 });
-
-// Update custom bangs and settings.
-function updateSettings(changes) {
-  for (const changedKey of Object.keys(changes)) {
-    if (changedKey.startsWith(PreferencePrefix.BANG)) {
-      const changedValue = changes[changedKey];
-      if (Object.hasOwn(changedValue, "newValue")) {
-        bangs[changedValue.newValue.bang] = changedValue.newValue;
-      } else if (Object.hasOwn(changedValue, "oldValue")) {
-        // Removed bang.
-        delete bangs[changedValue.oldValue.bang];
-      }
-    } else if (changedKey.startsWith(PreferencePrefix.BANG_SYMBOL)) {
-      const changedValue = changes[changedKey];
-      if (Object.hasOwn(changedValue, "newValue")) {
-        bangSymbol = changedValue.newValue;
-      }
-    }
-  }
-}
-browser.storage.sync.onChanged.addListener(updateSettings);
 
 // Temporal function to migrate storage schema.
 async function updateStorageSchema() {
@@ -211,17 +190,18 @@ async function updateStorageSchema() {
           return [bangKey, bang];
         }),
     );
-    if (!customBangs.hasOwnProperty(PreferencePrefix.BANG_SYMBOL)) {
+    if (!Object.hasOwn(customBangs, PreferencePrefix.BANG_SYMBOL)) {
       customBangs[PreferencePrefix.BANG_SYMBOL] = "!";
     }
     await browser.storage.sync.clear().then(
       async function onCleared() {
         await browser.storage.sync.set(sortedBangs).then(
-          function onSet() {
-            // Success
+          async function onSet() {
+            await fetchSettings(true);
           },
           async function onError(error) {
             await browser.storage.sync.set(sortedBangs); // Retry
+            await fetchSettings(true);
           },
         );
       },

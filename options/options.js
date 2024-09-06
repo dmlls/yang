@@ -98,19 +98,26 @@ function deleteBang(e) {
       const bang = item[bangKey];
       browser.storage.sync.remove(bangKey).then(
         function onRemoved() {
-          row.remove();
-          const table = document.getElementById("bangs-table");
-          if (table.rows.length === 1) {
-            // Empty table.
-            const noBangsLabel = document.getElementById("no-bangs");
-            noBangsLabel.style.visibility = "visible";
-          }
-          displayToast(
-            bangKey,
-            `Bang '${bang.bang}' deleted.`,
-            "Undo",
-            undoDeletion,
-            bang,
+          browser.storage.session.remove(bangKey).then(
+            function onRemoved() {
+              row.remove();
+              const table = document.getElementById("bangs-table");
+              if (table.rows.length === 1) {
+                // Empty table.
+                const noBangsLabel = document.getElementById("no-bangs");
+                noBangsLabel.style.visibility = "visible";
+              }
+              displayToast(
+                bangKey,
+                `Bang '${bang.bang}' deleted.`,
+                "Undo",
+                undoDeletion,
+                bang,
+              );
+            },
+            function onError() {
+              // TODO: Handle errors.
+            },
           );
         },
         function onError() {
@@ -126,12 +133,23 @@ function deleteBang(e) {
 
 function undoDeletion(bang) {
   browser.storage.sync.set({ [getBangKey(bang.bang)]: bang }).then(
-    function setItem() {
-      window.location.reload();
+    function onSet() {
+      browser.storage.session
+        .set({
+          [getBangKey(bang.bang)]: {
+            url: bang.url,
+            urlEncodeQuery: bang.urlEncodeQuery,
+            openBaseUrl: bang.openBaseUrl,
+          },
+        })
+        .then(
+          function onSet() {
+            window.location.reload();
+          },
+          function onError() {},
+        );
     },
-    function onError() {
-      // TODO: Handle error.
-    },
+    function onError(error) {},
   );
 }
 
