@@ -64,7 +64,7 @@ async function importSettings(file) {
     const preferences = new Map();
     try {
       const neededFields = ["name", "url", "bang", "urlEncodeQuery"];
-      let readBackup = JSON.parse(event.target.result);
+      const readBackup = JSON.parse(event.target.result);
       let readBangs = {};
       const backupKeys = Object.keys(readBackup);
       // Backup version < 1.0.
@@ -101,7 +101,7 @@ async function importSettings(file) {
       preferences.set(PreferencePrefix.BANG_SYMBOL, bangSymbol);
       browser.storage.sync.set(Object.fromEntries(preferences)).then(
         async function onSet() {
-          fetchSettings(true);
+          await fetchSettings(true);
           alert("Settings imported successfully!");
           window.location.href = "options.html";
         },

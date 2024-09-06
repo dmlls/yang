@@ -154,7 +154,7 @@ function stripExclamation(string) {
   return string.replace(/^!+|!+$/g, "");
 }
 
-async function setItem() {
+function setItem() {
   window.location.replace("options.html");
 }
 

@@ -29,7 +29,7 @@ if (typeof browser === "undefined") {
 }
 
 (async () => {
-  fetchSettings(false);
+  await fetchSettings(false);
 })();
 
 browser.webRequest.onBeforeRequest.addListener(
@@ -196,11 +196,12 @@ async function updateStorageSchema() {
     await browser.storage.sync.clear().then(
       async function onCleared() {
         await browser.storage.sync.set(sortedBangs).then(
-          function onSet() {
-            fetchSettings(true);
+          async function onSet() {
+            await fetchSettings(true);
           },
           async function onError(error) {
             await browser.storage.sync.set(sortedBangs); // Retry
+            await fetchSettings(true);
           },
         );
       },

@@ -131,7 +131,7 @@ function deleteBang(e) {
   );
 }
 
-async function undoDeletion(bang) {
+function undoDeletion(bang) {
   browser.storage.sync.set({ [getBangKey(bang.bang)]: bang }).then(
     function onSet() {
       browser.storage.session

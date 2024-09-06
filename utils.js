@@ -78,7 +78,7 @@ async function fetchSettings(update = false) {
   settings[getBangKey("waybackmachine")].urlEncodeQuery = false;
   // Fetch custom bangs.
   await browser.storage.sync.get().then(
-    async function onGot(storedSettings) {
+    function onGot(storedSettings) {
       for (let [bangKey, bangInfo] of Object.entries(storedSettings)) {
         // In the session storage, we don't need all the bang values stored in
         // the sync storage. Here, we filter them out.
@@ -105,6 +105,7 @@ async function fetchSettings(update = false) {
       // TODO: Handle error.
     },
   );
+  return null;
 }
 
 function getBangKey(bang) {

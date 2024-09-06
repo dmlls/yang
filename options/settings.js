@@ -34,7 +34,7 @@ function success() {
   window.location.replace("options.html");
 }
 
-async function saveSettings() {
+function saveSettings() {
   const settings = {};
   for (const [settingName, settingValue] of storedSettings) {
     settings[settingName] = settingValue.element.value || settingValue.default;
