@@ -232,6 +232,7 @@ if (mode === "edit") {
   );
 } else {
   saveButton.last = last;
+  document.getElementById("name").focus(); // focus first field
 }
 saveButton.mode = mode;
 saveButton.bangKey = bangKey;
