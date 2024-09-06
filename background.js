@@ -35,11 +35,27 @@ if (typeof browser === "undefined") {
 browser.webRequest.onBeforeRequest.addListener(
   async (details) => {
     const url = new URL(details.url);
+    // Only consider certain requests.
+    const include = [
+      "/search",
+      "duckduckgo.com/",
+      "/web", // swisscows & ask.com
+      "qwant.com/",
+      "/entry/should-show-feedback", // perplexity
+      "/s", // Baidu
+      "/meta", // metaGer
+      "/serp", // dogpile
+      "/search.seznam.cz",
+    ].some((value) => url.href.includes(value));
+    if (!include) {
+      return null;
+    }
     // Skip requests for suggestions.
     const skip =
       [
         "/ac",
         "suggest",
+        "/autosuggest",
         "/complete",
         "/autocompleter",
         "/autocomplete",
@@ -50,23 +66,34 @@ browser.webRequest.onBeforeRequest.addListener(
       return null;
     }
     // Different search engines use different params for the query.
-    const params = ["q", "p", "query", "text", "eingabe", "wd"]
-      .reduce((acc, param) => {
-        let q = url.searchParams.get(param);
-        // Some search engines include the query in the request body.
-        if (!q) {
-          const form = details?.requestBody?.formData;
-          if (form != null && Object.hasOwn(form, param))
-            q = details?.requestBody?.formData[param][0];
+    const params = ["q", "p", "query", "text", "eingabe", "wd"];
+    let searchQuery = null;
+    for (const param of params) {
+      searchQuery = url.searchParams.get(param);
+      // Some search engines include the query in the request body.
+      if (!searchQuery) {
+        const form = details?.requestBody?.formData;
+        if (form != null && Object.hasOwn(form, param)) {
+          searchQuery = form[param][0];
+        } else if (details?.requestBody?.raw) {
+          const decodedBody = JSON.parse(
+            decodeURIComponent(
+              String.fromCharCode.apply(
+                null,
+                new Uint8Array(details.requestBody.raw[0].bytes),
+              ),
+            ),
+          );
+          if (Object.hasOwn(decodedBody, param)) {
+            searchQuery = decodedBody[param];
+          }
         }
-        if (q != null) {
-          acc.push(q);
-        }
-        return acc;
-      }, [])
-      .filter((a) => a);
-
-    if (params[0] === undefined) {
+      }
+      if (searchQuery != null) {
+        break;
+      }
+    }
+    if (!searchQuery) {
       return null;
     }
     browser.storage.session.get(PreferencePrefix.BANG_SYMBOL).then(
@@ -75,7 +102,7 @@ browser.webRequest.onBeforeRequest.addListener(
           item[PreferencePrefix.BANG_SYMBOL] || Defaults.BANG_SYMBOL;
         let bang = null;
         let query = null;
-        const searchTerms = params[0].split(" ");
+        const searchTerms = searchQuery.split(" ");
         if (searchTerms) {
           const firstTerm = searchTerms[0].trim();
           const lastTerm = searchTerms[searchTerms.length - 1].trim();
