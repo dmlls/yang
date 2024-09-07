@@ -91,7 +91,7 @@ async function fetchSettings(update = false) {
         }
         settings[bangKey] = bangInfo;
       }
-      if (!Object.hasOwn(settings, PreferencePrefix.BANG_SYMBOL)) {
+      if (!Object.hasOwn(settings, PreferencePrefix.BANG_SYMBOL) || !settings[PreferencePrefix.BANG_SYMBOL]) {
         settings[PreferencePrefix.BANG_SYMBOL] = Defaults.BANG_SYMBOL;
       }
       browser.storage.session.clear().then(
