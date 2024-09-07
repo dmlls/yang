@@ -32,6 +32,12 @@ if (typeof browser === "undefined") {
   await fetchSettings(false);
 })();
 
+browser.runtime.onStartup.addListener(
+  async () => {
+    await fetchSettings(false);
+  }
+);
+
 browser.webRequest.onBeforeRequest.addListener(
   async (details) => {
     const url = new URL(details.url);

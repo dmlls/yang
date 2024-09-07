@@ -24,10 +24,8 @@ function onGot(allBangs) {
     .filter((entry) => entry[0].startsWith(PreferencePrefix.BANG))
     .sort((a, b) => a[1].order - b[1].order)
     .map((entry) => entry[0]);
-  if (sortedBangs.length === 0) {
-    const noBangsLabel = document.getElementById("no-bangs");
-    noBangsLabel.style.visibility = "visible";
-  } else {
+  if (sortedBangs.length > 0) {
+    document.getElementById("no-bangs").style.display = "none";
     for (const b of sortedBangs) {
       const tableBody = document.querySelector("#bangs-table tbody");
       const row = tableBody.insertRow();
@@ -104,8 +102,7 @@ function deleteBang(e) {
               const table = document.getElementById("bangs-table");
               if (table.rows.length === 1) {
                 // Empty table.
-                const noBangsLabel = document.getElementById("no-bangs");
-                noBangsLabel.style.visibility = "visible";
+                document.getElementById("no-bangs").style.removeProperty("display");
               }
               displayToast(
                 bangKey,

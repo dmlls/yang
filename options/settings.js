@@ -60,7 +60,7 @@ function saveOnCtrlEnter(e) {
 browser.storage.sync.get(Array.from(storedSettings.keys())).then(
   function onGot(items) {
     for (const [settingName, settingValue] of storedSettings) {
-      if (Object.hasOwn(items, settingName)) {
+      if (Object.hasOwn(items, settingName) && items[settingName] != null) {
         settingValue.element.setAttribute("value", items[settingName]);
       } else {
         settingValue.element.setAttribute("value", settingValue.default);
