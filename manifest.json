@@ -228,6 +228,8 @@
     "*://search.brave.com/search*",
 
     "*://www.startpage.com/sp/search*",
+    "*://eu.startpage.com/sp/search*",
+    "*://us.startpage.com/sp/search*",
 
     "*://swisscows.com/*/web*",
 
