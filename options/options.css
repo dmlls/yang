@@ -274,13 +274,19 @@ h1 {
 
   #bangs-table th:first-child,
   #bangs-table td:first-child {
-    width: 30vw;
+    width: 50vw;
+  }
+
+  #bangs-table th:nth-child(2),
+  #bangs-table td:nth-child(2) {
+    padding-right: 0;
+    padding-left: 0;
   }
 
   #bangs-table th:last-child,
   #bangs-table td:last-child {
-    min-width: 25%;
     padding-right: 0;
     padding-left: 0;
+    float: right;
   }
 }
