@@ -107,7 +107,9 @@ function deleteBang(e) {
               const table = document.getElementById("bangs-table");
               if (table.rows.length === 1) {
                 // Empty table.
-                document.getElementById("no-bangs").style.removeProperty("display");
+                document
+                  .getElementById("no-bangs")
+                  .style.removeProperty("display");
               }
               displayToast(
                 bangKey,
