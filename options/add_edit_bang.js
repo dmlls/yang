@@ -18,6 +18,11 @@
 
 import { getBangKey } from "../utils.js";
 
+// Support for Chromium.
+if (typeof browser === "undefined") {
+  globalThis.browser = chrome;
+}
+
 const FormFields = Object.freeze({
   NAME: "name",
   URL: "url",

@@ -23,7 +23,7 @@ import {
   getBangKey,
 } from "./utils.js";
 
-// Support for Chrome.
+// Support for Chromium.
 if (typeof browser === "undefined") {
   globalThis.browser = chrome;
 }
@@ -154,7 +154,7 @@ browser.webRequest.onBeforeRequest.addListener(
   {
     urls: ["<all_urls>"],
   },
-  ["blocking", "requestBody"],
+  ["requestBody"],
 );
 
 function updateTab(tabId, url) {

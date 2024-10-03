@@ -24,6 +24,11 @@ import {
   importSettings,
 } from "./export_import.js";
 
+// Support for Chromium.
+if (typeof browser === "undefined") {
+  globalThis.browser = chrome;
+}
+
 let storedSettings = new Map();
 storedSettings.set(PreferencePrefix.BANG_SYMBOL, {
   element: document.getElementById("bang-symbol"),

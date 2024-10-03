@@ -18,6 +18,11 @@
 
 import { PreferencePrefix, getBangKey } from "../utils.js";
 
+// Support for Chromium.
+if (typeof browser === "undefined") {
+  globalThis.browser = chrome;
+}
+
 function onGot(allBangs) {
   // Get only the bang values, sorted by order.
   const sortedBangs = Object.entries(allBangs)
