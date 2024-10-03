@@ -160,7 +160,7 @@ function stripExclamation(string) {
 }
 
 function setItem() {
-  window.location.replace("options.html");
+  window.location.href = "options.html";
 }
 
 function onError() {}

@@ -36,7 +36,7 @@ storedSettings.set(PreferencePrefix.BANG_SYMBOL, {
 });
 
 function success() {
-  window.location.replace("options.html");
+  window.location.href = "options.html";
 }
 
 function saveSettings() {
