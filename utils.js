@@ -32,10 +32,10 @@ const Defaults = Object.freeze({
 
 async function fetchSettings(update = false) {
   if (!update) {
-    // Check whether there are any settings are loaded. We look for, e.g.,
-    // the bang symbol key. If no settings are loaded, we fetch them and retry
-    // A more elegant solution would be `StorageArea.getBytesInUse()`, but
-    // it's not supported for `storage.session`.
+    // Check if any settings are loaded. We look for, e.g., the bang symbol key.
+    // If no settings are loaded, we fetch them and retry. A more elegant
+    // solution would be `StorageArea.getBytesInUse()`, but it's not supported
+    // for `storage.session`.
     const updated = await browser.storage.session
       .get(PreferencePrefix.BANG_SYMBOL)
       .then(

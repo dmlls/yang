@@ -16,7 +16,7 @@
  * For license information on the libraries used, see LICENSE.
  */
 
-import { PreferencePrefix, getBangKey } from "../utils.js";
+import { PreferencePrefix, fetchSettings, getBangKey } from "../utils.js";
 
 // Support for Chromium.
 if (typeof browser === "undefined") {
@@ -101,7 +101,7 @@ function deleteBang(e) {
       browser.storage.sync.remove(bangKey).then(
         function onRemoved() {
           browser.storage.session.remove(bangKey).then(
-            function onRemoved() {
+            async function onRemoved() {
               const rowIndex = row.rowIndex;
               row.remove();
               // Remove sets rowIndex to -1 so we restore it.
@@ -126,6 +126,7 @@ function deleteBang(e) {
                 row,
                 bang,
               ]);
+              await fetchSettings(true);
             },
             function onError() {
               // TODO: Handle errors.
