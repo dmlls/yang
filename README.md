@@ -9,7 +9,7 @@
 <h1 align="center">Yang!</h1>
 <p align="center"><b>Yet Another Bangs anywhere extension</b></p>
 <br>
-<p align="center"><a href="https://addons.mozilla.org/addon/yang-addon/"><img width="202" src="https://user-images.githubusercontent.com/22967053/218262747-3ef4af48-86c6-4e10-9e07-6b64b4910031.png" alt="Available on Firefox ADD-ONS"></a></p>
+<p align="center"><a href="https://addons.mozilla.org/addon/yang-addon/"><img width="202" src="https://github.com/user-attachments/assets/d6bf0baa-8e41-4528-8135-4b05518b1fd5" alt="Available on Firefox ADD-ONS"></a></p>
 
 <br><br>
 
