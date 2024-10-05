@@ -176,7 +176,7 @@ h1 {
 
 .bang {
   font-family: monospace;
-  font-size: 0.76rem;
+  font-size: 0.75rem;
   font-weight: bold;
   color: #7914ad;
   background-color: #f4f4f4;
@@ -187,7 +187,7 @@ h1 {
 
 #no-bangs {
   color: #585858;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   margin: 15px 0;
 }
 
