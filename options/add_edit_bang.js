@@ -242,6 +242,7 @@ if (mode === "edit") {
 saveButton.mode = mode;
 saveButton.bangKey = bangKey;
 saveButton.addEventListener("click", saveCustomBang, false);
+document.body.style.opacity = "1";
 
 // Save with Ctrl+Enter or Cmd+Enter.
 const inputFields = document.getElementsByClassName("input-field");

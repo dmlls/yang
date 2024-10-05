@@ -146,6 +146,7 @@ function undoDeletion(bang) {
         })
         .then(
           function onSet() {
+            document.body.style.opacity = "0";
             window.location.reload();
           },
           function onError() {},
@@ -194,5 +195,6 @@ function undoAction() {
 }
 
 browser.storage.sync.get().then(onGot, onError);
+document.body.style.opacity = "1";
 const addBangButton = document.getElementById("add-bang");
 addBangButton.addEventListener("click", addBang, false);

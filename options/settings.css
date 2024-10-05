@@ -7,6 +7,7 @@
 }
 
 body {
+  opacity: 0; /* Set to 1 when the contents are loaded. */
   font-family: InterVariable, sans-serif;
   font-size: 1rem;
   margin: 0;

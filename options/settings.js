@@ -76,6 +76,7 @@ browser.storage.sync.get(Array.from(storedSettings.keys())).then(
     // TODO: Handle error.
   },
 );
+document.body.style.opacity = "1";
 const saveButton = document.getElementById("save");
 saveButton.addEventListener("click", saveSettings, false);
 
