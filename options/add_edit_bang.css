@@ -7,7 +7,9 @@
 }
 
 body {
+  opacity: 0; /* Set to 1 when the contents are loaded. */
   font-family: InterVariable, sans-serif;
+  font-size: 1rem;
   margin: 0;
   padding: 0;
   background-color: #f5f5f5;
@@ -45,6 +47,12 @@ input {
   border: none;
   border: solid 1.5px #aaa;
   border-radius: 6px;
+  font-size: 0.95rem;
+}
+
+input::placeholder {
+  opacity: 0.7;
+  color: #5c5c5c;
 }
 
 .button-container {
@@ -63,7 +71,7 @@ button {
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  font-size: medium;
+  font-size: 1rem;
   transition:
     border-radius 0.5s ease,
     background 0.3s ease;
@@ -86,6 +94,7 @@ button svg {
 }
 
 .back-container {
+  font-size: 0.9rem;
   text-align: left;
 }
 
@@ -122,11 +131,7 @@ button svg {
   text-align: start;
   width: 100%;
   color: red;
-  font-size: small;
-}
-
-input::placeholder {
-  color: #666;
+  font-size: 0.87rem;
 }
 
 .tooltip-text {

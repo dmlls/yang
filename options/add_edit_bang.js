@@ -18,6 +18,11 @@
 
 import { getBangKey } from "../utils.js";
 
+// Support for Chromium.
+if (typeof browser === "undefined") {
+  globalThis.browser = chrome;
+}
+
 const FormFields = Object.freeze({
   NAME: "name",
   URL: "url",
@@ -155,7 +160,7 @@ function stripExclamation(string) {
 }
 
 function setItem() {
-  window.location.replace("options.html");
+  window.location.href = "options.html";
 }
 
 function onError() {}
@@ -237,6 +242,7 @@ if (mode === "edit") {
 saveButton.mode = mode;
 saveButton.bangKey = bangKey;
 saveButton.addEventListener("click", saveCustomBang, false);
+document.body.style.opacity = "1";
 
 // Save with Ctrl+Enter or Cmd+Enter.
 const inputFields = document.getElementsByClassName("input-field");

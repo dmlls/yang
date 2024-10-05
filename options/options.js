@@ -16,7 +16,12 @@
  * For license information on the libraries used, see LICENSE.
  */
 
-import { PreferencePrefix, getBangKey } from "../utils.js";
+import { PreferencePrefix, fetchSettings, getBangKey } from "../utils.js";
+
+// Support for Chromium.
+if (typeof browser === "undefined") {
+  globalThis.browser = chrome;
+}
 
 function onGot(allBangs) {
   // Get only the bang values, sorted by order.
@@ -66,6 +71,7 @@ function onGot(allBangs) {
     const addBangButton = document.getElementById("add-bang");
     addBangButton.last = last;
   }
+  document.body.style.opacity = "1";
 }
 
 // TODO: Handle errors.
@@ -75,16 +81,14 @@ function onError(error) {
 
 function addBang(e) {
   const last = e.currentTarget.last == null ? -1 : e.currentTarget.last;
-  window.location.replace(`add_edit_bang.html?mode=add&last=${last}`);
+  window.location.href = `add_edit_bang.html?mode=add&last=${last}`;
 }
 
 function editBang(e) {
   const row = e.currentTarget.parentNode.parentNode;
   const bang = row.cells[1].textContent;
   const addBangButton = document.getElementById("add-bang");
-  window.location.replace(
-    `add_edit_bang.html?mode=edit&bang=${bang}&last=${addBangButton.last}`,
-  );
+  window.location.href = `add_edit_bang.html?mode=edit&bang=${bang}&last=${addBangButton.last}`;
 }
 
 function deleteBang(e) {
@@ -97,20 +101,32 @@ function deleteBang(e) {
       browser.storage.sync.remove(bangKey).then(
         function onRemoved() {
           browser.storage.session.remove(bangKey).then(
-            function onRemoved() {
+            async function onRemoved() {
+              const rowIndex = row.rowIndex;
               row.remove();
+              // Remove sets rowIndex to -1 so we restore it.
+              row.index = rowIndex;
               const table = document.getElementById("bangs-table");
               if (table.rows.length === 1) {
                 // Empty table.
-                document.getElementById("no-bangs").style.removeProperty("display");
+                document
+                  .getElementById("no-bangs")
+                  .style.removeProperty("display");
               }
-              displayToast(
-                bangKey,
-                `Bang '${bang.bang}' deleted.`,
-                "Undo",
-                undoDeletion,
-                bang,
+              const toastMessage = document.createElement("div");
+              toastMessage.appendChild(document.createTextNode("Bang\xA0\xA0"));
+              const bangName = document.createElement("code");
+              bangName.classList.add("bang");
+              bangName.textContent = bang.bang;
+              toastMessage.appendChild(bangName);
+              toastMessage.appendChild(
+                document.createTextNode("\xA0\xA0deleted."),
               );
+              displayToast(bangKey, toastMessage, "Undo", undoDeletion, [
+                row,
+                bang,
+              ]);
+              await fetchSettings(true);
             },
             function onError() {
               // TODO: Handle errors.
@@ -128,7 +144,7 @@ function deleteBang(e) {
   );
 }
 
-function undoDeletion(bang) {
+function undoDeletion([row, bang]) {
   browser.storage.sync.set({ [getBangKey(bang.bang)]: bang }).then(
     function onSet() {
       browser.storage.session
@@ -141,7 +157,13 @@ function undoDeletion(bang) {
         })
         .then(
           function onSet() {
-            window.location.reload();
+            const table = document.getElementById("bangs-table");
+            if (table.rows.length === 1) {
+              document.getElementById("no-bangs").style.display = "none";
+            }
+            const tableBody = table.getElementsByTagName("tbody")[0];
+            tableBody.insertBefore(row, tableBody.childNodes[row.index - 1]);
+            hideToast();
           },
           function onError() {},
         );
@@ -152,23 +174,22 @@ function undoDeletion(bang) {
 
 function displayToast(
   toastId,
-  message,
+  messageElement,
   actionText,
   actionCallback,
   argsCallback,
 ) {
-  hideToast(toastId);
+  hideToast();
+  toastId = `toast-${toastId}`;
   const buttonId = `undo-button-${toastId}`;
   const toastContainer = document.createElement("div");
   toastContainer.id = toastId;
   toastContainer.classList.add("toast-container");
-  const toastMessage = document.createElement("div");
-  toastMessage.classList.add("toast-message");
-  toastMessage.textContent = message;
+  messageElement.classList.add("toast-message");
   const actionButton = document.createElement("button");
   actionButton.id = buttonId;
   actionButton.textContent = actionText;
-  toastContainer.appendChild(toastMessage);
+  toastContainer.appendChild(messageElement);
   toastContainer.appendChild(actionButton);
   document.body.appendChild(toastContainer);
   const undoButton = document.getElementById(buttonId);
@@ -178,14 +199,16 @@ function displayToast(
 }
 
 function hideToast(toastId) {
-  const toast = document.getElementById(toastId);
-  if (toast !== null) {
-    toast.remove();
+  // If not toast id is passed, we hide all toasts.
+  const toasts =
+    toastId == null
+      ? document.querySelectorAll('[id^="toast-"]')
+      : [document.getElementById(toastId)];
+  for (const toast of toasts) {
+    if (toast != null) {
+      toast.remove();
+    }
   }
-}
-
-function undoAction() {
-  // Add logic to undo the action here
 }
 
 browser.storage.sync.get().then(onGot, onError);

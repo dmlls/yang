@@ -7,8 +7,9 @@
 }
 
 body {
+  opacity: 0; /* Set to 1 when the contents are loaded. */
   font-family: InterVariable, sans-serif;
-  font-size: 1.1em;
+  font-size: 1.1rem;
   margin: 0;
   padding: 0;
   background-color: #f5f5f5;
@@ -26,7 +27,7 @@ body {
   background-color: #fff;
   box-shadow: 0 0 10px #ebebeb;
   border-radius: 8px;
-  padding: 2em;
+  padding: 2rem;
   overflow-x: hidden;
 }
 
@@ -105,7 +106,7 @@ h1 {
   table-layout: fixed;
   border-collapse: collapse;
   border-radius: 8px 8px 0 0;
-  font-size: 0.9em;
+  font-size: 0.95rem;
   font-family: sans-serif;
   text-align: left;
   box-shadow: 0 0 20px #ebebeb;
@@ -175,17 +176,18 @@ h1 {
 
 .bang {
   font-family: monospace;
+  font-size: 0.75rem;
+  font-weight: bold;
+  color: #7914ad;
   background-color: #f4f4f4;
-  padding: 0.2em;
+  padding: 0.2rem;
   border: 1px solid #ccc;
   border-radius: 4px;
-  color: #7914ad;
-  font-weight: bold;
 }
 
 #no-bangs {
   color: #585858;
-  font-size: 0.9em;
+  font-size: 0.95rem;
   margin: 15px 0;
 }
 
@@ -194,7 +196,7 @@ h1 {
   width: 100%;
   margin-top: 20px;
   justify-content: space-between;
-  font-size: small;
+  font-size: 0.85rem;
 }
 
 .footer a {
@@ -202,7 +204,7 @@ h1 {
 }
 
 #version {
-  font-size: medium;
+  font-size: 0.8rem;
 }
 
 #version a:link,
@@ -230,7 +232,7 @@ h1 {
   color: yellow;
   border: none;
   text-decoration: underline;
-  font-size: 16px;
+  font-size: 1rem;
   cursor: pointer;
 }
 

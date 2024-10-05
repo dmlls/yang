@@ -24,6 +24,11 @@ import {
   importSettings,
 } from "./export_import.js";
 
+// Support for Chromium.
+if (typeof browser === "undefined") {
+  globalThis.browser = chrome;
+}
+
 let storedSettings = new Map();
 storedSettings.set(PreferencePrefix.BANG_SYMBOL, {
   element: document.getElementById("bang-symbol"),
@@ -31,7 +36,7 @@ storedSettings.set(PreferencePrefix.BANG_SYMBOL, {
 });
 
 function success() {
-  window.location.replace("options.html");
+  window.location.href = "options.html";
 }
 
 function saveSettings() {
@@ -71,6 +76,7 @@ browser.storage.sync.get(Array.from(storedSettings.keys())).then(
     // TODO: Handle error.
   },
 );
+document.body.style.opacity = "1";
 const saveButton = document.getElementById("save");
 saveButton.addEventListener("click", saveSettings, false);
 

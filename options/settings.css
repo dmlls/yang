@@ -7,7 +7,9 @@
 }
 
 body {
+  opacity: 0; /* Set to 1 when the contents are loaded. */
   font-family: InterVariable, sans-serif;
+  font-size: 1rem;
   margin: 0;
   padding: 0;
   background-color: #f5f5f5;
@@ -20,7 +22,7 @@ body {
   background-color: #fff;
   box-shadow: 0 0 10px rgba(0 0 0 0.1);
   border-radius: 8px;
-  padding: 2em;
+  padding: 2rem;
   overflow: hidden;
 }
 
@@ -34,6 +36,7 @@ h1 {
 h2 {
   color: #e15e49;
   font-weight: normal;
+  font-size: 1.5rem;
   text-align: start;
 }
 
@@ -41,6 +44,7 @@ label {
   margin-bottom: 5px;
   text-align: start;
   width: 100%;
+  font-size: 1rem;
 }
 
 input {
@@ -73,7 +77,7 @@ button {
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  font-size: medium;
+  font-size: 1rem;
   transition:
     border-radius 0.5s ease,
     background 0.3s ease;
@@ -117,6 +121,7 @@ button svg {
 }
 
 .back-container {
+  font-size: 0.9rem;
   text-align: left;
 }
 
@@ -137,7 +142,7 @@ button svg {
 }
 
 .setting-detail {
-  font-size: small;
+  font-size: 0.82rem;
 }
 
 input::placeholder {

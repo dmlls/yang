@@ -19,6 +19,11 @@
 export { BACKUP_VERSION, BackupFields, exportSettings, importSettings };
 import { PreferencePrefix, fetchSettings, getBangKey } from "../utils.js";
 
+// Support for Chromium.
+if (typeof browser === "undefined") {
+  globalThis.browser = chrome;
+}
+
 const BACKUP_VERSION = "1.1";
 
 const BackupFields = Object.freeze({

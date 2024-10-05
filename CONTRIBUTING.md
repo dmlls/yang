@@ -10,22 +10,22 @@
    being hurt because they felt they "wasted their time" implementing a rejected
    feature.
 3. Once you have implemented your changes:
-   1.  Run the JavaScript linter (Node.js is required):
-       ```console
-       npx jshint *.js options/*.js
-       ```
-   2.  Run the CSS linter:
-       ```console
-       npx stylelint options/*.css
-       ```
+   1. Run the JavaScript linter (Node.js is required):
+      ```console
+      npx jshint *.js options/*.js
+      ```
+   2. Run the CSS linter:
+      ```console
+      npx stylelint options/*.css
+      ```
    3. Lint the extension:
       ```console
       npx web-ext lint
       ```
-   5.  Format the code:
-       ```console
-       npx prettier . --write
-       ```
+   4. Format the code:
+      ```console
+      npx prettier . --write
+      ```
 4. **Test the extension** thoroughly on both desktop and Android.
 5. Finally, open a pull request. Congratulations, you made it! 🥳
 
