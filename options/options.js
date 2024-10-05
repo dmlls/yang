@@ -71,7 +71,6 @@ function onGot(allBangs) {
     const addBangButton = document.getElementById("add-bang");
     addBangButton.last = last;
   }
-  document.body.style.opacity = "1";
 }
 
 // TODO: Handle errors.
@@ -211,6 +210,10 @@ function hideToast(toastId) {
   }
 }
 
-browser.storage.sync.get().then(onGot, onError);
+(async () => {
+  await browser.storage.sync.get().then(onGot, onError);
+  document.body.style.opacity = "1";
+})();
+
 const addBangButton = document.getElementById("add-bang");
 addBangButton.addEventListener("click", addBang, false);
