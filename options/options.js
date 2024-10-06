@@ -143,7 +143,7 @@ function deleteBang(e) {
   );
 }
 
-function undoDeletion([row, bang]) {
+function undoDeletion([row, bang, timeoutId]) {
   browser.storage.sync.set({ [getBangKey(bang.bang)]: bang }).then(
     function onSet() {
       browser.storage.session
@@ -163,6 +163,7 @@ function undoDeletion([row, bang]) {
             const tableBody = table.getElementsByTagName("tbody")[0];
             tableBody.insertBefore(row, tableBody.childNodes[row.index - 1]);
             hideToast();
+            clearTimeout(timeoutId);
           },
           function onError() {},
         );
@@ -192,9 +193,11 @@ function displayToast(
   toastContainer.appendChild(actionButton);
   document.body.appendChild(toastContainer);
   const undoButton = document.getElementById(buttonId);
-  undoButton.addEventListener("click", () => actionCallback(argsCallback));
   // Remove toast after a delay.
-  setTimeout(() => hideToast(toastId), 5000);
+  const timeoutId = setTimeout(() => hideToast(toastId), 5000);
+  undoButton.addEventListener("click", () =>
+    actionCallback([...argsCallback, timeoutId]),
+  );
 }
 
 function hideToast(toastId) {
