@@ -339,7 +339,9 @@
 
     "*://search.seznam.cz/*",
 
-    "*://www.perplexity.ai/*"
+    "*://www.perplexity.ai/*",
+
+    "*://*.karmasearch.org/*"
   ],
 
   "background": {
