@@ -341,7 +341,9 @@
 
     "*://www.perplexity.ai/*",
 
-    "*://*.karmasearch.org/*"
+    "*://*.karmasearch.org/*",
+
+    "*://leta.mullvad.net/*"
   ],
 
   "background": {
