@@ -106,6 +106,8 @@ sites**:
 | Dogpile | https://www.dogpile.com/
 | Ask.com | https://www.ask.com/
 | Seznam.cz | https://search.seznam.cz/
+| Karma Search | https://karmasearch.org/
+| Mullvad Leta | https://leta.mullvad.net/
 
 Is your favorite search engine not on the list? [Open an
 issue](https://github.com/dmlls/yang/issues/new/choose) and we'll add it!

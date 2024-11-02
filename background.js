@@ -50,6 +50,7 @@ browser.webRequest.onBeforeRequest.addListener(
       "/meta", // metaGer
       "/serp", // dogpile
       "/search.seznam.cz",
+      "leta.mullvad.net/",
     ].some((value) => url.href.includes(value));
     if (!include) {
       return null;
