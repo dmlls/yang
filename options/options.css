@@ -121,9 +121,14 @@ h1 {
 #bangs-table th,
 #bangs-table td {
   padding: 12px 15px;
-  white-space: normal;
-  overflow: auto;
-  text-overflow: clip;
+  white-space: nowrap;
+}
+
+#bangs-table th:first-child,
+#bangs-table td:first-child {
+  width: 25vw;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 #bangs-table th:last-child,
@@ -170,6 +175,10 @@ h1 {
 }
 
 .bang {
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 80%;
   font-family: monospace;
   font-size: 0.75rem;
   font-weight: bold;
@@ -267,6 +276,11 @@ h1 {
   .button-container {
     justify-content: space-between;
     margin-bottom: 20px;
+  }
+
+  #bangs-table th:first-child,
+  #bangs-table td:first-child {
+    width: 50vw;
   }
 
   #bangs-table th:nth-child(2),
