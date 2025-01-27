@@ -18,7 +18,7 @@
       ```console
       npx stylelint options/*.css
       ```
-   3. Lint the extension:
+   3. Lint the entire extension:
       ```console
       npx web-ext lint
       ```
