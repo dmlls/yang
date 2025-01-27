@@ -44,6 +44,7 @@ function onGot(allBangs) {
       const bang = document.createElement("code");
       bang.classList.add("bang");
       bang.textContent = allBangs[b].bang;
+      bang.addEventListener("click", () => copyBang(bang));
       bangCell.appendChild(bang);
 
       const editButton = document.createElement("button");
@@ -175,29 +176,31 @@ function undoDeletion([row, bang, timeoutId]) {
 function displayToast(
   toastId,
   messageElement,
-  actionText,
-  actionCallback,
-  argsCallback,
+  actionText = null,
+  actionCallback = null,
+  argsCallback = null,
+  hideAfter = 5000,
 ) {
   hideToast();
   toastId = `toast-${toastId}`;
-  const buttonId = `undo-button-${toastId}`;
   const toastContainer = document.createElement("div");
   toastContainer.id = toastId;
   toastContainer.classList.add("toast-container");
   messageElement.classList.add("toast-message");
-  const actionButton = document.createElement("button");
-  actionButton.id = buttonId;
-  actionButton.textContent = actionText;
   toastContainer.appendChild(messageElement);
-  toastContainer.appendChild(actionButton);
-  document.body.appendChild(toastContainer);
-  const undoButton = document.getElementById(buttonId);
   // Remove toast after a delay.
-  const timeoutId = setTimeout(() => hideToast(toastId), 5000);
-  undoButton.addEventListener("click", () =>
-    actionCallback([...argsCallback, timeoutId]),
-  );
+  const timeoutId = setTimeout(() => hideToast(toastId), hideAfter);
+  if (actionText != null && actionCallback != null && argsCallback != null) {
+    const buttonId = `undo-button-${toastId}`;
+    const undoButton = document.createElement("button");
+    undoButton.id = buttonId;
+    undoButton.textContent = actionText;
+    undoButton.addEventListener("click", () =>
+      actionCallback([...argsCallback, timeoutId]),
+    );
+    toastContainer.appendChild(undoButton);
+  }
+  document.body.appendChild(toastContainer);
 }
 
 function hideToast(toastId) {
@@ -211,6 +214,21 @@ function hideToast(toastId) {
       toast.remove();
     }
   }
+}
+
+function copyBang(element) {
+  const bang = element.innerText;
+  const toastMessage = document.createElement("div");
+  toastMessage.appendChild(
+    document.createTextNode("Bang copied to clipboard."),
+  );
+  // Use the Clipboard API to copy the text.
+  navigator.clipboard
+    .writeText(bang)
+    .then(displayToast(`copy-${bang}`, toastMessage, null, null, null, 2000))
+    .catch(function (err) {
+      console.error("Could not copy text: ", err);
+    });
 }
 
 (async () => {

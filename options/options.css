@@ -175,7 +175,6 @@ h1 {
 }
 
 .bang {
-  display: inline-block;
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 80%;
@@ -187,6 +186,11 @@ h1 {
   padding: 0.2rem;
   border: 1px solid #ccc;
   border-radius: 4px;
+}
+
+#bangs-table td .bang {
+  display: inline-block;
+  cursor: pointer;
 }
 
 #no-bangs {
