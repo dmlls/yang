@@ -121,7 +121,7 @@ function getInputValue(inputId) {
           }
           break;
         case FormFields.BANG:
-          value = validateEmptyOrTooLong(inputElement, 8);
+          value = validateEmptyOrTooLong(inputElement, 25);
           if (value !== null) {
             // Remove leading or trailing "!".
             value = stripExclamation(value).trim().toLowerCase();
