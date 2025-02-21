@@ -67,12 +67,20 @@ async function fetchSettings(update = false) {
     }
   }
   for (const bang of defaultBangs) {
-    settings[getBangKey(bang.t)] = {
+    const bangSettings = {
       url: bang.u,
       urlEncodeQuery: true, // default value
       openBaseUrl: true, // default value
     };
+    
+    if (bang.fmt) {
+      bangSettings.urlEncodeQuery = bang.fmt.includes("url_encode_placeholder");
+      bangSettings.openBaseUrl = bang.fmt.includes("open_base_path");
+    }
+
+    settings[getBangKey(bang.t)] = bangSettings;
   }
+
   // Exceptions (unfortunately, default bangs do not expose this info).
   settings[getBangKey("wayback")].urlEncodeQuery = false;
   settings[getBangKey("waybackmachine")].urlEncodeQuery = false;
