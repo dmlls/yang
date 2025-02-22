@@ -72,7 +72,7 @@ async function fetchSettings(update = false) {
       urlEncodeQuery: true, // default value
       openBaseUrl: true, // default value
     };
-    
+
     if (bang.fmt) {
       bangSettings.urlEncodeQuery = bang.fmt.includes("url_encode_placeholder");
       bangSettings.openBaseUrl = bang.fmt.includes("open_base_path");

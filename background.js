@@ -196,10 +196,10 @@ async function updateStorageSchema() {
           if (bang.url != null && !Array.isArray(bang.url)) {
             bang.targets = [
               {
-                "url": bang.url,
-                "altUrl": bang.openBaseUrl ? new URL(bang.url).origin : bang.url,
-                "urlEncodeQuery": bang.urlEncodeQuery
-              }
+                url: bang.url,
+                altUrl: bang.openBaseUrl ? new URL(bang.url).origin : bang.url,
+                urlEncodeQuery: bang.urlEncodeQuery,
+              },
             ];
             delete bang.url;
             delete bang.openBaseUrl;

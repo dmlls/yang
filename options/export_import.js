@@ -24,7 +24,7 @@ if (typeof browser === "undefined") {
   globalThis.browser = chrome;
 }
 
-const BACKUP_VERSION = "1.1";
+const BACKUP_VERSION = "1.2";
 
 const BackupFields = Object.freeze({
   BACKUP_VERSION: "backupVersion",
@@ -68,15 +68,16 @@ async function importSettings(file) {
   reader.onload = async (event) => {
     const preferences = new Map();
     try {
-      const neededFields = ["name", "url", "bang", "urlEncodeQuery"];
       const readBackup = JSON.parse(event.target.result);
       let readBangs = {};
       const backupKeys = Object.keys(readBackup);
       // Backup version < 1.0.
+      let backupVersion = 1.0;
       if (!backupKeys.includes(BackupFields.BACKUP_VERSION)) {
         readBangs = readBackup;
       } else {
         readBangs = readBackup[BackupFields.BANGS];
+        backupVersion = parseFloat(readBackup[BackupFields.BACKUP_VERSION]);
       }
       // Backup version >= 1.1.
       if (backupKeys.includes(BackupFields.SETTINGS)) {
@@ -84,6 +85,10 @@ async function importSettings(file) {
           readBackup[BackupFields.SETTINGS][BackupFields.BANG_SYMBOL];
       }
       let order = 0;
+      let neededFields =
+        backupVersion >= 1.2
+          ? ["name", "bang", "targets"]
+          : ["name", "url", "bang", "urlEncodeQuery"];
       for (const [bangName, bangInfo] of Object.entries(readBangs)) {
         if (!neededFields.every((key) => Object.keys(bangInfo).includes(key))) {
           throw new SyntaxError("Malformed backup file.");
