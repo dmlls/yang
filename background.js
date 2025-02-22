@@ -125,17 +125,27 @@ browser.webRequest.onBeforeRequest.addListener(
             function onGot(item) {
               // Any matches?
               if (Object.hasOwn(item, bangKey)) {
-                const bangInfo = item[bangKey];
+                const bangTargets = item[bangKey];
                 let targetUrl;
-                if (query.length === 0 && bangInfo.openBaseUrl) {
-                  targetUrl = new URL(bangInfo.url).origin;
-                } else {
-                  if (bangInfo.urlEncodeQuery) {
-                    query = encodeURIComponent(query);
+                bangTargets.forEach((target, index) => {
+                  if (query.length === 0) {
+                    targetUrl = target.altUrl;
+                  } else {
+                    if (target.urlEncodeQuery) {
+                      query = encodeURIComponent(query);
+                    }
+                    targetUrl = new URL(
+                      target.url.replace("{{{s}}}", query),
+                    ).toString();
                   }
-                  targetUrl = new URL(bangInfo.url.replace("{{{s}}}", query));
-                }
-                updateTab(details.tabId, targetUrl.toString());
+                  // Open first target URL in current tab...
+                  if (index === 0) {
+                    updateTab(details.tabId, targetUrl);
+                  } else {
+                    // ...and the rest in new tabs.
+                    browser.tabs.create({ url: targetUrl, active: false });
+                  }
+                });
               }
             },
             function onError(error) {

@@ -67,37 +67,32 @@ async function fetchSettings(update = false) {
     }
   }
   for (const bang of defaultBangs) {
-    const bangSettings = {
-      url: bang.u,
-      urlEncodeQuery: true, // default value
-      openBaseUrl: true, // default value
-    };
-
-    if (bang.fmt) {
-      bangSettings.urlEncodeQuery = bang.fmt.includes("url_encode_placeholder");
-      bangSettings.openBaseUrl = bang.fmt.includes("open_base_path");
-    }
-
-    settings[getBangKey(bang.t)] = bangSettings;
+    const bangTargets = [
+      {
+        url: bang.u,
+        altUrl:
+          Object.hasOwn(bang, "fmt") && bang.fmt.includes("open_base_path")
+            ? new URL(bang.u).origin
+            : bang.u,
+        urlEncodeQuery:
+          Object.hasOwn(bang, "fmt") &&
+          bang.fmt.includes("url_encode_placeholder"),
+      },
+    ];
+    settings[getBangKey(bang.t)] = bangTargets;
   }
 
   // Exceptions (unfortunately, default bangs do not expose this info).
-  settings[getBangKey("wayback")].urlEncodeQuery = false;
-  settings[getBangKey("waybackmachine")].urlEncodeQuery = false;
+  settings[getBangKey("wayback")][0].urlEncodeQuery = false;
+  settings[getBangKey("waybackmachine")][0].urlEncodeQuery = false;
   // Fetch custom bangs.
   await browser.storage.sync.get().then(
     function onGot(storedSettings) {
-      for (let [bangKey, bangInfo] of Object.entries(storedSettings)) {
-        // In the session storage, we don't need all the bang values stored in
-        // the sync storage. Here, we filter them out.
-        if (bangKey.startsWith(PreferencePrefix.BANG)) {
-          bangInfo = {
-            url: bangInfo.url,
-            urlEncodeQuery: bangInfo.urlEncodeQuery,
-            openBaseUrl: bangInfo.openBaseUrl,
-          };
-        }
-        settings[bangKey] = bangInfo;
+      for (let [key, item] of Object.entries(storedSettings)) {
+        // In the session storage, for the bangs we only need the targets.
+        settings[key] = key.startsWith(PreferencePrefix.BANG)
+          ? item.targets
+          : item;
       }
       if (
         !Object.hasOwn(settings, PreferencePrefix.BANG_SYMBOL) ||
