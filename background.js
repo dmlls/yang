@@ -192,6 +192,19 @@ async function updateStorageSchema() {
           ) {
             bang.order = index;
           }
+          // v1.0.0
+          if (bang.url != null && !Array.isArray(bang.url)) {
+            bang.targets = [
+              {
+                "url": bang.url,
+                "altUrl": bang.openBaseUrl ? new URL(bang.url).origin : bang.url,
+                "urlEncodeQuery": bang.urlEncodeQuery
+              }
+            ];
+            delete bang.url;
+            delete bang.openBaseUrl;
+            delete bang.urlEncodeQuery;
+          }
           return [bangKey, bang];
         }),
     );
