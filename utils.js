@@ -16,7 +16,7 @@
  * For license information on the libraries used, see LICENSE.
  */
 
-export { PreferencePrefix, Defaults, fetchSettings, getBangKey };
+export { PreferencePrefix, Defaults, fetchSettings, getBangKey, getBangName };
 
 // Prefixes added to the storage keys to differentiate between different types
 // of settings.
@@ -70,7 +70,7 @@ async function fetchSettings(update = false) {
     const bangTargets = [
       {
         url: bang.u,
-        altUrl:
+        baseUrl:
           Object.hasOwn(bang, "fmt") && bang.fmt.includes("open_base_path")
             ? new URL(bang.u).origin
             : bang.u,
@@ -88,7 +88,7 @@ async function fetchSettings(update = false) {
   // Fetch custom bangs.
   await browser.storage.sync.get().then(
     function onGot(storedSettings) {
-      for (let [key, item] of Object.entries(storedSettings)) {
+      for (const [key, item] of Object.entries(storedSettings)) {
         // In the session storage, for the bangs we only need the targets.
         settings[key] = key.startsWith(PreferencePrefix.BANG)
           ? item.targets
@@ -119,4 +119,11 @@ function getBangKey(bang) {
     return null;
   }
   return `${PreferencePrefix.BANG}${bang.toLowerCase()}`;
+}
+
+function getBangName(bangKey) {
+  if (bangKey == null) {
+    return null;
+  }
+  return bangKey.slice(PreferencePrefix.BANG.length);
 }

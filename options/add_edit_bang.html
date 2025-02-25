@@ -9,113 +9,288 @@
     <link rel="icon" type="image/png" href="../icons/icon-32.png" />
   </head>
   <body>
-    <div class="container">
+    <div id="main-container" class="container">
       <div class="back-container">
         <a href="options.html">&#8592; Cancel and go back</a>
       </div>
       <h1 id="title">Add Custom Bang</h1>
-      <div class="form">
-        <form id="custom-bang-form">
-          <div class="input-container">
-            <label for="name">Name</label>
-            <input
-              type="text"
-              id="name"
-              class="input-field"
-              name="name"
-              placeholder="Wikipedia"
-              required
-            /><br />
-            <span id="error-name" class="error-message">🐥</span>
-          </div>
-
-          <div class="input-container">
-            <div class="url-label">
-              <label for="url">URL</label>
-              <div class="tooltip">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="15"
-                  height="15"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  class="feather feather-info"
-                >
-                  <circle cx="12" cy="12" r="10"></circle>
-                  <line x1="12" y1="16" x2="12" y2="12"></line>
-                  <line x1="12" y1="8" x2="12.01" y2="8"></line>
-                </svg>
+      <form id="custom-bang-form">
+        <div class="input-container">
+          <label for="name">Name</label>
+          <input
+            type="text"
+            class="input-field name"
+            name="name"
+            placeholder="Wikipedia"
+          />
+        </div>
+        <div class="input-container">
+          <label for="bang">Bang</label>
+          <input
+            type="text"
+            class="input-field bang"
+            name="bang"
+            placeholder="wiki"
+          />
+        </div>
+        <div id="urls-container" class="input-container">
+          <div class="label-wrapper">
+            <div class="tooltip-label-wrapper">
+              <div class="tooltip-label">
+                <label for="url">Target URLs</label>
+                <div class="tooltip">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="15"
+                    height="15"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="feather feather-info"
+                  >
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                  </svg>
+                </div>
               </div>
-              <span class="tooltip-text"
-                >The <code>{{{s}}}</code> in the URL will be replaced with your
-                bang.</span
-              >
             </div>
-            <input
-              type="text"
-              id="url"
-              class="input-field"
-              name="url"
-              placeholder="https://en.wikipedia.org/wiki/{{{s}}}"
-              required
-            /><br />
-            <span id="error-url" class="error-message">🐥</span>
+            <span class="tooltip-text"
+              >The <code>{{{s}}}</code> in the URL will be replaced with your
+              bang</span
+            >
           </div>
-
-          <div class="input-container">
-            <label for="bang">Bang</label>
-            <input
-              type="text"
-              id="bang"
-              class="input-field"
-              name="bang"
-              placeholder="wiki"
-              required
-            /><br />
-            <span id="error-bang" class="error-message">🐥</span>
+          <div id="draggable-container">
+            <div class="target-url-container">
+              <div class="target-url-wrapper">
+                <div class="target-url">
+                  <div class="action-container left">
+                    <button
+                      class="move-up-button"
+                      title="Move up"
+                      type="button"
+                    >
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 18 18"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="m 2.3300781,3.9082031 c -0.2627917,0 -0.4863429,0.1011919 -0.6699219,0.2851563 L 0.859375,4.9960937 C 0.67546655,5.179623 0.57421875,5.4032136 0.57421875,5.6660156 c 0,0.2630783 0.10363821,0.4865902 0.28515625,0.6679688 L 8.3300781,13.806641 C 8.5134764,13.990129 8.7368528,14.091797 9,14.091797 c 0.2631452,0 0.4866076,-0.101646 0.6699219,-0.285156 L 17.140625,6.3339844 c 0.181368,-0.1814559 0.285156,-0.404733 0.285156,-0.6679688 0,-0.2633266 -0.102519,-0.4868657 -0.285156,-0.6699219 L 16.339844,4.1933594 C 16.156428,4.0095644 15.932745,3.9082031 15.669922,3.9082031 15.407184,3.9082031 15.183441,4.0095324 15,4.1933594 L 9,10.193359 3,4.1933594 C 2.8164429,4.0095068 2.5928589,3.9082031 2.3300781,3.9082031 Z"
+                        />
+                      </svg>
+                    </button>
+                    <button
+                      class="move-down-button"
+                      title="Move down"
+                      type="button"
+                    >
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 18 18"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="m 2.3300781,3.9082031 c -0.2627917,0 -0.4863429,0.1011919 -0.6699219,0.2851563 L 0.859375,4.9960937 C 0.67546655,5.179623 0.57421875,5.4032136 0.57421875,5.6660156 c 0,0.2630783 0.10363821,0.4865902 0.28515625,0.6679688 L 8.3300781,13.806641 C 8.5134764,13.990129 8.7368528,14.091797 9,14.091797 c 0.2631452,0 0.4866076,-0.101646 0.6699219,-0.285156 L 17.140625,6.3339844 c 0.181368,-0.1814559 0.285156,-0.404733 0.285156,-0.6679688 0,-0.2633266 -0.102519,-0.4868657 -0.285156,-0.6699219 L 16.339844,4.1933594 C 16.156428,4.0095644 15.932745,3.9082031 15.669922,3.9082031 15.407184,3.9082031 15.183441,4.0095324 15,4.1933594 L 9,10.193359 3,4.1933594 C 2.8164429,4.0095068 2.5928589,3.9082031 2.3300781,3.9082031 Z"
+                        />
+                      </svg>
+                    </button>
+                    <button
+                      class="reorder-button"
+                      title="Drag to reorder"
+                      draggable="true"
+                      type="button"
+                      tabindex="-1"
+                    >
+                      <svg
+                        width="18"
+                        height="18"
+                        fill="#000000"
+                        preserveAspectRatio="xMidYMid"
+                        version="1.1"
+                        viewBox="0 0 .81 .81"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="m0.333 0.117a0.072 0.072 0 0 1-0.072 0.072 0.072 0.072 0 0 1-0.072-0.072 0.072 0.072 0 0 1 0.072-0.072 0.072 0.072 0 0 1 0.072 0.072z"
+                          stroke-width=".048"
+                        />
+                        <path
+                          d="m0.333 0.693a0.072 0.072 0 0 1-0.072 0.072 0.072 0.072 0 0 1-0.072-0.072 0.072 0.072 0 0 1 0.072-0.072 0.072 0.072 0 0 1 0.072 0.072z"
+                          stroke-width=".048"
+                        />
+                        <path
+                          d="m0.621 0.117a0.072 0.072 0 0 1-0.072 0.072 0.072 0.072 0 0 1-0.072-0.072 0.072 0.072 0 0 1 0.072-0.072 0.072 0.072 0 0 1 0.072 0.072z"
+                          stroke-width=".048"
+                        />
+                        <path
+                          d="m0.621 0.693a0.072 0.072 0 0 1-0.072 0.072 0.072 0.072 0 0 1-0.072-0.072 0.072 0.072 0 0 1 0.072-0.072 0.072 0.072 0 0 1 0.072 0.072z"
+                          stroke-width=".048"
+                        />
+                        <path
+                          d="m0.621 0.405a0.072 0.072 0 0 1-0.072 0.072 0.072 0.072 0 0 1-0.072-0.072 0.072 0.072 0 0 1 0.072-0.072 0.072 0.072 0 0 1 0.072 0.072z"
+                          stroke-width=".048"
+                        />
+                        <path
+                          d="m0.333 0.405a0.072 0.072 0 0 1-0.072 0.072 0.072 0.072 0 0 1-0.072-0.072 0.072 0.072 0 0 1 0.072-0.072 0.072 0.072 0 0 1 0.072 0.072z"
+                          stroke-width=".048"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                  <input
+                    type="text"
+                    class="input-field url"
+                    name="url"
+                    placeholder="https://en.wikipedia.org/wiki/{{{s}}}"
+                  />
+                  <div class="action-container right">
+                    <button
+                      class="expand-button"
+                      title="See more"
+                      type="button"
+                      tabindex="-1"
+                    >
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 18 18"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="m 2.3300781,3.9082031 c -0.2627917,0 -0.4863429,0.1011919 -0.6699219,0.2851563 L 0.859375,4.9960937 C 0.67546655,5.179623 0.57421875,5.4032136 0.57421875,5.6660156 c 0,0.2630783 0.10363821,0.4865902 0.28515625,0.6679688 L 8.3300781,13.806641 C 8.5134764,13.990129 8.7368528,14.091797 9,14.091797 c 0.2631452,0 0.4866076,-0.101646 0.6699219,-0.285156 L 17.140625,6.3339844 c 0.181368,-0.1814559 0.285156,-0.404733 0.285156,-0.6679688 0,-0.2633266 -0.102519,-0.4868657 -0.285156,-0.6699219 L 16.339844,4.1933594 C 16.156428,4.0095644 15.932745,3.9082031 15.669922,3.9082031 15.407184,3.9082031 15.183441,4.0095324 15,4.1933594 L 9,10.193359 3,4.1933594 C 2.8164429,4.0095068 2.5928589,3.9082031 2.3300781,3.9082031 Z"
+                        />
+                      </svg>
+                    </button>
+                    <button
+                      class="delete-button"
+                      title="Delete"
+                      type="button"
+                      tabindex="-1"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        fill="currentColor"
+                        class="bi bi-trash"
+                        viewBox="0 0 18 18"
+                      >
+                        <path
+                          d="M 8.9960938,0 C 7.3877879,0 6.1550888,1.0820111 5.6152344,2.4824219 H 3.0332031 c -0.038189,-0.00241 -0.082462,-0.00791 -0.1132812,-0.00781 h -0.00781 -0.00586 c -0.022702,4.674e-4 -0.06027,0.00577 -0.089844,0.00781 H 1.4238281 c -1.8977857,-0.025626 -1.89778566,2.7775807 0,2.7519531 H 1.65625 l 1.0234375,10.087891 c 0.1582392,1.564364 1.5314783,2.736328 3.1230469,2.736328 H 12.1875 c 1.591571,0 2.964897,-1.172095 3.123047,-2.736328 L 16.333984,5.234375 h 0.232422 c 1.897786,0.025628 1.897786,-2.7775805 0,-2.7519531 h -1.40039 l 0.115234,0.00977 c -0.145457,-0.022535 -0.293997,-0.022534 -0.439453,0 l 0.115234,-0.00977 H 12.375 C 11.835643,1.0821394 10.6047,-1.0584005e-8 8.9960938,0 Z m -4.515625,5.234375 h 9.0273432 l -0.99414,9.816406 c -0.01237,0.12231 -0.142551,0.25586 -0.326172,0.25586 H 5.8027344 c -0.1815854,0 -0.3139852,-0.135382 -0.3261719,-0.25586 z"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div class="url-options-container">
+                <div class="checkbox-container">
+                  <input
+                    type="checkbox"
+                    class="base-url-checkbox"
+                    name="baseURLCheckbox"
+                  />
+                  <div class="label-wrapper">
+                    <div class="tooltip-label-wrapper">
+                      <div class="tooltip-label">
+                        <label for="url">Base URL</label>
+                        <div class="tooltip">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="15"
+                            height="15"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="feather feather-info"
+                          >
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="16" x2="12" y2="12"></line>
+                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+                    <span class="tooltip-text"
+                      >Open a specific URL when the bang is triggered without
+                      arguments</span
+                    >
+                  </div>
+                </div>
+                <div class="base-url-wrapper">
+                  <input
+                    type="text"
+                    class="input-field base-url"
+                    name="baseUrl"
+                    placeholder="https://en.wikipedia.org/wiki/{{{s}}}"
+                  />
+                </div>
+                <div class="checkbox-container">
+                  <input
+                    type="checkbox"
+                    class="url-encode-query"
+                    name="urlEncodeQuery"
+                  />
+                  <label for="urlEncodeQuery">URL Encode Query</label>
+                </div>
+              </div>
+            </div>
           </div>
-
-          <div class="checkbox-container">
-            <input type="checkbox" id="urlEncodeQuery" name="urlEncodeQuery" />
-            <label for="urlEncodeQuery">URL Encode Query</label>
-          </div>
-
-          <div class="checkbox-container">
-            <input type="checkbox" id="openBaseUrl" name="openBaseUrl" />
-            <label for="openBaseUrl">Open Base URL</label>
-          </div>
-          <div class="button-container">
-            <button type="button" id="save">
-              <svg
-                width="22"
-                height="22"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="feather feather-save"
-                version="1.1"
-                id="svg2"
-                xmlns="http://www.w3.org/2000/svg"
-                xmlns:svg="http://www.w3.org/2000/svg"
-              >
-                <path
-                  id="polyline2"
-                  d="m 7,3 v 5 h 8 m 2,13 V 13 H 7 v 8 m 12,0 H 5 A 2,2 0 0 1 3,19 V 5 A 2,2 0 0 1 5,3 h 11 l 5,5 v 11 a 2,2 0 0 1 -2,2 z"
-                  style="stroke-width: 1.7; stroke-dasharray: none"
-                />
-              </svg>
-              Save
-            </button>
-          </div>
-        </form>
-      </div>
+          <button type="button" id="add-url">
+            <svg
+              class="icon"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              width="24"
+              height="24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Add URL
+          </button>
+        </div>
+        <div class="button-container">
+          <button type="button" id="save">
+            <svg
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="feather feather-save"
+              version="1.1"
+              id="svg2"
+              xmlns="http://www.w3.org/2000/svg"
+              xmlns:svg="http://www.w3.org/2000/svg"
+            >
+              <path
+                id="polyline2"
+                d="m 7,3 v 5 h 8 m 2,13 V 13 H 7 v 8 m 12,0 H 5 A 2,2 0 0 1 3,19 V 5 A 2,2 0 0 1 5,3 h 11 l 5,5 v 11 a 2,2 0 0 1 -2,2 z"
+                style="stroke-width: 1.7; stroke-dasharray: none"
+              />
+            </svg>
+            Save
+          </button>
+        </div>
+      </form>
     </div>
   </body>
 </html>

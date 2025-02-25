@@ -128,8 +128,8 @@ browser.webRequest.onBeforeRequest.addListener(
                 const bangTargets = item[bangKey];
                 let targetUrl;
                 bangTargets.forEach((target, index) => {
-                  if (query.length === 0) {
-                    targetUrl = target.altUrl;
+                  if (query.length === 0 && target.baseUrl != null) {
+                    targetUrl = target.baseUrl;
                   } else {
                     if (target.urlEncodeQuery) {
                       query = encodeURIComponent(query);
@@ -207,7 +207,7 @@ async function updateStorageSchema() {
             bang.targets = [
               {
                 url: bang.url,
-                altUrl: bang.openBaseUrl ? new URL(bang.url).origin : bang.url,
+                baseUrl: bang.openBaseUrl ? new URL(bang.url).origin : null,
                 urlEncodeQuery: bang.urlEncodeQuery,
               },
             ];

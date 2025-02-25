@@ -85,7 +85,7 @@ async function importSettings(file) {
           readBackup[BackupFields.SETTINGS][BackupFields.BANG_SYMBOL];
       }
       let order = 0;
-      let neededFields =
+      const neededFields =
         backupVersion >= 1.2
           ? ["name", "bang", "targets"]
           : ["name", "url", "bang", "urlEncodeQuery"];
@@ -95,8 +95,20 @@ async function importSettings(file) {
         }
         bangInfo.bang = bangInfo.bang.toLowerCase();
         bangInfo.order = order;
-        if (!Object.hasOwn("openBaseUrl")) {
-          bangInfo.openBaseUrl = false;
+        if (backupVersion < 1.2) {
+          bangInfo.targets = [
+            {
+              url: bangInfo.url,
+              baseUrl:
+                Object.hasOwn("openBaseUrl") && bangInfo.openBaseUrl
+                  ? new URL(bangInfo.url).origin
+                  : null,
+              urlEncodeQuery: bangInfo.urlEncodeQuery,
+            },
+          ];
+          delete bangInfo.url;
+          delete bangInfo.openBaseUrl;
+          delete bangInfo.urlEncodeQuery;
         }
         let key;
         // Backup version >= 1.0.
