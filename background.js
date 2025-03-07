@@ -43,6 +43,7 @@ browser.webRequest.onBeforeRequest.addListener(
     const include = [
       "/search",
       "duckduckgo.com/",
+      "/dsearch", // Startpage add-on
       "/web", // swisscows & ask.com
       "qwant.com/",
       "/entry/should-show-feedback", // perplexity
