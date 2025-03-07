@@ -9,7 +9,14 @@
 <h1 align="center">Yang!</h1>
 <p align="center"><b>Yet Another Bangs anywhere extension</b></p>
 <br>
-<p align="center"><a href="https://addons.mozilla.org/addon/yang-addon/"><img width="202" src="https://github.com/user-attachments/assets/d6bf0baa-8e41-4528-8135-4b05518b1fd5" alt="Available on Firefox ADD-ONS"></a></p>
+<p align="center">
+   <a href="https://addons.mozilla.org/addon/yang-addon/">
+      <img width="202" src="img/firefox-banner.svg">
+   </a>
+   <a href="https://chromewebstore.google.com/detail/yang-yet-another-bangs-an/ecboojkidbdghfhifefbpdkdollfhicb">
+      <img width="202" src="https://github.com/user-attachments/assets/6eb89957-a021-43e9-af7a-3bdfe3ce7d84" alt="Available in the Chrome Web Store">
+   </a>
+</p>
 
 <br><br>
 
@@ -60,12 +67,13 @@ Bangs can also be triggered without any query, serving as a bookmark shortcut:
 |✅|**Kagi Bangs**| More than 13,500 default bangs included. |
 |✅|**Custom Bangs**| You can create your own bangs or override defaults. |
 |✅|**Custom Bang Symbol**| Define your own custom symbol(s) to trigger the bangs. |
-|✅|**Mobile Support**| Yang! is also available on [Firefox Android](https://addons.mozilla.org/en-US/android/addon/yang-addon/). |
+|✅|**Multiple Target URLs**| Open multiple websites with a single bang. |
+|✅|**Custom Base URL**| Specify which URL to open when the bang is triggered without arguments. |
 |✅|**Fast Redirections**| Bangs are resolved locally, without Kagi as intermediary<sup>1</sup>. |
 |✅|**Address Bar Trigger**| You can use bangs directly in the URL bar. |
 |✅|**Search Engine Trigger**| Bangs also work from the search bar of your favorite search engine. |
 |✅|**Backup and Restore**| Never lose your bangs. |
-|🔜|**Chromium Support**| However, consider giving Firefox a try ;) |
+|✅|**Mobile Support**| Yang! is also available on [Firefox Android](https://addons.mozilla.org/en-US/android/addon/yang-addon/). |
 |🔜|**Custom Search Engines**| Soon you will be able to add your own custom search engines. |
 
 <sub><sup>1</sup> This greatly reduces the redirection times, as shown by
