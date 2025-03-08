@@ -93,13 +93,12 @@ button svg {
 }
 
 .setting-button {
-  color: #e15e49;
-  margin-left: 15px;
   padding: 5px 10px;
-  background: white;
-  border: solid 2px;
-  border-color: #e15e49;
+  margin-left: 15px;
   font-size: 0.9rem;
+  background: none;
+  border: solid 2px #e15e49;
+  color: #e15e49;
   white-space: nowrap;
 }
 

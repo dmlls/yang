@@ -227,6 +227,7 @@ h1 {
   left: 50%;
   transform: translateX(-50%);
   background-color: #1a1a1a;
+  font-size: 0.95rem;
   color: #fff;
   padding: 15px;
   border-radius: 5px;

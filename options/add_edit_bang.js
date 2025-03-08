@@ -16,52 +16,55 @@
  * For license information on the libraries used, see LICENSE.
  */
 
-import { getBangKey } from "../utils.js";
+import { getBangKey, getBangName } from "../utils.js";
 
 // Support for Chromium.
 if (typeof browser === "undefined") {
   globalThis.browser = chrome;
 }
 
-const FormFields = Object.freeze({
+// Mapping from input to the class name of the input.
+const FORM_FIELDS = Object.freeze({
   NAME: "name",
-  URL: "url",
   BANG: "bang",
-  URL_ENCODE_QUERY: "urlEncodeQuery",
-  OPEN_BASE_URL: "openBaseUrl",
+  URL: "url",
+  BASE_URL: "base-url",
+  URL_ENCODE_QUERY: "url-encode-query",
 });
 
-function showErrorMessage(inputField, message) {
-  const errorMsg = document.getElementById(`error-${inputField.id}`);
-  errorMsg.textContent = message;
-  errorMsg.style.visibility = "visible";
-  inputField.classList.add("error-input-border");
-}
+const LIMITS = Object.freeze({
+  // Maximum length for the name of the bang.
+  MAX_LENGTH_NAME: 100,
+  // Maximum length for the the bang.
+  MAX_LENGTH_BANG: 25,
+  // Maximum length for the the URLs.
+  MAX_LENGTH_URLS: 250,
+  // Maximum number of target URLs users can input.
+  MAX_NUMBER_URLS: 10,
+});
 
-function hideErrorMessage(inputField) {
-  const errorMsg = document.getElementById(`error-${inputField.id}`);
-  inputField.classList.remove("error-input-border");
-  errorMsg.style.visibility = "hidden";
-}
-
-function validateEmptyOrTooLong(inputElement, maxLength) {
+function validateEmptyOrTooLong(inputElement, containerElement, maxLength) {
   const textValue = inputElement.value.trim();
   if (textValue == null || textValue === "") {
-    showErrorMessage(inputElement, "This field cannot be empty.");
+    showErrorMessage(
+      inputElement,
+      containerElement,
+      "This field cannot be empty.",
+    );
     return null;
   } else if (maxLength !== undefined && textValue.length > maxLength) {
     showErrorMessage(
       inputElement,
+      containerElement,
       `The input is too long (max. ${maxLength} characters allowed).`,
     );
     return null;
-  } else {
-    hideErrorMessage(inputElement);
-    return textValue.trim();
   }
+  // Valid.
+  return textValue;
 }
 
-function validateUrl(inputElement) {
+function validateUrl(inputElement, containerElement) {
   let url;
   const urlString = inputElement.value.trim();
   try {
@@ -69,111 +72,126 @@ function validateUrl(inputElement) {
   } catch (_) {
     showErrorMessage(
       inputElement,
+      containerElement,
       "Invalid URL (don't forget to include the scheme, e.g., 'https://').",
     );
     return null;
   }
   // Valid.
-  hideErrorMessage(inputElement);
   return url;
 }
 
 async function validateBangKey(oldBangKey, newBangKey) {
-  const bangElement = document.getElementById(FormFields.BANG);
-  if (newBangKey == null) {
-    return false;
-  } else if (/\s/.test(newBangKey)) {
-    showErrorMessage(bangElement, "The bang cannot contain whitespaces.");
-    return false;
-  } else if (oldBangKey === newBangKey) {
-    return true;
+  if (!newBangKey) {
+    return null;
   }
-  const valid = await browser.storage.sync.get(newBangKey).then(
+  const bangElement = document.querySelector(`.${FORM_FIELDS.BANG}`);
+  if (newBangKey == null && oldBangKey === newBangKey) {
+    return null;
+  } else if (/\s/.test(newBangKey)) {
+    showErrorMessage(
+      bangElement,
+      bangElement.parentNode,
+      "The bang cannot contain whitespaces.",
+    );
+    return null;
+  }
+  const valid_bang = await browser.storage.sync.get(newBangKey).then(
     function onGot(item) {
       if (Object.keys(item).length > 0) {
-        showErrorMessage(bangElement, "This bang already exists.");
-        return false;
+        showErrorMessage(
+          bangElement,
+          bangElement.parentNode,
+          "This bang already exists.",
+        );
+        return null;
       } else {
-        hideErrorMessage(bangElement);
-        return true;
+        // Valid.
+        return getBangName(newBangKey);
       }
     },
     function onError(error) {
-      // TODO: Handle error.
+      return null;
     },
   );
-  return valid;
+  return valid_bang;
 }
 
-function getInputValue(inputId) {
-  let value;
-  const inputElement = document.getElementById(inputId);
-  switch (inputElement.type) {
-    case "text":
-      switch (inputId) {
-        case FormFields.NAME:
-          value = validateEmptyOrTooLong(inputElement, 100);
-          break;
-        case FormFields.URL:
-          value = validateEmptyOrTooLong(inputElement, 250);
-          if (value !== null) {
-            value = validateUrl(inputElement);
-          }
-          break;
-        case FormFields.BANG:
-          value = validateEmptyOrTooLong(inputElement, 25);
-          if (value !== null) {
-            // Remove leading or trailing "!".
-            value = stripExclamation(value).trim().toLowerCase();
-          }
-          break;
-        default:
-          break;
+async function getInputtedBang(last, mode) {
+  hideAllErrorMessages();
+  const newBang = {
+    name: null,
+    bang: null,
+    targets: [],
+  };
+  // Validate name.
+  const nameInput = document.querySelector(`.${FORM_FIELDS.NAME}`);
+  newBang.name = validateEmptyOrTooLong(
+    nameInput,
+    nameInput.parentNode,
+    LIMITS.MAX_LENGTH_NAME,
+  );
+
+  // Validate bang (Still left to check if the bang does not already exist. This
+  // is done later.)
+  const bangInput = document.querySelector(`.${FORM_FIELDS.BANG}`);
+  let bang = validateEmptyOrTooLong(
+    bangInput,
+    bangInput.parentNode,
+    LIMITS.MAX_LENGTH_NAME,
+  )?.toLowerCase();
+  if (mode === "add" || saveButton.bangKey !== getBangKey(bang)) {
+    bang = await validateBangKey(saveButton.bangKey, getBangKey(bang));
+  }
+  newBang.bang = bang;
+
+  // Validate target URLs.
+  let allUrlsValid = true;
+  document.querySelectorAll(".target-url-container").forEach((container) => {
+    const targetUrl = {};
+    const baseUrl = container.querySelector(
+      `.${FORM_FIELDS.BASE_URL}-checkbox`,
+    ).checked;
+    [FORM_FIELDS.URL, FORM_FIELDS.BASE_URL].forEach((className, index) => {
+      const targetField = className === FORM_FIELDS.URL ? "url" : "baseUrl";
+      // Nothing to validate.
+      if (index === 1 && !baseUrl) {
+        targetUrl[targetField] = null;
+      } else {
+        const urlInput = container.querySelector(`.${className}`);
+        const containerElement =
+          index === 0 ? urlInput.parentNode.parentNode : urlInput.parentNode;
+        let url = validateEmptyOrTooLong(
+          urlInput,
+          containerElement,
+          LIMITS.MAX_LENGTH_URLS,
+        );
+        if (url != null) {
+          url = validateUrl(urlInput, containerElement);
+        }
+        if ((className === FORM_FIELDS.URL || baseUrl) && url == null) {
+          allUrlsValid = false;
+        }
+        targetUrl[targetField] = url;
       }
-      break;
-    case "checkbox":
-      value = inputElement.checked;
-      break;
-    default:
-      break;
-  }
-  return value;
-}
-
-function getInputtedBang(last, mode) {
-  const newBang = {};
-  const inputIds = Object.values(FormFields);
-  const inputtedValues = inputIds.map((inputId) => getInputValue(inputId));
-  for (let i = 0; i < inputIds.length; i++) {
-    newBang[inputIds[i]] = inputtedValues[i];
-  }
+    });
+    targetUrl.urlEncodeQuery = container.querySelector(
+      `.${FORM_FIELDS.URL_ENCODE_QUERY}`,
+    ).checked;
+    newBang.targets.push(targetUrl);
+  });
   newBang.order = mode === "add" ? last + 1 : last;
-  return newBang;
+  if (newBang.name != null && newBang.bang != null && allUrlsValid) {
+    return newBang;
+  }
+  return null;
 }
-
-function isInputtedBangValid(bang) {
-  return !Object.values(bang).includes(null);
-}
-
-function stripExclamation(string) {
-  return string.replace(/^!+|!+$/g, "");
-}
-
-function setItem() {
-  window.location.href = "options.html";
-}
-
-function onError() {}
 
 async function saveCustomBang() {
   const saveButton = document.getElementById("save");
-  const inputtedBang = getInputtedBang(saveButton.last, saveButton.mode);
-  const inputtedBangKey = getBangKey(inputtedBang.bang);
-  // Note: The single "&" is deliberate.
-  if (
-    isInputtedBangValid(inputtedBang) &
-    (await validateBangKey(saveButton.bangKey, inputtedBangKey))
-  ) {
+  const inputtedBang = await getInputtedBang(saveButton.last, saveButton.mode);
+  if (inputtedBang != null) {
+    const inputtedBangKey = getBangKey(inputtedBang.bang);
     if (saveButton.mode === "edit") {
       // If the bang has changed and does not already exist ->
       // Delete the previous one first.
@@ -184,13 +202,14 @@ async function saveCustomBang() {
       function onSet() {
         browser.storage.session
           .set({
-            [inputtedBangKey]: {
-              url: inputtedBang.url,
-              urlEncodeQuery: inputtedBang.urlEncodeQuery,
-              openBaseUrl: inputtedBang.openBaseUrl,
-            },
+            [inputtedBangKey]: inputtedBang.targets,
           })
-          .then(setItem, onError);
+          .then(
+            () => {
+              window.location.href = "options.html";
+            },
+            function onError() {},
+          );
       },
       function onError(error) {},
     );
@@ -203,6 +222,261 @@ function saveOnCtrlEnter(e) {
   }
 }
 
+function attachEventListeners() {
+  const urlContainers = document.querySelectorAll(".target-url-container");
+  const urlOptionsContainers = document.querySelectorAll(
+    ".url-options-container",
+  );
+  const expandButtons = document.querySelectorAll(".expand-button");
+  expandButtons.forEach((button, index) => {
+    if (button.getAttribute("listener") !== "true") {
+      button.addEventListener("click", () => {
+        button.classList.toggle("expanded");
+        urlOptionsContainers[index].classList.toggle("expanded");
+      });
+      button.setAttribute("listener", "true");
+    }
+  });
+  const deleteButtons = document.querySelectorAll(".delete-button");
+  deleteButtons.forEach((button, index) => {
+    if (button.getAttribute("listener") !== "true") {
+      button.addEventListener("click", () => {
+        urlContainers[index].remove();
+        // Hide buttons if there is only one target URL.
+        if (urlContainers.length <= LIMITS.MAX_NUMBER_URLS) {
+          addUrlButton.disabled = false;
+          addUrlButton.title = "";
+          addUrlButton.classList.remove("disabled-button");
+        }
+        hideActionButtons(urlContainers);
+      });
+      button.setAttribute("listener", "true");
+    }
+  });
+
+  const urls = document.querySelectorAll(".url");
+  const baseUrls = document.querySelectorAll(".base-url");
+  const baseUrlCheckboxes = document.querySelectorAll(".base-url-checkbox");
+  baseUrlCheckboxes.forEach((checkbox, index) => {
+    if (checkbox.getAttribute("listener") !== "true") {
+      checkbox.addEventListener("change", (event) => {
+        if (event.currentTarget.checked) {
+          baseUrls[index].value =
+            urls[index].value.length > 0
+              ? new URL(urls[index].value).origin
+              : "";
+          baseUrls[index].style.display = "block";
+        } else {
+          baseUrls[index].style.display = "none";
+        }
+      });
+      checkbox.setAttribute("listener", "true");
+    }
+  });
+
+  const container = document.getElementById("draggable-container");
+  const moveUpButtons = document.querySelectorAll(".move-up-button");
+  const moveDownButtons = document.querySelectorAll(".move-down-button");
+  const reorderButtons = document.querySelectorAll(".reorder-button");
+  urlContainers.forEach((urlContainer, index) => {
+    if (moveUpButtons[index].getAttribute("listener") !== "true") {
+      moveUpButtons[index].addEventListener("click", () => {
+        const previousUrl = urlContainer.previousElementSibling;
+        if (previousUrl) {
+          urlContainer.parentNode.insertBefore(urlContainer, previousUrl);
+        }
+      });
+      moveUpButtons[index].setAttribute("listener", "true");
+    }
+    if (moveDownButtons[index].getAttribute("listener") !== "true") {
+      moveDownButtons[index].addEventListener("click", () => {
+        const nextUrl = urlContainer.nextElementSibling;
+        if (nextUrl) {
+          urlContainer.parentNode.insertBefore(nextUrl, urlContainer);
+        }
+      });
+      moveDownButtons[index].setAttribute("listener", "true");
+    }
+    if (reorderButtons[index].getAttribute("dragStartListener") !== "true") {
+      reorderButtons[index].addEventListener("dragstart", (e) => {
+        e.stopPropagation();
+        urlContainer.classList.add("dragging");
+        urlOptionsContainers.forEach((urlContainer) => {
+          urlContainer.classList.remove("expanded");
+        });
+        expandButtons.forEach((expandButton) => {
+          expandButton.classList.remove("expanded");
+        });
+        reorderButtons.forEach((reorderButton) => {
+          reorderButton.style.opacity = 0.000001;
+        });
+      });
+      reorderButtons[index].setAttribute("dragStarListener", "true");
+    }
+    if (reorderButtons[index].getAttribute("dragEndListener") !== "true") {
+      reorderButtons[index].addEventListener("dragend", () => {
+        urlContainer.classList.remove("dragging");
+        reorderButtons.forEach((reorderButton) => {
+          reorderButton.style.opacity = 1;
+        });
+      });
+      reorderButtons[index].setAttribute("dragEndListener", "true");
+    }
+    hideActionButtons(urlContainers);
+  });
+
+  if (container.getAttribute("listener") !== "true") {
+    container.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      const afterElement = getDragAfterElement(container, e.clientY);
+      const dragging = document.querySelector(".dragging");
+      if (afterElement == null) {
+        container.appendChild(dragging);
+      } else {
+        container.insertBefore(dragging, afterElement);
+      }
+    });
+    container.setAttribute("listener", "true");
+  }
+
+  function getDragAfterElement(container, y) {
+    const draggableElements = [
+      ...container.querySelectorAll(".target-url-container:not(.dragging)"),
+    ];
+
+    return draggableElements.reduce(
+      (closest, child) => {
+        const box = child.getBoundingClientRect();
+        const offset = y - box.top - box.height / 2;
+        if (offset < 0 && offset > closest.offset) {
+          return { offset: offset, element: child };
+        } else {
+          return closest;
+        }
+      },
+      { offset: Number.NEGATIVE_INFINITY },
+    ).element;
+  }
+}
+
+function showErrorMessage(inputElement, containerElement, message) {
+  const errorMessage = document.createElement("span");
+
+  errorMessage.className = "error-message";
+  errorMessage.textContent = message;
+
+  inputElement.classList.add("error-input-border");
+  containerElement.appendChild(errorMessage);
+}
+
+function hideAllErrorMessages() {
+  document.querySelectorAll(".error-input-border").forEach((input) => {
+    input.classList.remove("error-input-border");
+  });
+  document.querySelectorAll(".error-message").forEach((errorMessage) => {
+    errorMessage.parentNode.removeChild(errorMessage);
+  });
+}
+
+// Hide buttons if there is only one target URL.
+function hideActionButtons(urlContainers) {
+  urlContainers = document.querySelectorAll(".target-url-container");
+  const deleteButtons = document.querySelectorAll(".delete-button");
+  // Used in desktop.
+  const reorderButtons = document.querySelectorAll(".reorder-button");
+  // Used in mobile.
+  const moveUpButtons = document.querySelectorAll(".move-up-button");
+  const moveDownButtons = document.querySelectorAll(".move-down-button");
+
+  if (urlContainers.length === 1) {
+    moveUpButtons[0].style.display = "none";
+    moveDownButtons[0].style.display = "none";
+    reorderButtons[0].style.display = "none";
+    deleteButtons[0].style.display = "none";
+  } else {
+    urlContainers.forEach((_, index) => {
+      // Mobile?
+      if (window.matchMedia("(hover: none)").matches) {
+        moveUpButtons[index].style.display = "block";
+        moveDownButtons[index].style.display = "block";
+        reorderButtons[index].style.display = "none";
+      } else {
+        moveUpButtons[index].style.display = "none";
+        moveDownButtons[index].style.display = "none";
+        reorderButtons[index].style.display = "block";
+      }
+    });
+    deleteButtons[0].style.display = "block";
+  }
+}
+
+const addUrlButton = document.getElementById("add-url");
+addUrlButton.addEventListener("click", () => {
+  const urlContainers = document.getElementsByClassName("target-url-container");
+  const lastUrlContainer = urlContainers[urlContainers.length - 1];
+  // Clone and empty fields.
+  const newUrlContainer = lastUrlContainer.cloneNode(true);
+  newUrlContainer.querySelector(".url").value = "";
+  newUrlContainer
+    .querySelector(".url-options-container")
+    .classList.remove("expanded");
+  const baseUrlCheckbox = newUrlContainer.querySelector(".base-url-checkbox");
+  baseUrlCheckbox.checked = false;
+  baseUrlCheckbox.removeAttribute("listener");
+  newUrlContainer.querySelector(".base-url").style.display = "none";
+  newUrlContainer.querySelector(".base-url").value = "";
+  newUrlContainer.querySelector(".url-encode-query").checked = false;
+  const reorderButton = newUrlContainer.querySelector(".reorder-button");
+  reorderButton.removeAttribute("dragStarListener");
+  reorderButton.removeAttribute("dragEndListener");
+  reorderButton.style.display = "block";
+  const expandButton = newUrlContainer.querySelector(".expand-button");
+  expandButton.removeAttribute("listener");
+  expandButton.classList.remove("expanded");
+  const deleteButton = newUrlContainer.querySelector(".delete-button");
+  deleteButton.removeAttribute("listener");
+  deleteButton.style.display = "block";
+  const errorMessages = newUrlContainer.querySelectorAll(".error-message");
+  errorMessages.forEach((error) => {
+    error.parentNode.removeChild(error);
+    newUrlContainer
+      .querySelector(".error-input-border")
+      .classList.remove("error-input-border");
+  });
+  lastUrlContainer.after(newUrlContainer);
+  if (urlContainers.length >= LIMITS.MAX_NUMBER_URLS) {
+    addUrlButton.disabled = true;
+    addUrlButton.title = "Maximum number of URLs reached";
+    addUrlButton.classList.add("disabled-button");
+  }
+  attachEventListeners();
+});
+
+window.addEventListener("resize", () => {
+  const urlContainers = document.querySelectorAll(".target-url-container");
+  urlContainers.forEach((_, index) => {
+    hideActionButtons(urlContainers);
+  });
+});
+
+// If on mobile, the tooltips are opened when clicking on them, instead of
+// hovering.
+if (window.matchMedia("(hover: none)").matches) {
+  const tooltips = document.querySelectorAll(".tooltip-text");
+  window.addEventListener("click", (e) => {
+    const tooltip =
+      e.target.closest(".tooltip-label")?.parentNode?.nextElementSibling;
+    tooltips.forEach((t) => {
+      if (t !== tooltip) {
+        t.classList.remove("show");
+      }
+    });
+    if (tooltip != null && tooltip.classList.contains("tooltip-text")) {
+      tooltip.classList.toggle("show");
+    }
+  });
+}
+
 const saveButton = document.getElementById("save");
 const urlParams = new URLSearchParams(window.location.search);
 const mode = urlParams.get("mode");
@@ -212,40 +486,63 @@ if (mode === "edit") {
   const title = document.getElementById("title");
   title.innerHTML = "Edit Custom Bang";
   document.title = "Yang! – Edit Bang";
-  bangKey = getBangKey(stripExclamation(urlParams.get("bang")));
+  bangKey = getBangKey(urlParams.get("bang"));
   browser.storage.sync.get(bangKey).then(
     function onGot(item) {
-      const bang = item[bangKey];
-      for (const field of Object.values(FormFields)) {
-        const inputElement = document.getElementById(field);
-        switch (inputElement.type) {
-          case "text":
-            inputElement.value = bang[field];
-            break;
-          case "checkbox":
-            inputElement.checked = bang[field] ?? false;
-            break;
-          default:
-            break;
-        }
+      const bangInfo = item[bangKey];
+      const name = document.querySelector(`.${FORM_FIELDS.NAME}`);
+      name.value = bangInfo.name;
+      const bang = document.querySelector(`.${FORM_FIELDS.BANG}`);
+      bang.value = bangInfo.bang;
+      const firstTargetUrlContainer = document.getElementsByClassName(
+        "target-url-container",
+      )[0];
+      for (let i = 0; i < bangInfo.targets.length - 1; i++) {
+        // Create as many URL containers as we need.
+        firstTargetUrlContainer.after(firstTargetUrlContainer.cloneNode(true));
       }
-      saveButton.last = bang.order;
+      const targetUrls = document.querySelectorAll(`.${FORM_FIELDS.URL}`);
+      const targetBaseUrlCheckboxes = document.querySelectorAll(
+        `.${FORM_FIELDS.BASE_URL}-checkbox`,
+      );
+      const targetBaseUrls = document.querySelectorAll(
+        `.${FORM_FIELDS.BASE_URL}`,
+      );
+      const urlEncodeQueryCheckboxes = document.querySelectorAll(
+        `.${FORM_FIELDS.URL_ENCODE_QUERY}`,
+      );
+      bangInfo.targets.forEach((target, index) => {
+        targetUrls[index].value = target.url;
+        targetBaseUrlCheckboxes[index].checked = target.baseUrl != null;
+        targetBaseUrls[index].style.display =
+          target.baseUrl != null ? "block" : "none";
+        targetBaseUrls[index].value =
+          target.baseUrl != null ? target.baseUrl : "";
+        urlEncodeQueryCheckboxes[index].checked = target.urlEncodeQuery;
+      });
+      attachEventListeners();
+      saveButton.last = bangInfo.order;
+      // Display page once everything is loaded.
+      document.body.style.opacity = "1";
     },
     function onError(error) {
       // TODO: Handle error.
     },
   );
 } else {
+  attachEventListeners();
   saveButton.last = last;
-  document.getElementById("name").focus(); // focus first field
+  document.querySelector(`.${FORM_FIELDS.NAME}`).focus(); // focus first field;
+  // Display page once everything is loaded.
+  document.body.style.opacity = "1";
 }
-saveButton.mode = mode;
-saveButton.bangKey = bangKey;
-saveButton.addEventListener("click", saveCustomBang, false);
-document.body.style.opacity = "1";
 
 // Save with Ctrl+Enter or Cmd+Enter.
 const inputFields = document.getElementsByClassName("input-field");
 for (const field of inputFields) {
   field.onkeydown = saveOnCtrlEnter;
 }
+
+saveButton.mode = mode;
+saveButton.bangKey = bangKey;
+saveButton.addEventListener("click", saveCustomBang, false);

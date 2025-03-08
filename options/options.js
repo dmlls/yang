@@ -97,46 +97,50 @@ function deleteBang(e) {
   // Retrieve bang to be able to undo deletion.
   browser.storage.sync.get(bangKey).then(
     function onGot(item) {
-      const bang = item[bangKey];
-      browser.storage.sync.remove(bangKey).then(
-        function onRemoved() {
-          browser.storage.session.remove(bangKey).then(
-            async function onRemoved() {
-              const rowIndex = row.rowIndex;
-              row.remove();
-              // Remove sets rowIndex to -1 so we restore it.
-              row.index = rowIndex;
-              const table = document.getElementById("bangs-table");
-              if (table.rows.length === 1) {
-                // Empty table.
-                document
-                  .getElementById("no-bangs")
-                  .style.removeProperty("display");
-              }
-              const toastMessage = document.createElement("div");
-              toastMessage.appendChild(document.createTextNode("Bang\xA0\xA0"));
-              const bangName = document.createElement("code");
-              bangName.classList.add("bang");
-              bangName.textContent = bang.bang;
-              toastMessage.appendChild(bangName);
-              toastMessage.appendChild(
-                document.createTextNode("\xA0\xA0deleted."),
-              );
-              displayToast(bangKey, toastMessage, "Undo", undoDeletion, [
-                row,
-                bang,
-              ]);
-              await fetchSettings(true);
-            },
-            function onError() {
-              // TODO: Handle errors.
-            },
-          );
-        },
-        function onError() {
-          // TODO: Handle errors.
-        },
-      );
+      if (Object.hasOwn(item, bangKey)) {
+        const bang = item[bangKey];
+        browser.storage.sync.remove(bangKey).then(
+          function onRemoved() {
+            browser.storage.session.remove(bangKey).then(
+              async function onRemoved() {
+                const rowIndex = row.rowIndex;
+                row.remove();
+                // Remove sets rowIndex to -1 so we restore it.
+                row.index = rowIndex;
+                const table = document.getElementById("bangs-table");
+                if (table.rows.length === 1) {
+                  // Empty table.
+                  document
+                    .getElementById("no-bangs")
+                    .style.removeProperty("display");
+                }
+                const toastMessage = document.createElement("div");
+                toastMessage.appendChild(
+                  document.createTextNode("Bang\xA0\xA0"),
+                );
+                const bangName = document.createElement("code");
+                bangName.classList.add("bang");
+                bangName.textContent = bang.bang;
+                toastMessage.appendChild(bangName);
+                toastMessage.appendChild(
+                  document.createTextNode("\xA0\xA0deleted."),
+                );
+                displayToast(bangKey, toastMessage, "Undo", undoDeletion, [
+                  row,
+                  bang,
+                ]);
+                await fetchSettings(true);
+              },
+              function onError() {
+                // TODO: Handle errors.
+              },
+            );
+          },
+          function onError() {
+            // TODO: Handle errors.
+          },
+        );
+      }
     },
     function onError(error) {
       // TODO: Handle error.
@@ -145,15 +149,12 @@ function deleteBang(e) {
 }
 
 function undoDeletion([row, bang, timeoutId]) {
-  browser.storage.sync.set({ [getBangKey(bang.bang)]: bang }).then(
+  const bangKey = getBangKey(bang.bang);
+  browser.storage.sync.set({ [bangKey]: bang }).then(
     function onSet() {
       browser.storage.session
         .set({
-          [getBangKey(bang.bang)]: {
-            url: bang.url,
-            urlEncodeQuery: bang.urlEncodeQuery,
-            openBaseUrl: bang.openBaseUrl,
-          },
+          [bangKey]: bang.targets,
         })
         .then(
           function onSet() {
