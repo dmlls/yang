@@ -67,22 +67,25 @@ async function fetchSettings(update = false) {
     }
   }
   for (const bang of defaultBangs) {
+    // Kagi does not specify the origin for its own bangs, so we add it.
+    if (bang.d === "kagi.com" && bang.u.startsWith("/")) {
+      bang.u = `https://kagi.com${bang.u}`;
+    }
     const bangTargets = [
       {
         url: bang.u,
         baseUrl:
-          Object.hasOwn(bang, "fmt") && bang.fmt.includes("open_base_path")
-            ? new URL(bang.u).origin
-            : bang.u,
-        urlEncodeQuery:
-          Object.hasOwn(bang, "fmt") &&
-          bang.fmt.includes("url_encode_placeholder"),
+          Object.hasOwn(bang, "fmt") && !bang.fmt.includes("open_base_path")
+            ? null
+            : new URL(bang.u).origin,
+        urlEncodeQuery: Object.hasOwn(bang, "fmt")
+          ? bang.fmt.includes("url_encode_placeholder")
+          : true,
       },
     ];
     settings[getBangKey(bang.t)] = bangTargets;
   }
-
-  // Exceptions (unfortunately, default bangs do not expose this info).
+  // Exceptions for DDG (unfortunately, default bangs do not expose this info).
   settings[getBangKey("wayback")][0].urlEncodeQuery = false;
   settings[getBangKey("waybackmachine")][0].urlEncodeQuery = false;
   // Fetch custom bangs.
