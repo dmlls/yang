@@ -399,11 +399,6 @@ code {
     padding: 20px;
   }
 
-  .action-container {
-    display: flex;
-    gap: 8px;
-  }
-
   .target-url ~ .error-message {
     margin-left: calc(10vw + 8px);
   }
@@ -421,6 +416,11 @@ code {
 
 /* Touchscreen devices. */
 @media (hover: none) {
+  .action-container {
+    display: flex;
+    gap: 8px;
+  }
+
   .move-up-button,
   .move-down-button {
     display: block;

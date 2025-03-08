@@ -430,6 +430,10 @@ addUrlButton.addEventListener("click", () => {
   reorderButton.removeAttribute("dragStarListener");
   reorderButton.removeAttribute("dragEndListener");
   reorderButton.style.display = "block";
+  const moveUpButton = newUrlContainer.querySelector(".move-up-button");
+  moveUpButton.removeAttribute("listener");
+  const moveDownButton = newUrlContainer.querySelector(".move-down-button");
+  moveDownButton.removeAttribute("listener");
   const expandButton = newUrlContainer.querySelector(".expand-button");
   expandButton.removeAttribute("listener");
   expandButton.classList.remove("expanded");
