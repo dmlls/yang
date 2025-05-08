@@ -224,6 +224,8 @@
 
     "*://duckduckgo.com/bang.js",
     "*://duckduckgo.com/*",
+    "*://lite.duckduckgo.com/lite*",
+    "*://html.duckduckgo.com/html*",
 
     "*://search.brave.com/search*",
 
