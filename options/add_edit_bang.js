@@ -187,6 +187,18 @@ async function getInputtedBang(last, mode) {
   return null;
 }
 
+function displayErrorAlert(error) {
+  const errorMsg = "Error saving bang."
+  console.error(errorMsg, error.message);
+  if (error.message.includes("QuotaExceededError") || error.message.includes("QUOTA_BYTES")) {
+    alert(
+      errorMsg + " The browser's storage limit has been reached."
+    );
+  } else {
+    alert(`${errorMsg} ${error.message}`)
+  }
+}
+
 async function saveCustomBang() {
   const saveButton = document.getElementById("save");
   const inputtedBang = await getInputtedBang(saveButton.last, saveButton.mode);
@@ -208,10 +220,14 @@ async function saveCustomBang() {
             () => {
               window.location.href = "options.html";
             },
-            function onError() {},
+            function onError() {
+              displayErrorAlert(error);
+            },
           );
       },
-      function onError(error) {},
+      function onError(error) {
+        displayErrorAlert(error);
+      },
     );
   }
 }

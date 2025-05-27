@@ -16,7 +16,7 @@
       <h1 id="title">Settings</h1>
       <div class="form">
         <form id="setting-form">
-          <h2 class="setting-group">Bangs</h2>
+          <h2 id="bangs" class="setting-group">Bangs</h2>
           <div class="setting-container">
             <div class="setting-label">
               <label for="bang-symbol">Bang Symbol(s)</label>
@@ -30,7 +30,7 @@
               maxlength="3"
             />
           </div>
-          <h2 class="setting-group">Backups</h2>
+          <h2 id="backups" class="setting-group">Backups</h2>
           <div class="setting-container">
             <div class="setting-label">
               <label for="export-data">Export custom bangs and settings</label>
@@ -58,9 +58,9 @@
           <div class="setting-container">
             <div class="setting-label">
               <label for="import-data">Import bangs and settings</label>
-              <p class="setting-detail">
+              <span class="setting-detail">
                 Existent bangs and settings will be updated
-              </p>
+              </span>
             </div>
             <button type="button" id="import-button" class="setting-button">
               <svg
@@ -87,7 +87,19 @@
             accept=".json"
             style="display: none"
           />
-          <div class="button-container">
+          <h2 id="storage" class="setting-group">Storage</h2>
+          <div class="storage-container">
+            <span id="storage-quota-usage" class="storage-label"></span>
+            <div class="storage-bar">
+              <div id="storage-quota-bar"></div>
+            </div>
+          </div>
+          <div class="storage-container">
+            <span id="storage-item-usage" class="storage-label"></span>
+            <div class="storage-bar">
+              <div id="storage-item-bar"></div>
+            </div>
+          </div>
             <button type="button" id="save">
               <svg
                 width="22"
