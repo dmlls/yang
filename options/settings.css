@@ -23,7 +23,7 @@ body {
   box-shadow: 0 0 10px rgba(0 0 0 0.1);
   border-radius: 8px;
   padding: 2rem;
-  overflow: hidden;
+  overflow: scroll;
 }
 
 h1 {
@@ -92,6 +92,10 @@ button svg {
   margin-right: 8px;
 }
 
+#save {
+  margin: 55px auto 0 auto;
+}
+
 .setting-button {
   padding: 5px 10px;
   margin-left: 15px;
@@ -132,6 +136,8 @@ button svg {
 }
 
 .setting-label {
+  display: flex;
+  flex-direction: column;
   text-align: start;
 }
 
@@ -140,8 +146,35 @@ button svg {
   color: #454545;
 }
 
-.setting-detail {
+.setting-detail,
+.storage-label {
   font-size: 0.82rem;
+}
+
+.storage-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  text-align: end;
+  margin-bottom: 20px;
+}
+
+.storage-label {
+  margin-bottom: 5px;
+}
+
+.storage-bar {
+  width: 100%;
+  height: 0.5rem;
+  border-radius: 5px;
+  background: #e3e3e3;
+}
+
+.storage-bar > div {
+  width: 5%;
+  height: 0.5rem;
+  border-radius: 5px;
+  background: #e15e49;
 }
 
 input::placeholder {

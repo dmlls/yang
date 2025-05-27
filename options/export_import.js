@@ -53,6 +53,7 @@ function exportSettings(settings) {
 }
 
 async function importSettings(file) {
+  const errorMsg = "Error importing settings.";
   // Read existent bang symbol (if any).
   let bangSymbol = await browser.storage.sync
     .get(PreferencePrefix.BANG_SYMBOL)
@@ -127,12 +128,22 @@ async function importSettings(file) {
           alert("Settings imported successfully!");
           window.location.href = "options.html";
         },
-        function onError(error) {},
+        function onError(error) {
+          console.error(errorMsg, error.message);
+          if (error.message.includes("QuotaExceededError") || error.message.includes("QUOTA_BYTES")) {
+            alert(
+              errorMsg + " The backup file is too big and exceeds the browser's " +
+              "storage limits. Please, make it smaller and try again."
+            );
+          } else {
+            alert(`${errorMsg} ${error.message}`)
+          }
+        },
       );
     } catch (error) {
-      console.error("Error importing settings:", error);
+      console.error(errorMsg, error);
       alert(
-        "Error importing settings. Please make sure the file is a valid Yang backup.",
+        errorMsg + " Please, make sure the file is a valid Yang backup.",
       );
     }
   };
