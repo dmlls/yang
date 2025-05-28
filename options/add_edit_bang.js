@@ -326,6 +326,22 @@ function attachEventListeners() {
     }
   });
 
+  // Allow to click on labels to toggle checkmarks.
+  document.querySelectorAll(".bang-option-label").forEach((label) => {
+    if (label.getAttribute("listener") !== "true") {
+      label.addEventListener("click", () => {
+        let parent = label.parentElement;
+        if ([...parent.classList].includes("tooltip-label")) {
+          parent = parent.parentElement.parentElement.parentElement;
+        }
+        const checkmark = parent.children[0];
+        checkmark.checked = !checkmark.checked;
+        checkmark.dispatchEvent(new Event("change"));
+      });
+      label.setAttribute("listener", "true");
+    }
+  });
+
   const container = document.getElementById("draggable-container");
   const moveUpButtons = document.querySelectorAll(".move-up-button");
   const moveDownButtons = document.querySelectorAll(".move-down-button");
@@ -475,6 +491,9 @@ addUrlButton.addEventListener("click", () => {
   const baseUrlCheckbox = newUrlContainer.querySelector(".base-url-checkbox");
   baseUrlCheckbox.checked = false;
   baseUrlCheckbox.removeAttribute("listener");
+  newUrlContainer.querySelectorAll(".bang-option-label").forEach((label) => {
+    label.removeAttribute("listener");
+  });
   newUrlContainer.querySelector(".base-url").style.display = "none";
   newUrlContainer.querySelector(".base-url").value = "";
   newUrlContainer.querySelector(".url-encode-query").checked = false;
