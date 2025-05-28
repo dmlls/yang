@@ -346,7 +346,9 @@
 
     "*://*.karmasearch.org/*",
 
-    "*://leta.mullvad.net/*"
+    "*://leta.mullvad.net/*",
+
+    "*://good-search.org/*"
   ],
 
   "background": {
