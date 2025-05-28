@@ -52,7 +52,7 @@ here to closest restaurant !gm
 
 <br>
 
-Bangs can also be triggered without any query, serving as a bookmark shortcut: 
+Bangs can also be triggered without any query, serving as a bookmark shortcut:
 
 ```console
 !bbc
@@ -116,6 +116,7 @@ sites**:
 | Seznam.cz | https://search.seznam.cz/
 | Karma Search | https://karmasearch.org/
 | Mullvad Leta | https://leta.mullvad.net/
+| Good Search | https://good-search.org/
 
 Is your favorite search engine not on the list? [Open an
 issue](https://github.com/dmlls/yang/issues/new/choose) and we'll add it!

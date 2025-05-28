@@ -117,7 +117,39 @@ async function validateBangKey(oldBangKey, newBangKey) {
   return valid_bang;
 }
 
-async function getInputtedBang(last, mode) {
+function getInputtedBang() {
+  const newBang = {
+    name: null,
+    bang: null,
+    targets: [],
+  };
+  newBang.name = document.querySelector(`.${FORM_FIELDS.NAME}`).value.trim();
+  newBang.bang = document.querySelector(`.${FORM_FIELDS.BANG}`).value.trim();
+  document.querySelectorAll(".target-url-container").forEach((container) => {
+    const targetUrl = {};
+    const baseUrl = container.querySelector(
+      `.${FORM_FIELDS.BASE_URL}-checkbox`,
+    ).checked;
+    [FORM_FIELDS.URL, FORM_FIELDS.BASE_URL].forEach((className, index) => {
+      const targetField = className === FORM_FIELDS.URL ? "url" : "baseUrl";
+      // Nothing to validate.
+      if (index === 1 && !baseUrl) {
+        targetUrl[targetField] = null;
+      } else {
+        targetUrl[targetField] = container
+          .querySelector(`.${className}`)
+          .value.trim();
+      }
+    });
+    targetUrl.urlEncodeQuery = container.querySelector(
+      `.${FORM_FIELDS.URL_ENCODE_QUERY}`,
+    ).checked;
+    newBang.targets.push(targetUrl);
+  });
+  return newBang;
+}
+
+async function getAndValidateInputtedBang(last, mode) {
   hideAllErrorMessages();
   const newBang = {
     name: null,
@@ -188,20 +220,24 @@ async function getInputtedBang(last, mode) {
 }
 
 function displayErrorAlert(error) {
-  const errorMsg = "Error saving bang."
+  const errorMsg = "Error saving bang.";
   console.error(errorMsg, error.message);
-  if (error.message.includes("QuotaExceededError") || error.message.includes("QUOTA_BYTES")) {
-    alert(
-      errorMsg + " The browser's storage limit has been reached."
-    );
+  if (
+    error.message.includes("QuotaExceededError") ||
+    error.message.includes("QUOTA_BYTES")
+  ) {
+    alert(errorMsg + " The browser's storage limit has been reached.");
   } else {
-    alert(`${errorMsg} ${error.message}`)
+    alert(`${errorMsg} ${error.message}`);
   }
 }
 
 async function saveCustomBang() {
   const saveButton = document.getElementById("save");
-  const inputtedBang = await getInputtedBang(saveButton.last, saveButton.mode);
+  const inputtedBang = await getAndValidateInputtedBang(
+    saveButton.last,
+    saveButton.mode,
+  );
   if (inputtedBang != null) {
     const inputtedBangKey = getBangKey(inputtedBang.bang);
     if (saveButton.mode === "edit") {
@@ -544,6 +580,7 @@ if (mode === "edit") {
       saveButton.last = bangInfo.order;
       // Display page once everything is loaded.
       document.body.style.opacity = "1";
+      document.body.dispatchEvent(new Event("pageloaded"));
     },
     function onError(error) {
       // TODO: Handle error.
@@ -555,6 +592,7 @@ if (mode === "edit") {
   document.querySelector(`.${FORM_FIELDS.NAME}`).focus(); // focus first field;
   // Display page once everything is loaded.
   document.body.style.opacity = "1";
+  document.body.dispatchEvent(new Event("pageloaded"));
 }
 
 // Save with Ctrl+Enter or Cmd+Enter.
@@ -566,3 +604,22 @@ for (const field of inputFields) {
 saveButton.mode = mode;
 saveButton.bangKey = bangKey;
 saveButton.addEventListener("click", saveCustomBang, false);
+
+document.body.addEventListener("pageloaded", () => {
+  const initialBang = getInputtedBang();
+  // Ask for confirmation upon unsaved changes.
+  const beforeUnloadHandler = (event) => {
+    if (JSON.stringify(getInputtedBang()) !== JSON.stringify(initialBang)) {
+      event.preventDefault();
+      // Included for legacy support, e.g. Chrome/Edge < 119.
+      event.returnValue = true;
+    }
+  };
+  window.addEventListener("beforeunload", beforeUnloadHandler);
+  saveButton.addEventListener("click", () => {
+    window.removeEventListener("beforeunload", beforeUnloadHandler);
+  });
+  document.getElementById("cancel").addEventListener("click", () => {
+    window.removeEventListener("beforeunload", beforeUnloadHandler);
+  });
+});
