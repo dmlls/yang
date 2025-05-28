@@ -166,6 +166,11 @@ code {
   width: 100%;
 }
 
+.bang-option-label {
+  cursor: pointer;
+  user-select: none;
+}
+
 .checkbox-container input {
   width: auto;
   min-width: auto;
