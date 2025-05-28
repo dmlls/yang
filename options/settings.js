@@ -24,7 +24,6 @@ import {
   importSettings,
 } from "./export_import.js";
 
-
 const LIMITS = Object.freeze({
   // Maximum total amount (in bytes) of data that can be stored in sync storage.
   // Firefox: https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/storage/sync#storage_quotas_for_sync_data
@@ -90,21 +89,31 @@ browser.storage.sync.get(Array.from(storedSettings.keys())).then(
 );
 (async () => {
   const bytesInUse = await browser.storage.sync.getBytesInUse();
-  let storagePercentage = bytesInUse / LIMITS.SYNC_MAX_QUOTA_BYTES * 100;
-  const storagePercentageLabel = storagePercentage > 0 && storagePercentage < 1 ? "< 1" : Math.round(storagePercentage);
-  document.getElementById("storage-quota-usage").textContent = `${(bytesInUse / 1000).toFixed(2)} KB of ${(LIMITS.SYNC_MAX_QUOTA_BYTES / 1000).toFixed(2)} KB used (${storagePercentageLabel}%)`;
-  document.getElementById("storage-quota-bar").style.width = `${storagePercentage}%`;
+  let storagePercentage = (bytesInUse / LIMITS.SYNC_MAX_QUOTA_BYTES) * 100;
+  const storagePercentageLabel =
+    storagePercentage > 0 && storagePercentage < 1
+      ? "< 1"
+      : Math.round(storagePercentage);
+  document.getElementById("storage-quota-usage").textContent =
+    `${(bytesInUse / 1000).toFixed(2)} KB of ${(LIMITS.SYNC_MAX_QUOTA_BYTES / 1000).toFixed(2)} KB used (${storagePercentageLabel}%)`;
+  document.getElementById("storage-quota-bar").style.width =
+    `${storagePercentage}%`;
   browser.storage.sync.get().then(
     function onGot(storedData) {
       const bangCount = Object.keys(storedData).filter((k) => {
-          return k.startsWith(PreferencePrefix.BANG);
-      }).length
+        return k.startsWith(PreferencePrefix.BANG);
+      }).length;
       const otherSettingsCount = Object.keys(storedData).length - bangCount;
       const totalBangsLimit = LIMITS.SYNC_MAX_ITEMS - otherSettingsCount;
-      const bangPercentage = bangCount / totalBangsLimit * 100;
-      const bangPercentageLabel = bangPercentage !== 0 && bangPercentage < 1 ? "< 1" : Math.round(bangPercentage);
-      document.getElementById("storage-item-usage").textContent = `${bangCount} bangs of ${totalBangsLimit} bangs used (${bangPercentageLabel}%)`;
-      document.getElementById("storage-item-bar").style.width = `${bangPercentage}%`;
+      const bangPercentage = (bangCount / totalBangsLimit) * 100;
+      const bangPercentageLabel =
+        bangPercentage !== 0 && bangPercentage < 1
+          ? "< 1"
+          : Math.round(bangPercentage);
+      document.getElementById("storage-item-usage").textContent =
+        `${bangCount} bangs of ${totalBangsLimit} bangs used (${bangPercentageLabel}%)`;
+      document.getElementById("storage-item-bar").style.width =
+        `${bangPercentage}%`;
     },
     function onError(error) {
       // TODO: Handle errors.
