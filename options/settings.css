@@ -206,3 +206,11 @@ input::placeholder {
     width: 1.1rem;
   }
 }
+
+/* No storage quota on mobile. */
+@media (hover: none) {
+  #storage,
+  .storage-container {
+    display: none;
+  }
+}
