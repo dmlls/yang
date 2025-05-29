@@ -226,7 +226,7 @@ function displayErrorAlert(error) {
     error.message.includes("QuotaExceededError") ||
     error.message.includes("QUOTA_BYTES")
   ) {
-    alert(errorMsg + " The browser's storage limit has been reached.");
+    alert(`${errorMsg} The browser's storage limit has been reached.`);
   } else {
     alert(`${errorMsg} ${error.message}`);
   }
@@ -256,7 +256,7 @@ async function saveCustomBang() {
             () => {
               window.location.assign("options.html");
             },
-            function onError() {
+            function onError(error) {
               displayErrorAlert(error);
             },
           );
@@ -587,9 +587,7 @@ document.body.addEventListener("pageloaded", () => {
     }
   };
   document.body.addEventListener("keydown", keyHandler);
-  saveButton.mode = mode;
-  saveButton.bangKey = bangKey;
-  saveButton.addEventListener("click", async (e) => {
+  saveButton.addEventListener("click", async () => {
     const bang = await saveCustomBang();
     if (bang == null) {
       // Add back the listener if the bang is not valid.
@@ -655,3 +653,6 @@ if (mode === "edit") {
   document.body.style.opacity = "1";
   document.body.dispatchEvent(new Event("pageloaded"));
 }
+
+saveButton.mode = mode;
+saveButton.bangKey = bangKey;

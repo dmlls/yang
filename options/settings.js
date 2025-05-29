@@ -83,7 +83,7 @@ browser.storage.sync.get(Array.from(storedSettings.keys())).then(
 if (!window.matchMedia("(hover: none)").matches) {
   (async () => {
     const bytesInUse = await browser.storage.sync.getBytesInUse();
-    let storagePercentage = (bytesInUse / LIMITS.SYNC_MAX_QUOTA_BYTES) * 100;
+    const storagePercentage = (bytesInUse / LIMITS.SYNC_MAX_QUOTA_BYTES) * 100;
     const storagePercentageLabel =
       storagePercentage > 0 && storagePercentage < 1
         ? "< 1"
@@ -112,7 +112,7 @@ if (!window.matchMedia("(hover: none)").matches) {
         document.getElementById("storage-item-bar").style.width =
           `${bangPercentage}%`;
       },
-      function onError(error) {
+      function onError() {
         // TODO: Handle errors.
       },
     );
