@@ -23,7 +23,10 @@ body {
   box-shadow: 0 0 10px rgba(0 0 0 0.1);
   border-radius: 8px;
   padding: 2rem;
-  overflow: scroll;
+}
+
+a {
+  color: #0000ff;
 }
 
 h1 {
@@ -55,6 +58,15 @@ input {
   border: none;
   border: solid 1.5px #aaa;
   border-radius: 6px;
+}
+
+input:focus {
+  outline: 1px solid #0000ff;
+}
+
+input::placeholder {
+  opacity: 0.7;
+  color: #5c5c5c;
 }
 
 .setting-group:nth-child(n + 2) {
@@ -93,7 +105,7 @@ button svg {
 }
 
 #save {
-  margin: 55px auto 0;
+  margin: 55px auto 15px;
 }
 
 .setting-button {
@@ -119,7 +131,6 @@ button svg {
 .form {
   width: 75%;
   margin: 0 auto;
-  margin-bottom: 15px;
   box-sizing: border-box;
 }
 
@@ -177,16 +188,16 @@ button svg {
   background: #e15e49;
 }
 
-input::placeholder {
-  color: #666;
-}
-
 @media screen and (width < 1000px) {
+  html {
+    background-color: white;
+  }
+
   .container {
     max-width: 100%;
-    height: 100vh;
     margin: 0;
-    padding: 0;
+    padding: 0 0 50px;
+    box-shadow: none;
   }
 
   .form {
