@@ -587,6 +587,15 @@ document.body.addEventListener("pageloaded", () => {
     }
   };
   document.body.addEventListener("keydown", keyHandler);
+  saveButton.mode = mode;
+  saveButton.bangKey = bangKey;
+  saveButton.addEventListener("click", async (e) => {
+    const bang = await saveCustomBang();
+    if (bang == null) {
+      // Add back the listener if the bang is not valid.
+      window.addEventListener("beforeunload", beforeUnloadHandler);
+    }
+  });
 });
 
 let bangKey;
@@ -646,7 +655,3 @@ if (mode === "edit") {
   document.body.style.opacity = "1";
   document.body.dispatchEvent(new Event("pageloaded"));
 }
-
-saveButton.mode = mode;
-saveButton.bangKey = bangKey;
-saveButton.addEventListener("click", saveCustomBang, false);
