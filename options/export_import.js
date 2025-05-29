@@ -135,9 +135,8 @@ async function importSettings(file) {
             error.message.includes("QUOTA_BYTES")
           ) {
             alert(
-              errorMsg +
-                " The backup file is too big and exceeds the browser's " +
-                "storage limits. Please, make it smaller and try again.",
+              `${errorMsg} The backup file is too big and exceeds the ` +
+              "browser's storage limits. Please, make it smaller and try again.",
             );
           } else {
             alert(`${errorMsg} ${error.message}`);
@@ -146,7 +145,7 @@ async function importSettings(file) {
       );
     } catch (error) {
       console.error(errorMsg, error);
-      alert(errorMsg + " Please, make sure the file is a valid Yang backup.");
+      alert(`${errorMsg} Please, make sure the file is a valid Yang backup.`);
     }
   };
   reader.readAsText(file);
