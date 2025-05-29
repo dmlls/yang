@@ -254,7 +254,7 @@ async function saveCustomBang() {
           })
           .then(
             () => {
-              window.location.href = "options.html";
+              window.location.assign("options.html");
             },
             function onError() {
               displayErrorAlert(error);
@@ -266,12 +266,7 @@ async function saveCustomBang() {
       },
     );
   }
-}
-
-function saveOnCtrlEnter(e) {
-  if ((e.ctrlKey || e.metaKey) && (e.keyCode === 13 || e.keyCode === 10)) {
-    saveCustomBang();
-  }
+  return inputtedBang;
 }
 
 function attachEventListeners() {
@@ -556,6 +551,44 @@ const saveButton = document.getElementById("save");
 const urlParams = new URLSearchParams(window.location.search);
 const mode = urlParams.get("mode");
 const last = Number(urlParams.get("last"));
+
+document.body.addEventListener("pageloaded", () => {
+  const initialBang = getInputtedBang();
+  // Ask for confirmation upon unsaved changes.
+  const beforeUnloadHandler = (e) => {
+    if (JSON.stringify(getInputtedBang()) !== JSON.stringify(initialBang)) {
+      e.preventDefault();
+      // Included for legacy support, e.g. Chrome/Edge < 119.
+      e.returnValue = true;
+    }
+  };
+  window.addEventListener("beforeunload", beforeUnloadHandler);
+  saveButton.addEventListener("click", () => {
+    window.removeEventListener("beforeunload", beforeUnloadHandler);
+  });
+  document.getElementById("cancel").addEventListener("click", () => {
+    window.removeEventListener("beforeunload", beforeUnloadHandler);
+  });
+  const keyHandler = async (e) => {
+    // Save on Ctrl/Cmd + Enter.
+    if ((e.ctrlKey || e.metaKey) && (e.keyCode === 13 || e.keyCode === 10)) {
+      window.removeEventListener("beforeunload", beforeUnloadHandler);
+      e.preventDefault();
+      const bang = await saveCustomBang();
+      if (bang == null) {
+        // Add back the listener if the bang is not valid.
+        window.addEventListener("beforeunload", beforeUnloadHandler);
+      }
+    }
+    // Exit on Escape.
+    else if (e.key === "Escape") {
+      e.preventDefault();
+      window.location.assign("options.html");
+    }
+  };
+  document.body.addEventListener("keydown", keyHandler);
+});
+
 let bangKey;
 if (mode === "edit") {
   const title = document.getElementById("title");
@@ -614,31 +647,6 @@ if (mode === "edit") {
   document.body.dispatchEvent(new Event("pageloaded"));
 }
 
-// Save with Ctrl+Enter or Cmd+Enter.
-const inputFields = document.getElementsByClassName("input-field");
-for (const field of inputFields) {
-  field.onkeydown = saveOnCtrlEnter;
-}
-
 saveButton.mode = mode;
 saveButton.bangKey = bangKey;
 saveButton.addEventListener("click", saveCustomBang, false);
-
-document.body.addEventListener("pageloaded", () => {
-  const initialBang = getInputtedBang();
-  // Ask for confirmation upon unsaved changes.
-  const beforeUnloadHandler = (event) => {
-    if (JSON.stringify(getInputtedBang()) !== JSON.stringify(initialBang)) {
-      event.preventDefault();
-      // Included for legacy support, e.g. Chrome/Edge < 119.
-      event.returnValue = true;
-    }
-  };
-  window.addEventListener("beforeunload", beforeUnloadHandler);
-  saveButton.addEventListener("click", () => {
-    window.removeEventListener("beforeunload", beforeUnloadHandler);
-  });
-  document.getElementById("cancel").addEventListener("click", () => {
-    window.removeEventListener("beforeunload", beforeUnloadHandler);
-  });
-});

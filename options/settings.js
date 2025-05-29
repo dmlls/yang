@@ -47,7 +47,7 @@ storedSettings.set(PreferencePrefix.BANG_SYMBOL, {
 });
 
 function success() {
-  window.location.href = "options.html";
+  window.location.assign("options.html");
 }
 
 function saveSettings() {
@@ -64,14 +64,6 @@ function saveSettings() {
 }
 
 function onError(error) {}
-
-function saveOnCtrlEnter(e) {
-  if ((e.ctrlKey || e.metaKey) && (e.keyCode === 13 || e.keyCode === 10)) {
-    saveSettings();
-  } else if (e.keyCode === 13 || e.keyCode === 10) {
-    e.preventDefault();
-  }
-}
 
 browser.storage.sync.get(Array.from(storedSettings.keys())).then(
   function onGot(items) {
@@ -124,11 +116,20 @@ document.body.style.opacity = "1";
 const saveButton = document.getElementById("save");
 saveButton.addEventListener("click", saveSettings, false);
 
-// Save with Ctrl+Enter or Cmd+Enter.
-const inputFields = document.getElementsByClassName("input-field");
-for (const field of inputFields) {
-  field.onkeydown = saveOnCtrlEnter;
-}
+const keyHandler = (e) => {
+  // Save on Ctrl/Cmd + Enter.
+  if ((e.ctrlKey || e.metaKey) && (e.keyCode === 13 || e.keyCode === 10)) {
+    saveSettings();
+  } else if (e.keyCode === 13 || e.keyCode === 10) {
+    e.preventDefault();
+  }
+  // Exit on Escape.
+  else if (e.key === "Escape") {
+    e.preventDefault();
+    window.location.assign("options.html");
+  }
+};
+document.body.addEventListener("keydown", keyHandler);
 
 const exportButton = document.getElementById("export-button");
 exportButton.addEventListener("click", async () => {

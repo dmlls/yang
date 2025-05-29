@@ -126,7 +126,7 @@ async function importSettings(file) {
         async function onSet() {
           await fetchSettings(true);
           alert("Settings imported successfully!");
-          window.location.href = "options.html";
+          window.location.assign("options.html");
         },
         function onError(error) {
           console.error(errorMsg, error.message);
