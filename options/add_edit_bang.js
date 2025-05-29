@@ -326,7 +326,7 @@ function attachEventListeners() {
     if (label.getAttribute("listener") !== "true") {
       label.addEventListener("click", () => {
         let parent = label.parentElement;
-        if ([...parent.classList].includes("tooltip-label")) {
+        if (parent.classList.contains("tooltip-label")) {
           parent = parent.parentElement.parentElement.parentElement;
         }
         const checkmark = parent.children[0];
@@ -535,7 +535,7 @@ if (window.matchMedia("(hover: none)").matches) {
   const tooltips = document.querySelectorAll(".tooltip-text");
   window.addEventListener("click", (e) => {
     const tooltip =
-      e.target.closest(".tooltip-label")?.parentNode?.nextElementSibling;
+      e.target.closest(".tooltip")?.parentNode?.parentNode?.nextElementSibling;
     tooltips.forEach((t) => {
       if (t !== tooltip) {
         t.classList.remove("show");
