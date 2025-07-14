@@ -136,7 +136,7 @@ async function importSettings(file) {
           ) {
             alert(
               `${errorMsg} The backup file is too big and exceeds the ` +
-              "browser's storage limits. Please, make it smaller and try again.",
+                "browser's storage limits. Please, make it smaller and try again.",
             );
           } else {
             alert(`${errorMsg} ${error.message}`);
