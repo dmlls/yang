@@ -117,6 +117,7 @@ sites**:
 | Karma Search | https://karmasearch.org/
 | Mullvad Leta | https://leta.mullvad.net/
 | Good Search | https://good-search.org/
+| Marginalia Search | https://marginalia-search.com/
 
 Is your favorite search engine not on the list? [Open an
 issue](https://github.com/dmlls/yang/issues/new/choose) and we'll add it!
