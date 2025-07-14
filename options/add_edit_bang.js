@@ -524,7 +524,7 @@ addUrlButton.addEventListener("click", () => {
 
 window.addEventListener("resize", () => {
   const urlContainers = document.querySelectorAll(".target-url-container");
-  urlContainers.forEach((_, index) => {
+  urlContainers.forEach(() => {
     hideActionButtons(urlContainers);
   });
 });
