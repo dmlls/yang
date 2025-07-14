@@ -348,7 +348,10 @@
 
     "*://leta.mullvad.net/*",
 
-    "*://good-search.org/*"
+    "*://good-search.org/*",
+
+    "*://marginalia-search.com/search*",
+    "*://old-search.marginalia.nu/search*"
   ],
 
   "background": {
