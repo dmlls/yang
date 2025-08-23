@@ -86,8 +86,10 @@ async function fetchSettings(update = false) {
     settings[getBangKey(bang.t)] = bangTargets;
   }
   // Exceptions for DDG (unfortunately, default bangs do not expose this info).
-  settings[getBangKey("wayback")][0].urlEncodeQuery = false;
-  settings[getBangKey("waybackmachine")][0].urlEncodeQuery = false;
+  const wbm = settings[getBangKey("archived")];
+  if (wbm && wbm.length > 0) {
+      wbm[0].urlEncodeQuery = false;
+  }
   // Fetch custom bangs.
   await browser.storage.sync.get().then(
     function onGot(storedSettings) {
