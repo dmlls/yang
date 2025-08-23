@@ -88,7 +88,7 @@ async function fetchSettings(update = false) {
   // Exceptions for DDG (unfortunately, default bangs do not expose this info).
   const wbm = settings[getBangKey("archived")];
   if (wbm && wbm.length > 0) {
-      wbm[0].urlEncodeQuery = false;
+    wbm[0].urlEncodeQuery = false;
   }
   // Fetch custom bangs.
   await browser.storage.sync.get().then(
