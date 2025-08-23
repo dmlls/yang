@@ -175,3 +175,25 @@ fileInput.addEventListener("change", (event) => {
     importSettings(file);
   }
 });
+
+// Resize selects to the selected option.
+function resizeSelect(selectElement) {
+    const selectedOption = selectElement.options[selectElement.selectedIndex];
+    const tmpSpan = document.createElement("span");
+    tmpSpan.style.visibility = "hidden";
+    tmpSpan.style.whiteSpace = "nowrap";
+    tmpSpan.style.font = getComputedStyle(selectElement).font; // Match the font style
+    tmpSpan.textContent = selectedOption.text; // Get the text of the selected option
+    document.body.appendChild(tmpSpan);
+
+    // Set the width of the select to the width of the selected option
+    selectElement.style.width = `${tmpSpan.offsetWidth + 35}px`; // Add some padding
+    document.body.removeChild(tmpSpan);
+}
+
+[...document.getElementsByTagName("select")].forEach(select => {
+  // Initial resize
+  resizeSelect(select);
+  // Resize on change
+  select.addEventListener('change', () => resizeSelect(select));
+});
