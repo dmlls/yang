@@ -52,27 +52,40 @@ async function fetchSettings(update = false) {
     }
   }
   const settings = {};
+  const bangApis = {
+    kagi: [
+      "https://raw.githubusercontent.com/kagisearch/bangs/main/data/bangs.json",
+      "https://raw.githubusercontent.com/kagisearch/bangs/main/data/kagi_bangs.json",
+      "https://raw.githubusercontent.com/kagisearch/bangs/main/data/assistant_bangs.json",
+    ],
+    ddg: ["https://duckduckgo.com/bang.js"],
+  };
   let defaultBangs = [];
-  const bangApis = [
-    "https://raw.githubusercontent.com/kagisearch/bangs/main/data/bangs.json",
-    "https://duckduckgo.com/bang.js",
-  ];
-  let index = -1;
-  for (const api of bangApis) {
-    try {
-      index++;
-      const res = await fetch(new Request(api));
-      defaultBangs = await res.json();
+  let provider = null;
+  for (const [prov, apis] of Object.entries(bangApis)) {
+    let failed = false;
+    provider = prov.toString();
+    for (const api of apis) {
+      try {
+        const res = await fetch(new Request(api));
+        defaultBangs = defaultBangs.concat(await res.json());
+      } catch (error) {
+        failed = true;
+        break;
+      }
+    }
+    if (!failed) {
       break;
-    } catch (error) {
-      // retry
     }
   }
   for (const bang of defaultBangs) {
     // Neither Kagi nor DDG does not specify the origin for its own bangs,
     // so we add it.
     if (bang.u.startsWith("/")) {
-      bang.u = index === 0 ? `https://kagi.com${bang.u}` : `https://duckduckgo.com${bang.u}`;
+      bang.u =
+        provider === "kagi"
+          ? `https://kagi.com${bang.u}`
+          : `https://duckduckgo.com${bang.u}`;
     }
     const bangTargets = [
       {
