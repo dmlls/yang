@@ -57,8 +57,10 @@ async function fetchSettings(update = false) {
     "https://raw.githubusercontent.com/kagisearch/bangs/main/data/bangs.json",
     "https://duckduckgo.com/bang.js",
   ];
+  let index = -1;
   for (const api of bangApis) {
     try {
+      index++;
       const res = await fetch(new Request(api));
       defaultBangs = await res.json();
       break;
@@ -67,9 +69,10 @@ async function fetchSettings(update = false) {
     }
   }
   for (const bang of defaultBangs) {
-    // Kagi does not specify the origin for its own bangs, so we add it.
-    if (bang.d === "kagi.com" && bang.u.startsWith("/")) {
-      bang.u = `https://kagi.com${bang.u}`;
+    // Neither Kagi nor DDG does not specify the origin for its own bangs,
+    // so we add it.
+    if (bang.u.startsWith("/")) {
+      bang.u = index === 0 ? `https://kagi.com${bang.u}` : `https://duckduckgo.com${bang.u}`;
     }
     const bangTargets = [
       {
@@ -91,10 +94,21 @@ async function fetchSettings(update = false) {
       }
     }
   }
-  // Exceptions for DDG (unfortunately, default bangs do not expose this info).
-  const wbm = settings[getBangKey("archived")];
-  if (wbm && wbm.length > 0) {
-    wbm[0].urlEncodeQuery = false;
+  // Exceptions for default bangs (unfortunately, they do not expose this info).
+  const exceptions = [
+    "archived",
+    "archiveweb",
+    "ia",
+    "wayback",
+    "waybackmachine",
+    "wbm",
+    "webarchive",
+  ];
+  for (const exc of exceptions) {
+    const exc_bang = settings[getBangKey(exc)];
+    if (exc_bang && exc_bang.length > 0) {
+      exc_bang[0].urlEncodeQuery = false;
+    }
   }
   // Fetch custom bangs.
   await browser.storage.sync.get().then(
