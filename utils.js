@@ -84,6 +84,12 @@ async function fetchSettings(update = false) {
       },
     ];
     settings[getBangKey(bang.t)] = bangTargets;
+    // Add Kagi aliases.
+    if (bang.ts && bang.ts.length > 0) {
+      for (const alias of bang.ts) {
+        settings[getBangKey(alias)] = bangTargets;
+      }
+    }
   }
   // Exceptions for DDG (unfortunately, default bangs do not expose this info).
   const wbm = settings[getBangKey("archived")];
