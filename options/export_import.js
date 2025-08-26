@@ -17,20 +17,26 @@
  */
 
 export { BACKUP_VERSION, BackupFields, exportSettings, importSettings };
-import { PreferencePrefix, fetchSettings, getBangKey } from "../utils.js";
+import {
+  Defaults,
+  PreferencePrefix,
+  fetchSettings,
+  getBangKey,
+} from "../utils.js";
 
 // Support for Chromium.
 if (typeof browser === "undefined") {
   globalThis.browser = chrome;
 }
 
-const BACKUP_VERSION = "1.2";
+const BACKUP_VERSION = "1.3";
 
 const BackupFields = Object.freeze({
   BACKUP_VERSION: "backupVersion",
   BANGS: "bangs",
   SETTINGS: "settings",
   BANG_SYMBOL: "bangSymbol",
+  BANG_PROVIDER: "bangProvider",
   SEARCH_ENGINES: "searchEngines",
 });
 
@@ -54,17 +60,6 @@ function exportSettings(settings) {
 
 async function importSettings(file) {
   const errorMsg = "Error importing settings.";
-  // Read existent bang symbol (if any).
-  let bangSymbol = await browser.storage.sync
-    .get(PreferencePrefix.BANG_SYMBOL)
-    .then(
-      function onGot(item) {
-        return item[PreferencePrefix.BANG_SYMBOL];
-      },
-      function onError(error) {
-        return "!"; // default
-      },
-    );
   const reader = new FileReader();
   reader.onload = async (event) => {
     const preferences = new Map();
@@ -80,10 +75,15 @@ async function importSettings(file) {
         readBangs = readBackup[BackupFields.BANGS];
         backupVersion = parseFloat(readBackup[BackupFields.BACKUP_VERSION]);
       }
+      let bangSymbol = Defaults.BANG_SYMBOL;
+      let bangProvider = Defaults.BANG_PROVIDER.id;
       // Backup version >= 1.1.
       if (backupKeys.includes(BackupFields.SETTINGS)) {
-        bangSymbol =
-          readBackup[BackupFields.SETTINGS][BackupFields.BANG_SYMBOL];
+        const settings = readBackup[BackupFields.SETTINGS];
+        bangSymbol = settings[BackupFields.BANG_SYMBOL] ?? Defaults.BANG_SYMBOL;
+        // Backup version >= 1.3.
+        bangProvider =
+          settings[BackupFields.BANG_PROVIDER] ?? Defaults.BANG_PROVIDER.id;
       }
       let order = 0;
       const neededFields =
@@ -122,6 +122,7 @@ async function importSettings(file) {
         order++;
       }
       preferences.set(PreferencePrefix.BANG_SYMBOL, bangSymbol);
+      preferences.set(PreferencePrefix.BANG_PROVIDER, bangProvider);
       browser.storage.sync.set(Object.fromEntries(preferences)).then(
         async function onSet() {
           await fetchSettings(true);

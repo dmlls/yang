@@ -181,9 +181,9 @@ exportButton.addEventListener("click", async () => {
       loadedSettings[BackupFields.BACKUP_VERSION] = BACKUP_VERSION;
       loadedSettings[BackupFields.SETTINGS] = {};
       loadedSettings[BackupFields.SETTINGS][BackupFields.BANG_SYMBOL] =
-        storedData[PreferencePrefix.BANG_SYMBOL] || Defaults.BANG_SYMBOL;
-      loadedSettings[BackupFields.SETTINGS][BackupFields.BANG_SYMBOL] =
-        storedData[PreferencePrefix.BANG_PROVIDER] || Defaults.BANG_PROVIDER.id;
+        storedData[PreferencePrefix.BANG_SYMBOL] ?? Defaults.BANG_SYMBOL;
+      loadedSettings[BackupFields.SETTINGS][BackupFields.BANG_PROVIDER] =
+        storedData[PreferencePrefix.BANG_PROVIDER] ?? Defaults.BANG_PROVIDER.id;
       loadedSettings[BackupFields.SETTINGS][BackupFields.SEARCH_ENGINES] = {};
       const sortedBangs = Object.entries(storedData)
         .filter((entry) => entry[0].startsWith(PreferencePrefix.BANG))
