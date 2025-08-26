@@ -16,7 +16,7 @@
  * For license information on the libraries used, see LICENSE.
  */
 
-import { PreferencePrefix } from "../utils.js";
+import { Defaults, fetchSettings, PreferencePrefix } from "../utils.js";
 import {
   BACKUP_VERSION,
   BackupFields,
@@ -43,21 +43,47 @@ if (typeof browser === "undefined") {
 let storedSettings = new Map();
 storedSettings.set(PreferencePrefix.BANG_SYMBOL, {
   element: document.getElementById("bang-symbol"),
-  default: "!",
+  default: Defaults.BANG_SYMBOL,
 });
-
-function success() {
-  window.location.assign("options.html");
-}
+storedSettings.set(PreferencePrefix.BANG_PROVIDER, {
+  element: document.getElementById("bang-provider"),
+  default: Defaults.BANG_PROVIDER.id,
+});
+let initialBangProvider = null;
 
 function saveSettings() {
   const settings = {};
+  let fetchNeeded = false;
   for (const [settingName, settingValue] of storedSettings) {
     settings[settingName] = settingValue.element.value || settingValue.default;
+    if (
+      settingName === PreferencePrefix.BANG_PROVIDER &&
+      initialBangProvider !== settings[settingName]
+    ) {
+      fetchNeeded = true;
+    }
   }
   browser.storage.sync.set(settings).then(
     function onSet() {
-      browser.storage.session.set(settings).then(success, onError);
+      browser.storage.session.set(settings).then(async () => {
+        if (fetchNeeded) {
+          const saveButtonInner = document.querySelector(
+            "#save > .button-inner",
+          );
+          saveButtonInner.style.visibility = "hidden";
+          const saveButtonSpinner = document.querySelector(
+            "#save > .button-spinner",
+          );
+          saveButtonSpinner.style.display = "flex";
+          const result = await fetchSettings(true);
+          if (result != null) {
+            alert(
+              "There was an error fetching the default bangs. Please, check your internet connection and try again.",
+            );
+          }
+        }
+        window.location.assign("options.html");
+      }, onError);
     },
     function onError(error) {},
   );
@@ -69,16 +95,26 @@ browser.storage.sync.get(Array.from(storedSettings.keys())).then(
   function onGot(items) {
     for (const [settingName, settingValue] of storedSettings) {
       if (Object.hasOwn(items, settingName) && items[settingName] != null) {
-        settingValue.element.setAttribute("value", items[settingName]);
+        settingValue.element.value = items[settingName];
       } else {
-        settingValue.element.setAttribute("value", settingValue.default);
+        settingValue.element.value = settingValue.default;
       }
     }
+    // Resize selects.
+    [...document.getElementsByTagName("select")].forEach((select) => {
+      // Initial resize
+      resizeSelect(select);
+      // Resize on change
+      select.addEventListener("change", () => resizeSelect(select));
+    });
+    initialBangProvider = storedSettings.get(PreferencePrefix.BANG_PROVIDER)
+      .element.value;
   },
   function onError(error) {
     // TODO: Handle error.
   },
 );
+
 // Storage quotas only on Desktop, since on Mobile they don't work reliably.
 if (!window.matchMedia("(hover: none)").matches) {
   (async () => {
@@ -145,7 +181,9 @@ exportButton.addEventListener("click", async () => {
       loadedSettings[BackupFields.BACKUP_VERSION] = BACKUP_VERSION;
       loadedSettings[BackupFields.SETTINGS] = {};
       loadedSettings[BackupFields.SETTINGS][BackupFields.BANG_SYMBOL] =
-        storedData[PreferencePrefix.BANG_SYMBOL] || "!";
+        storedData[PreferencePrefix.BANG_SYMBOL] || Defaults.BANG_SYMBOL;
+      loadedSettings[BackupFields.SETTINGS][BackupFields.BANG_SYMBOL] =
+        storedData[PreferencePrefix.BANG_PROVIDER] || Defaults.BANG_PROVIDER.id;
       loadedSettings[BackupFields.SETTINGS][BackupFields.SEARCH_ENGINES] = {};
       const sortedBangs = Object.entries(storedData)
         .filter((entry) => entry[0].startsWith(PreferencePrefix.BANG))
@@ -178,22 +216,15 @@ fileInput.addEventListener("change", (event) => {
 
 // Resize selects to the selected option.
 function resizeSelect(selectElement) {
-    const selectedOption = selectElement.options[selectElement.selectedIndex];
-    const tmpSpan = document.createElement("span");
-    tmpSpan.style.visibility = "hidden";
-    tmpSpan.style.whiteSpace = "nowrap";
-    tmpSpan.style.font = getComputedStyle(selectElement).font; // Match the font style
-    tmpSpan.textContent = selectedOption.text; // Get the text of the selected option
-    document.body.appendChild(tmpSpan);
+  const selectedOption = selectElement.options[selectElement.selectedIndex];
+  const tmpSpan = document.createElement("span");
+  tmpSpan.style.visibility = "hidden";
+  tmpSpan.style.whiteSpace = "nowrap";
+  tmpSpan.style.font = getComputedStyle(selectElement).font; // Match the font style
+  tmpSpan.textContent = selectedOption.text; // Get the text of the selected option
+  document.body.appendChild(tmpSpan);
 
-    // Set the width of the select to the width of the selected option
-    selectElement.style.width = `${tmpSpan.offsetWidth + 35}px`; // Add some padding
-    document.body.removeChild(tmpSpan);
+  // Set the width of the select to the width of the selected option
+  selectElement.style.width = `${tmpSpan.offsetWidth + 35}px`; // Add some padding
+  document.body.removeChild(tmpSpan);
 }
-
-[...document.getElementsByTagName("select")].forEach(select => {
-  // Initial resize
-  resizeSelect(select);
-  // Resize on change
-  select.addEventListener('change', () => resizeSelect(select));
-});
