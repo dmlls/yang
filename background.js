@@ -193,12 +193,14 @@ async function updateStorageSchema() {
           if (
             !bangKey.startsWith(PreferencePrefix.BANG) &&
             !bangKey.startsWith(PreferencePrefix.BANG_SYMBOL) &&
+            !bangKey.startsWith(PreferencePrefix.BANG_PROVIDER) &&
             !bangKey.startsWith(PreferencePrefix.SEARCH_ENGINE)
           ) {
             bangKey = getBangKey(bang.bang);
           }
           if (
             !bangKey.startsWith(PreferencePrefix.BANG_SYMBOL) &&
+            !bangKey.startsWith(PreferencePrefix.BANG_PROVIDER) &&
             !bangKey.startsWith(PreferencePrefix.SEARCH_ENGINE)
           ) {
             bang.order = index;
@@ -220,7 +222,10 @@ async function updateStorageSchema() {
         }),
     );
     if (!Object.hasOwn(customBangs, PreferencePrefix.BANG_SYMBOL)) {
-      customBangs[PreferencePrefix.BANG_SYMBOL] = "!";
+      customBangs[PreferencePrefix.BANG_SYMBOL] = Defaults.BANG_SYMBOL;
+    }
+    if (!Object.hasOwn(customBangs, PreferencePrefix.BANG_PROVIDER)) {
+      customBangs[PreferencePrefix.BANG_PROVIDER] = Defaults.BANG_PROVIDER;
     }
     await browser.storage.sync.clear().then(
       async function onCleared() {
