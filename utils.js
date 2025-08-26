@@ -22,11 +22,35 @@ export { PreferencePrefix, Defaults, fetchSettings, getBangKey, getBangName };
 // of settings.
 const PreferencePrefix = Object.freeze({
   BANG: "#bang#",
+  BANG_PROVIDER: "#provider#",
   BANG_SYMBOL: "#symbol#",
   SEARCH_ENGINE: "#engine#",
 });
 
+const BangProviders = Object.freeze({
+  KAGI: {
+    id: "kagi",
+    url: "https://kagi.com",
+    endpoints: [
+      "https://raw.githubusercontent.com/kagisearch/bangs/main/data/bangs.json",
+      "https://raw.githubusercontent.com/kagisearch/bangs/main/data/kagi_bangs.json",
+      "https://raw.githubusercontent.com/kagisearch/bangs/main/data/assistant_bangs.json",
+    ],
+  },
+  DDG: {
+    id: "ddg",
+    url: "https://duckduckgo.com",
+    endpoints: ["https://duckduckgo.com/bang.js"],
+  },
+  NONE: {
+    id: "none",
+    url: "",
+    endpoints: [],
+  },
+});
+
 const Defaults = Object.freeze({
+  BANG_PROVIDER: BangProviders.KAGI,
   BANG_SYMBOL: "!",
 });
 
@@ -51,91 +75,75 @@ async function fetchSettings(update = false) {
       return null;
     }
   }
-  const settings = {};
-  const bangApis = {
-    kagi: [
-      "https://raw.githubusercontent.com/kagisearch/bangs/main/data/bangs.json",
-      "https://raw.githubusercontent.com/kagisearch/bangs/main/data/kagi_bangs.json",
-      "https://raw.githubusercontent.com/kagisearch/bangs/main/data/assistant_bangs.json",
-    ],
-    ddg: ["https://duckduckgo.com/bang.js"],
-  };
-  let defaultBangs = [];
-  let provider = null;
-  for (const [prov, apis] of Object.entries(bangApis)) {
-    let failed = false;
-    provider = prov.toString();
-    for (const api of apis) {
-      try {
-        const res = await fetch(new Request(api));
-        defaultBangs = defaultBangs.concat(await res.json());
-      } catch (error) {
-        failed = true;
-        break;
+  // Fetch settings and store them in the session storage.
+  const result = await browser.storage.sync.get().then(
+    async function onGot(storedSettings) {
+      const settings = {};
+      // Fetch default bangs.
+      let defaultBangs = [];
+      const provider =
+        BangProviders[settings[PreferencePrefix.BANG_PROVIDER].toUpperCase()];
+      for (const api of provider.endpoints) {
+        try {
+          const res = await fetch(new Request(api));
+          defaultBangs = defaultBangs.concat(await res.json());
+        } catch (error) {
+          return error;
+        }
       }
-    }
-    if (!failed) {
-      break;
-    }
-  }
-  for (const bang of defaultBangs) {
-    // Neither Kagi nor DDG does not specify the origin for its own bangs,
-    // so we add it.
-    if (bang.u.startsWith("/")) {
-      bang.u =
-        provider === "kagi"
-          ? `https://kagi.com${bang.u}`
-          : `https://duckduckgo.com${bang.u}`;
-    }
-    const bangTargets = [
-      {
-        url: bang.u,
-        baseUrl:
-          Object.hasOwn(bang, "fmt") && !bang.fmt.includes("open_base_path")
-            ? null
-            : new URL(bang.u).origin,
-        urlEncodeQuery: Object.hasOwn(bang, "fmt")
-          ? bang.fmt.includes("url_encode_placeholder")
-          : true,
-      },
-    ];
-    settings[getBangKey(bang.t)] = bangTargets;
-    // Add Kagi aliases.
-    if (bang.ts && bang.ts.length > 0) {
-      for (const alias of bang.ts) {
-        settings[getBangKey(alias)] = bangTargets;
+      for (const bang of defaultBangs) {
+        // Bang providers do not specify the origin for bangs targeting their own
+        // site, so we add it.
+        if (bang.u.startsWith("/")) {
+          bang.u = `${provider.url}${bang.u}`;
+        }
+        const bangTargets = [
+          {
+            url: bang.u,
+            baseUrl:
+              Object.hasOwn(bang, "fmt") && !bang.fmt.includes("open_base_path")
+                ? null
+                : new URL(bang.u).origin,
+            urlEncodeQuery: Object.hasOwn(bang, "fmt")
+              ? bang.fmt.includes("url_encode_placeholder")
+              : true,
+          },
+        ];
+        settings[getBangKey(bang.t)] = bangTargets;
+        // Add Kagi aliases.
+        if (bang.ts && bang.ts.length > 0) {
+          for (const alias of bang.ts) {
+            settings[getBangKey(alias)] = bangTargets;
+          }
+        }
       }
-    }
-  }
-  // Exceptions for URL encoding of default bangs (unfortunately, they do
-  // not expose this info).
-  const urlEncodingExceptions = [
-    "archived",
-    "archiveweb",
-    "ia",
-    "wayback",
-    "waybackmachine",
-    "wbm",
-    "webarchive",
-  ];
-  for (const exc of urlEncodingExceptions) {
-    const exc_bang = settings[getBangKey(exc)];
-    if (exc_bang && exc_bang.length > 0) {
-      exc_bang[0].urlEncodeQuery = false;
-    }
-  }
-  // Exceptions to point default bangs to different targets.
-  const targetExceptions = {
-    "m": settings[getBangKey("gm")],
-    "map": settings[getBangKey("gm")],
-    "maps": settings[getBangKey("gm")],
-  }
-  for (const [bang, target] of Object.entries(targetExceptions)) {
-    settings[getBangKey(bang)] = target;
-  }
-  // Fetch custom bangs.
-  await browser.storage.sync.get().then(
-    function onGot(storedSettings) {
+      // Exceptions for URL encoding of default bangs (unfortunately, they do
+      // not expose this info).
+      const urlEncodingExceptions = [
+        "archived",
+        "archiveweb",
+        "ia",
+        "wayback",
+        "waybackmachine",
+        "wbm",
+        "webarchive",
+      ];
+      for (const exc of urlEncodingExceptions) {
+        const exc_bang = settings[getBangKey(exc)];
+        if (exc_bang && exc_bang.length > 0) {
+          exc_bang[0].urlEncodeQuery = false;
+        }
+      }
+      // Exceptions to point default bangs to different targets.
+      const targetExceptions = {
+        "m": settings[getBangKey("gm")],
+        "map": settings[getBangKey("gm")],
+        "maps": settings[getBangKey("gm")],
+      }
+      for (const [bang, target] of Object.entries(targetExceptions)) {
+        settings[getBangKey(bang)] = target;
+      }
+      // Retrieve custom settings.
       for (const [key, item] of Object.entries(storedSettings)) {
         // In the session storage, for the bangs we only need the targets.
         settings[key] = key.startsWith(PreferencePrefix.BANG)
@@ -148,6 +156,12 @@ async function fetchSettings(update = false) {
       ) {
         settings[PreferencePrefix.BANG_SYMBOL] = Defaults.BANG_SYMBOL;
       }
+      if (
+        !Object.hasOwn(settings, PreferencePrefix.BANG_PROVIDER) ||
+        !settings[PreferencePrefix.BANG_PROVIDER]
+      ) {
+        settings[PreferencePrefix.BANG_PROVIDER] = Defaults.BANG_PROVIDER.id;
+      }
       browser.storage.session.clear().then(
         function onCleared() {
           browser.storage.session.set(settings);
@@ -159,7 +173,7 @@ async function fetchSettings(update = false) {
       // TODO: Handle error.
     },
   );
-  return null;
+  return result;
 }
 
 function getBangKey(bang) {

@@ -89,6 +89,11 @@ select {
   margin-top: 55px;
 }
 
+.button-inner {
+  display: flex;
+  justify-content: center;
+}
+
 button {
   display: flex;
   align-items: center;
@@ -112,6 +117,17 @@ button:hover {
 
 button svg {
   margin-right: 8px;
+}
+
+.button-spinner {
+  display: none;
+  position: absolute;
+  justify-content: center;
+}
+
+.button-spinner > svg {
+  margin: 0;
+  height: 1.7rem;
 }
 
 #save {
