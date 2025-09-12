@@ -107,8 +107,9 @@ async function fetchSettings(update = false) {
       }
     }
   }
-  // Exceptions for default bangs (unfortunately, they do not expose this info).
-  const exceptions = [
+  // Exceptions for URL encoding of default bangs (unfortunately, they do
+  // not expose this info).
+  const urlEncodingExceptions = [
     "archived",
     "archiveweb",
     "ia",
@@ -117,11 +118,20 @@ async function fetchSettings(update = false) {
     "wbm",
     "webarchive",
   ];
-  for (const exc of exceptions) {
+  for (const exc of urlEncodingExceptions) {
     const exc_bang = settings[getBangKey(exc)];
     if (exc_bang && exc_bang.length > 0) {
       exc_bang[0].urlEncodeQuery = false;
     }
+  }
+  // Exceptions to point default bangs to different targets.
+  const targetExceptions = {
+    "m": settings[getBangKey("gm")],
+    "map": settings[getBangKey("gm")],
+    "maps": settings[getBangKey("gm")],
+  }
+  for (const [bang, target] of Object.entries(targetExceptions)) {
+    settings[getBangKey(bang)] = target;
   }
   // Fetch custom bangs.
   await browser.storage.sync.get().then(
