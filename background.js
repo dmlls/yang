@@ -186,55 +186,46 @@ browser.action.onClicked.addListener(() => {
 async function updateStorageSchema() {
   const customBangs = await browser.storage.sync.get();
   if (Object.keys(customBangs).length > 0) {
-    const sortedBangs = Object.fromEntries(
-      Object.entries(customBangs)
-        .sort(([, a], [, b]) => a.order - b.order)
-        .map(([bangKey, bang], index) => {
-          if (
-            !bangKey.startsWith(PreferencePrefix.BANG) &&
-            !bangKey.startsWith(PreferencePrefix.BANG_SYMBOL) &&
-            !bangKey.startsWith(PreferencePrefix.BANG_PROVIDER) &&
-            !bangKey.startsWith(PreferencePrefix.SEARCH_ENGINE)
-          ) {
-            bangKey = getBangKey(bang.bang);
-          }
-          if (
-            !bangKey.startsWith(PreferencePrefix.BANG_SYMBOL) &&
-            !bangKey.startsWith(PreferencePrefix.BANG_PROVIDER) &&
-            !bangKey.startsWith(PreferencePrefix.SEARCH_ENGINE)
-          ) {
-            bang.order = index;
-          }
-          // v1.0.0
-          if (bang.url != null && !Array.isArray(bang.url)) {
-            bang.targets = [
-              {
-                url: bang.url,
-                baseUrl: bang.openBaseUrl ? new URL(bang.url).origin : null,
-                urlEncodeQuery: bang.urlEncodeQuery,
-              },
-            ];
-            delete bang.url;
-            delete bang.openBaseUrl;
-            delete bang.urlEncodeQuery;
-          }
-          return [bangKey, bang];
-        }),
+    const processedBangs = Object.fromEntries(
+      Object.entries(customBangs).map(([bangKey, bang]) => {
+        if (
+          !bangKey.startsWith(PreferencePrefix.BANG) &&
+          !bangKey.startsWith(PreferencePrefix.BANG_SYMBOL) &&
+          !bangKey.startsWith(PreferencePrefix.BANG_PROVIDER) &&
+          !bangKey.startsWith(PreferencePrefix.SEARCH_ENGINE)
+        ) {
+          bangKey = getBangKey(bang.bang);
+        }
+        // v1.0.0
+        if (bang.url != null && !Array.isArray(bang.url)) {
+          bang.targets = [
+            {
+              url: bang.url,
+              baseUrl: bang.openBaseUrl ? new URL(bang.url).origin : null,
+              urlEncodeQuery: bang.urlEncodeQuery,
+            },
+          ];
+          delete bang.url;
+          delete bang.openBaseUrl;
+          delete bang.urlEncodeQuery;
+        }
+        return [bangKey, bang];
+      }),
     );
-    if (!Object.hasOwn(sortedBangs, PreferencePrefix.BANG_SYMBOL)) {
-      sortedBangs[PreferencePrefix.BANG_SYMBOL] = Defaults.BANG_SYMBOL;
+    if (!Object.hasOwn(processedBangs, PreferencePrefix.BANG_SYMBOL)) {
+      processedBangs[PreferencePrefix.BANG_SYMBOL] = Defaults.BANG_SYMBOL;
     }
-    if (!Object.hasOwn(sortedBangs, PreferencePrefix.BANG_PROVIDER)) {
-      sortedBangs[PreferencePrefix.BANG_PROVIDER] = Defaults.BANG_PROVIDER;
+    if (!Object.hasOwn(processedBangs, PreferencePrefix.BANG_PROVIDER)) {
+      processedBangs[PreferencePrefix.BANG_PROVIDER] = Defaults.BANG_PROVIDER;
     }
     await browser.storage.sync.clear().then(
       async function onCleared() {
-        await browser.storage.sync.set(sortedBangs).then(
+        await browser.storage.sync.set(processedBangs).then(
           async function onSet() {
             await fetchSettings(true);
           },
           async function onError(error) {
-            await browser.storage.sync.set(sortedBangs); // Retry
+            await browser.storage.sync.set(processedBangs); // Retry
             await fetchSettings(true);
           },
         );

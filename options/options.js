@@ -68,9 +68,7 @@ function onGot(allBangs) {
       actionsCell.appendChild(editButton);
       actionsCell.appendChild(deleteButton);
     }
-    const last = allBangs[sortedBangs.at(-1)].order; // order of the most recent bang
     const addBangButton = document.getElementById("add-bang");
-    addBangButton.last = last;
   }
 }
 
@@ -79,18 +77,14 @@ function onError(error) {
   console.error(`Error: ${error}`);
 }
 
-function addBang(e) {
-  const last = e.currentTarget.last == null ? -1 : e.currentTarget.last;
-  window.location.assign(`add_edit_bang.html?mode=add&last=${last}`);
+function addBang() {
+  window.location.assign(`add_edit_bang.html?mode=add`);
 }
 
 function editBang(e) {
   const row = e.currentTarget.parentNode.parentNode;
   const bang = row.cells[1].textContent;
-  const addBangButton = document.getElementById("add-bang");
-  window.location.assign(
-    `add_edit_bang.html?mode=edit&bang=${bang}&last=${addBangButton.last}`,
-  );
+  window.location.assign(`add_edit_bang.html?mode=edit&bang=${bang}`);
 }
 
 function deleteBang(e) {
