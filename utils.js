@@ -81,6 +81,9 @@ async function fetchSettings(update = false) {
       const settings = {};
       // Fetch default bangs.
       let defaultBangs = [];
+      settings[PreferencePrefix.BANG_PROVIDER] =
+        storedSettings[PreferencePrefix.BANG_PROVIDER]?.id ??
+        Defaults.BANG_PROVIDER.id;
       const provider =
         BangProviders[settings[PreferencePrefix.BANG_PROVIDER].toUpperCase()];
       for (const api of provider.endpoints) {
@@ -136,14 +139,16 @@ async function fetchSettings(update = false) {
       }
       // Exceptions to point default bangs to different targets.
       const targetExceptions = {
-        "m": settings[getBangKey("gm")],
-        "map": settings[getBangKey("gm")],
-        "maps": settings[getBangKey("gm")],
-      }
+        m: settings[getBangKey("gm")],
+        map: settings[getBangKey("gm")],
+        maps: settings[getBangKey("gm")],
+      };
       for (const [bang, target] of Object.entries(targetExceptions)) {
         settings[getBangKey(bang)] = target;
       }
-      // Retrieve custom settings.
+      // Retrieve custom settings (IMPORTANT: This must be done after loading
+      // the default bangs, otherwise those would override the custom bangs and
+      // not vice versa).
       for (const [key, item] of Object.entries(storedSettings)) {
         // In the session storage, for the bangs we only need the targets.
         settings[key] = key.startsWith(PreferencePrefix.BANG)
