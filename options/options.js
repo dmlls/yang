@@ -68,7 +68,6 @@ function onGot(allBangs) {
       actionsCell.appendChild(editButton);
       actionsCell.appendChild(deleteButton);
     }
-    const addBangButton = document.getElementById("add-bang");
   }
 }
 

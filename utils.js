@@ -50,7 +50,7 @@ const BangProviders = Object.freeze({
 });
 
 const Defaults = Object.freeze({
-  BANG_PROVIDER: BangProviders.KAGI,
+  BANG_PROVIDER: BangProviders.KAGI.id,
   BANG_SYMBOL: "!",
 });
 
@@ -82,8 +82,8 @@ async function fetchSettings(update = false) {
       // Fetch default bangs.
       let defaultBangs = [];
       settings[PreferencePrefix.BANG_PROVIDER] =
-        storedSettings[PreferencePrefix.BANG_PROVIDER]?.id ??
-        Defaults.BANG_PROVIDER.id;
+        storedSettings[PreferencePrefix.BANG_PROVIDER] ??
+        Defaults.BANG_PROVIDER;
       const provider =
         BangProviders[settings[PreferencePrefix.BANG_PROVIDER].toUpperCase()];
       for (const api of provider.endpoints) {
