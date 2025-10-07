@@ -221,11 +221,11 @@ async function updateStorageSchema() {
           return [bangKey, bang];
         }),
     );
-    if (!Object.hasOwn(customBangs, PreferencePrefix.BANG_SYMBOL)) {
-      customBangs[PreferencePrefix.BANG_SYMBOL] = Defaults.BANG_SYMBOL;
+    if (!Object.hasOwn(sortedBangs, PreferencePrefix.BANG_SYMBOL)) {
+      sortedBangs[PreferencePrefix.BANG_SYMBOL] = Defaults.BANG_SYMBOL;
     }
-    if (!Object.hasOwn(customBangs, PreferencePrefix.BANG_PROVIDER)) {
-      customBangs[PreferencePrefix.BANG_PROVIDER] = Defaults.BANG_PROVIDER;
+    if (!Object.hasOwn(sortedBangs, PreferencePrefix.BANG_PROVIDER)) {
+      sortedBangs[PreferencePrefix.BANG_PROVIDER] = Defaults.BANG_PROVIDER;
     }
     await browser.storage.sync.clear().then(
       async function onCleared() {
