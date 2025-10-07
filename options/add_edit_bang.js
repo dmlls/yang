@@ -149,7 +149,7 @@ function getInputtedBang() {
   return newBang;
 }
 
-async function getAndValidateInputtedBang(last, mode) {
+async function getAndValidateInputtedBang(mode) {
   hideAllErrorMessages();
   const newBang = {
     name: null,
@@ -212,7 +212,6 @@ async function getAndValidateInputtedBang(last, mode) {
     ).checked;
     newBang.targets.push(targetUrl);
   });
-  newBang.order = mode === "add" ? last + 1 : last;
   if (newBang.name != null && newBang.bang != null && allUrlsValid) {
     return newBang;
   }
@@ -234,10 +233,7 @@ function displayErrorAlert(error) {
 
 async function saveCustomBang() {
   const saveButton = document.getElementById("save");
-  const inputtedBang = await getAndValidateInputtedBang(
-    saveButton.last,
-    saveButton.mode,
-  );
+  const inputtedBang = await getAndValidateInputtedBang(saveButton.mode);
   if (inputtedBang != null) {
     const inputtedBangKey = getBangKey(inputtedBang.bang);
     if (saveButton.mode === "edit") {
@@ -550,7 +546,6 @@ if (window.matchMedia("(hover: none)").matches) {
 const saveButton = document.getElementById("save");
 const urlParams = new URLSearchParams(window.location.search);
 const mode = urlParams.get("mode");
-const last = Number(urlParams.get("last"));
 
 document.body.addEventListener("pageloaded", () => {
   const initialBang = getInputtedBang();
@@ -636,7 +631,6 @@ if (mode === "edit") {
         urlEncodeQueryCheckboxes[index].checked = target.urlEncodeQuery;
       });
       attachEventListeners();
-      saveButton.last = bangInfo.order;
       // Display page once everything is loaded.
       document.body.style.opacity = "1";
       document.body.dispatchEvent(new Event("pageloaded"));
@@ -647,7 +641,6 @@ if (mode === "edit") {
   );
 } else {
   attachEventListeners();
-  saveButton.last = last;
   document.querySelector(`.${FORM_FIELDS.NAME}`).focus(); // focus first field;
   // Display page once everything is loaded.
   document.body.style.opacity = "1";
