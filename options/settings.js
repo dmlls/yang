@@ -187,9 +187,8 @@ exportButton.addEventListener("click", async () => {
       loadedSettings[BackupFields.SETTINGS][BackupFields.SEARCH_ENGINES] = {};
       const sortedBangs = Object.entries(storedData)
         .filter((entry) => entry[0].startsWith(PreferencePrefix.BANG))
-        .sort((a, b) => a[1].order - b[1].order)
+        .sort((a, b) => a[1].name.localeCompare(b[1].name))
         .map((entry) => {
-          delete entry[1].order;
           return entry[1];
         });
       loadedSettings[BackupFields.BANGS] = sortedBangs;

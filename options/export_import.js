@@ -85,7 +85,6 @@ async function importSettings(file) {
         bangProvider =
           settings[BackupFields.BANG_PROVIDER] ?? Defaults.BANG_PROVIDER.id;
       }
-      let order = 0;
       const neededFields =
         backupVersion >= 1.2
           ? ["name", "bang", "targets"]
@@ -95,7 +94,6 @@ async function importSettings(file) {
           throw new SyntaxError("Malformed backup file.");
         }
         bangInfo.bang = bangInfo.bang.toLowerCase();
-        bangInfo.order = order;
         if (backupVersion < 1.2) {
           bangInfo.targets = [
             {
@@ -119,7 +117,6 @@ async function importSettings(file) {
           key = getBangKey(bangInfo.bang);
         }
         preferences.set(key, bangInfo);
-        order++;
       }
       preferences.set(PreferencePrefix.BANG_SYMBOL, bangSymbol);
       preferences.set(PreferencePrefix.BANG_PROVIDER, bangProvider);
