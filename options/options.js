@@ -24,10 +24,10 @@ if (typeof browser === "undefined") {
 }
 
 function onGot(allBangs) {
-  // Get only the bang values, sorted by order.
+  // Get only the bang values, sorted alphabetically (by name).
   const sortedBangs = Object.entries(allBangs)
     .filter((entry) => entry[0].startsWith(PreferencePrefix.BANG))
-    .sort((a, b) => a[1].order - b[1].order)
+    .sort((a, b) => a[1].name.localeCompare(b[1].name))
     .map((entry) => entry[0]);
   if (sortedBangs.length > 0) {
     document.getElementById("no-bangs").style.display = "none";
