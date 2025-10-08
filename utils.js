@@ -174,7 +174,7 @@ async function fetchSettings(update = false) {
         !Object.hasOwn(settings, PreferencePrefix.BANG_PROVIDER) ||
         !settings[PreferencePrefix.BANG_PROVIDER]
       ) {
-        settings[PreferencePrefix.BANG_PROVIDER] = Defaults.BANG_PROVIDER.id;
+        settings[PreferencePrefix.BANG_PROVIDER] = Defaults.BANG_PROVIDER;
       }
       browser.storage.session.clear().then(
         function onCleared() {

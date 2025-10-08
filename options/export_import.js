@@ -76,14 +76,14 @@ async function importSettings(file) {
         backupVersion = parseFloat(readBackup[BackupFields.BACKUP_VERSION]);
       }
       let bangSymbol = Defaults.BANG_SYMBOL;
-      let bangProvider = Defaults.BANG_PROVIDER.id;
+      let bangProvider = Defaults.BANG_PROVIDER;
       // Backup version >= 1.1.
       if (backupKeys.includes(BackupFields.SETTINGS)) {
         const settings = readBackup[BackupFields.SETTINGS];
         bangSymbol = settings[BackupFields.BANG_SYMBOL] ?? Defaults.BANG_SYMBOL;
         // Backup version >= 1.3.
         bangProvider =
-          settings[BackupFields.BANG_PROVIDER] ?? Defaults.BANG_PROVIDER.id;
+          settings[BackupFields.BANG_PROVIDER] ?? Defaults.BANG_PROVIDER;
       }
       const neededFields =
         backupVersion >= 1.2
