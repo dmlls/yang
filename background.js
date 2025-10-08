@@ -178,7 +178,7 @@ function updateTab(tabId, url) {
 
 browser.action.onClicked.addListener(() => {
   browser.tabs.create({
-    url: browser.runtime.getURL("options/options.html"),
+    url: browser.runtime.getURL("options/options.html?page=1"),
   });
 });
 
