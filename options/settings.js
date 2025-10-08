@@ -16,7 +16,12 @@
  * For license information on the libraries used, see LICENSE.
  */
 
-import { Defaults, fetchSettings, PreferencePrefix } from "../utils.js";
+import {
+  Defaults,
+  fetchSettings,
+  PreferencePrefix,
+  sortBangs,
+} from "../utils.js";
 import {
   BACKUP_VERSION,
   BackupFields,
@@ -185,12 +190,7 @@ exportButton.addEventListener("click", async () => {
       loadedSettings[BackupFields.SETTINGS][BackupFields.BANG_PROVIDER] =
         storedData[PreferencePrefix.BANG_PROVIDER] ?? Defaults.BANG_PROVIDER.id;
       loadedSettings[BackupFields.SETTINGS][BackupFields.SEARCH_ENGINES] = {};
-      const sortedBangs = Object.entries(storedData)
-        .filter((entry) => entry[0].startsWith(PreferencePrefix.BANG))
-        .sort((a, b) => a[1].name.localeCompare(b[1].name))
-        .map((entry) => {
-          return entry[1];
-        });
+      const sortedBangs = sortBangs(storedData);
       loadedSettings[BackupFields.BANGS] = sortedBangs;
       return loadedSettings;
     },

@@ -23,6 +23,7 @@ export {
   getPage,
   getBangKey,
   getBangName,
+  sortBangs,
 };
 
 // Prefixes added to the storage keys to differentiate between different types
@@ -210,6 +211,20 @@ function getPage(items, pageNumber, itemsPerPage = Defaults.ITEMS_PER_PAGE) {
     totalPages: totalPages,
     page: pages[pageNumber - 1],
   };
+}
+
+function sortBangs(bangs) {
+  return Object.entries(bangs)
+    .filter((entry) => entry[0].startsWith(PreferencePrefix.BANG))
+    .map((entry) => entry[1])
+    .sort((a, b) => {
+      const comparison = a.name.localeCompare(b.name);
+      // If equal names, sort by bang.
+      if (comparison === 0) {
+        return a.bang.localeCompare(b.bang);
+      }
+      return comparison;
+    });
 }
 
 function getBangKey(bang) {

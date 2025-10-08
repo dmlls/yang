@@ -21,7 +21,7 @@ import {
   fetchSettings,
   getPage,
   getBangKey,
-  Defaults,
+  sortBangs,
 } from "../utils.js";
 
 // Support for Chromium.
@@ -247,11 +247,8 @@ let pageNumber = Number(url.searchParams.get("page") ?? 1);
 
 async function loadPage(pageNumber, updateURL = true) {
   await browser.storage.sync.get().then((allBangs) => {
-    // Get only the bang values, sorted alphabetically (by name).
-    const sortedBangs = Object.entries(allBangs)
-      .filter((entry) => entry[0].startsWith(PreferencePrefix.BANG))
-      .sort((a, b) => a[1].name.localeCompare(b[1].name))
-      .map((entry) => entry[1]);
+    // Get only the bang values, sorted alphabetically (by name and bang).
+    const sortedBangs = sortBangs(allBangs);
     if (updateURL) {
       url.searchParams.set("page", pageNumber);
       history.pushState({}, "", url);
