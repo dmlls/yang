@@ -16,7 +16,14 @@
  * For license information on the libraries used, see LICENSE.
  */
 
-export { PreferencePrefix, Defaults, fetchSettings, getBangKey, getBangName };
+export {
+  PreferencePrefix,
+  Defaults,
+  fetchSettings,
+  getPage,
+  getBangKey,
+  getBangName,
+};
 
 // Prefixes added to the storage keys to differentiate between different types
 // of settings.
@@ -52,6 +59,7 @@ const BangProviders = Object.freeze({
 const Defaults = Object.freeze({
   BANG_PROVIDER: BangProviders.KAGI.id,
   BANG_SYMBOL: "!",
+  ITEMS_PER_PAGE: 25,
 });
 
 async function fetchSettings(update = false) {
@@ -179,6 +187,29 @@ async function fetchSettings(update = false) {
     },
   );
   return result;
+}
+
+// Pagination utility.
+function getPage(items, pageNumber, itemsPerPage = Defaults.ITEMS_PER_PAGE) {
+  if (items.length === 0) {
+    return {
+      totalPages: 0,
+      page: [],
+    };
+  }
+  // Total number of pages.
+  const totalPages = Math.ceil(items.length / itemsPerPage);
+  if (pageNumber > totalPages) {
+    pageNumber = totalPages;
+  }
+  const pages = Array.from({ length: totalPages }, (_, i) => {
+    const start = i * itemsPerPage;
+    return items.slice(start, start + itemsPerPage);
+  });
+  return {
+    totalPages: totalPages,
+    page: pages[pageNumber - 1],
+  };
 }
 
 function getBangKey(bang) {

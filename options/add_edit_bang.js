@@ -250,7 +250,7 @@ async function saveCustomBang() {
           })
           .then(
             () => {
-              window.location.assign("options.html");
+              window.location.assign("options.html?page=1");
             },
             function onError(error) {
               displayErrorAlert(error);
@@ -578,7 +578,7 @@ document.body.addEventListener("pageloaded", () => {
     // Exit on Escape.
     else if (e.key === "Escape") {
       e.preventDefault();
-      window.location.assign("options.html");
+      window.location.assign("options.html?page=1");
     }
   };
   document.body.addEventListener("keydown", keyHandler);

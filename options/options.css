@@ -19,7 +19,6 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
   max-width: 60%;
   min-height: 80vh;
   margin: 50px auto;
@@ -203,10 +202,63 @@ h1 {
   margin: 15px 0;
 }
 
+#pagination {
+  font-size: 0.9rem;
+  margin-bottom: 30px;
+}
+
+#pagination > a {
+  margin-right: 8px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
 .footer {
   display: flex;
   width: 100%;
-  margin-top: 20px;
+  margin-top: auto;
+  justify-content: space-between;
+  font-size: 0.85rem;
+}
+
+#version {
+  font-size: 0.8rem;
+}
+
+#version a:link,
+#version a:visited {
+  color: #4e4e4e;
+}
+
+.toast-container {
+  position: fixed;
+  width: 50%;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #1a1a1a;
+  font-size: 0.95rem;
+  color: #fff;
+  padding: 15px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.toast-container button {
+  background-color: transparent;
+  color: yellow;
+  border: none;
+  text-decoration: underline;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.footer {
+  display: flex;
+  width: 100%;
+  margin-top: auto;
   justify-content: space-between;
   font-size: 0.85rem;
 }

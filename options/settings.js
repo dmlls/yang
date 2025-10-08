@@ -47,7 +47,7 @@ storedSettings.set(PreferencePrefix.BANG_SYMBOL, {
 });
 storedSettings.set(PreferencePrefix.BANG_PROVIDER, {
   element: document.getElementById("bang-provider"),
-  default: Defaults.BANG_PROVIDER.id,
+  default: Defaults.BANG_PROVIDER,
 });
 let initialBangProvider = null;
 
@@ -82,7 +82,7 @@ function saveSettings() {
             );
           }
         }
-        window.location.assign("options.html");
+        window.location.assign("options.html?page=1");
       }, onError);
     },
     function onError(error) {},
@@ -168,7 +168,7 @@ const keyHandler = (e) => {
   // Exit on Escape.
   else if (e.key === "Escape") {
     e.preventDefault();
-    window.location.assign("options.html");
+    window.location.assign("options.html?page=1");
   }
 };
 document.body.addEventListener("keydown", keyHandler);
