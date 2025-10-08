@@ -16,34 +16,51 @@
  * For license information on the libraries used, see LICENSE.
  */
 
-import { PreferencePrefix, fetchSettings, getBangKey } from "../utils.js";
+import {
+  PreferencePrefix,
+  fetchSettings,
+  getPage,
+  getBangKey,
+  Defaults,
+} from "../utils.js";
 
 // Support for Chromium.
 if (typeof browser === "undefined") {
   globalThis.browser = chrome;
 }
 
-function onGot(allBangs) {
-  // Get only the bang values, sorted alphabetically (by name).
-  const sortedBangs = Object.entries(allBangs)
-    .filter((entry) => entry[0].startsWith(PreferencePrefix.BANG))
-    .sort((a, b) => a[1].name.localeCompare(b[1].name))
-    .map((entry) => entry[0]);
-  if (sortedBangs.length > 0) {
+function displayBangs(totalPages, bangs) {
+  const tableBody = document.querySelector("#bangs-table tbody");
+  tableBody.innerHTML = "";
+  if (totalPages > 0 && bangs.length > 0) {
     document.getElementById("no-bangs").style.display = "none";
-    for (const b of sortedBangs) {
-      const tableBody = document.querySelector("#bangs-table tbody");
+
+    // Show pagination numbers (only if more than 1 page).
+    const paginationDiv = document.getElementById("pagination");
+    paginationDiv.innerHTML = "";
+    if (totalPages > 1) {
+      for (let i = 1; i <= totalPages; i++) {
+        const page = document.createElement("a");
+        page.textContent = i;
+        if (i === pageNumber || (pageNumber > totalPages && i == totalPages)) {
+          page.style.setProperty("text-decoration", "underline");
+        }
+        page.addEventListener("click", changePage);
+        paginationDiv.appendChild(page);
+      }
+    }
+    for (const b of bangs) {
       const row = tableBody.insertRow();
       const nameCell = row.insertCell(0);
       const bangCell = row.insertCell(1);
       const actionsCell = row.insertCell(2);
 
-      const name = document.createTextNode(allBangs[b].name);
+      const name = document.createTextNode(b.name);
       nameCell.appendChild(name);
 
       const bang = document.createElement("code");
       bang.classList.add("bang");
-      bang.textContent = allBangs[b].bang;
+      bang.textContent = b.bang;
       bang.addEventListener("click", () => copyBang(bang));
       bangCell.appendChild(bang);
 
@@ -68,6 +85,8 @@ function onGot(allBangs) {
       actionsCell.appendChild(editButton);
       actionsCell.appendChild(deleteButton);
     }
+  } else {
+    document.getElementById("no-bangs").style.display = "block";
   }
 }
 
@@ -98,16 +117,13 @@ function deleteBang(e) {
           function onRemoved() {
             browser.storage.session.remove(bangKey).then(
               async function onRemoved() {
-                const rowIndex = row.rowIndex;
-                row.remove();
-                // Remove sets rowIndex to -1 so we restore it.
-                row.index = rowIndex;
                 const table = document.getElementById("bangs-table");
-                if (table.rows.length === 1) {
-                  // Empty table.
-                  document
-                    .getElementById("no-bangs")
-                    .style.removeProperty("display");
+                let increasePage = false;
+                if (table.rows.length === 2 && pageNumber > 1) {
+                  // Last row in the page -> Decrease page number.
+                  pageNumber--;
+                  // If deletion is undone -> Increase page back.
+                  increasePage = true;
                 }
                 const toastMessage = document.createElement("div");
                 toastMessage.appendChild(
@@ -120,8 +136,9 @@ function deleteBang(e) {
                 toastMessage.appendChild(
                   document.createTextNode("\xA0\xA0deleted."),
                 );
+                await loadPage(pageNumber);
                 displayToast(bangKey, toastMessage, "Undo", undoDeletion, [
-                  row,
+                  increasePage,
                   bang,
                 ]);
                 await fetchSettings(true);
@@ -143,7 +160,7 @@ function deleteBang(e) {
   );
 }
 
-function undoDeletion([row, bang, timeoutId]) {
+function undoDeletion([increasePage, bang, timeoutId]) {
   const bangKey = getBangKey(bang.bang);
   browser.storage.sync.set({ [bangKey]: bang }).then(
     function onSet() {
@@ -152,13 +169,11 @@ function undoDeletion([row, bang, timeoutId]) {
           [bangKey]: bang.targets,
         })
         .then(
-          function onSet() {
-            const table = document.getElementById("bangs-table");
-            if (table.rows.length === 1) {
-              document.getElementById("no-bangs").style.display = "none";
+          async function onSet() {
+            if (increasePage) {
+              pageNumber++;
             }
-            const tableBody = table.getElementsByTagName("tbody")[0];
-            tableBody.insertBefore(row, tableBody.childNodes[row.index - 1]);
+            await loadPage(pageNumber);
             hideToast();
             clearTimeout(timeoutId);
           },
@@ -227,10 +242,37 @@ function copyBang(element) {
     });
 }
 
-(async () => {
-  await browser.storage.sync.get().then(onGot, onError);
-  document.body.style.opacity = "1";
-})();
+const url = new URL(window.location.href);
+let pageNumber = Number(url.searchParams.get("page") ?? 1);
+
+async function loadPage(pageNumber, updateURL = true) {
+  await browser.storage.sync.get().then((allBangs) => {
+    // Get only the bang values, sorted alphabetically (by name).
+    const sortedBangs = Object.entries(allBangs)
+      .filter((entry) => entry[0].startsWith(PreferencePrefix.BANG))
+      .sort((a, b) => a[1].name.localeCompare(b[1].name))
+      .map((entry) => entry[1]);
+    if (updateURL) {
+      url.searchParams.set("page", pageNumber);
+      history.pushState({}, "", url);
+    }
+    const bangs = getPage(sortedBangs, pageNumber);
+    displayBangs(bangs.totalPages, bangs.page);
+  }, onError);
+}
+
+async function changePage(e) {
+  pageNumber = Number(e.target.textContent);
+  url.searchParams.set("page", pageNumber);
+  window.location.assign(url);
+}
 
 const addBangButton = document.getElementById("add-bang");
 addBangButton.addEventListener("click", addBang, false);
+
+// Initial load.
+(async () => {
+  document.body.style.opacity = "0";
+  await loadPage(pageNumber, false);
+  document.body.style.opacity = "1";
+})();
