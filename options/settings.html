@@ -10,13 +10,24 @@
   </head>
   <body>
     <div class="container">
-      <div class="back-container">
-        <a href="options.html?page=1">&#8592; Cancel and go back</a>
+      <div id="header">
+        <div class="title">
+          <a id="back" title="Cancel and go back" href="options.html?page=1">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24">
+              <path
+                d="M10.187 1.62c-.36.014-.729.133-1.152.527l-.003.003-.015.015-8.49 8.63a1.797 1.797 0 0 0 .002 2.545l8.342 8.482.002.002.008.009c.486.464.897.568 1.31.544.42-.025.867-.234 1.209-.57.342-.336.557-.777.59-1.196.03-.413-.065-.829-.52-1.323l-.012-.01-.008-.01-5.331-5.431 16.083-.078c.707-.006 1.079-.23 1.358-.548.279-.32.444-.793.44-1.282-.004-.49-.178-.96-.462-1.274-.284-.314-.657-.532-1.368-.526l-15.954.073 5.393-5.49.016-.018c.345-.385.469-.722.5-1.044a1.675 1.675 0 0 0-.213-.974c-.344-.627-1.073-1.08-1.725-1.055Z"
+                style="fill: #7814ae"
+              />
+            </svg>
+          </a>
+          <h1>Settings</h1>
+        </div>
       </div>
-      <h1 id="title">Settings</h1>
       <div class="form">
         <form id="setting-form">
-          <h2 id="bangs" class="setting-group">Bangs</h2>
+          <div class="header-container">
+            <h2 id="bangs" class="setting-group">Bangs</h2>
+          </div>
           <div class="setting-container">
             <div class="setting-label">
               <label for="bang-symbol">Bang Symbol(s)</label>
@@ -40,7 +51,9 @@
               <option value="none">None</option>
             </select>
           </div>
-          <h2 id="backups" class="setting-group">Backups</h2>
+          <div class="header-container">
+            <h2 id="backups" class="setting-group">Backups</h2>
+          </div>
           <div class="setting-container">
             <div class="setting-label">
               <label for="export-data">Export custom bangs and settings</label>
@@ -97,7 +110,9 @@
             accept=".json"
             style="display: none"
           />
-          <h2 id="storage" class="setting-group">Storage</h2>
+          <div class="header-container">
+            <h2 id="storage" class="setting-group">Storage</h2>
+          </div>
           <div class="storage-container">
             <span id="storage-quota-usage" class="storage-label"></span>
             <div class="storage-bar">
