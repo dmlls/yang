@@ -16,13 +16,33 @@ body {
 }
 
 .container {
-  max-width: 40%;
-  margin: 50px auto;
+  display: flex;
+  min-height: 100dvh;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
+  background-color: #f5f5f5;
+  overflow-x: hidden;
+}
+
+#header {
+  display: flex;
+  width: 100vw;
+  height: 5rem;
+  box-sizing: border-box;
+  padding: 0 40px;
+  margin-bottom: 20px;
+  justify-content: space-between;
+  align-items: center;
   background-color: #fff;
-  box-shadow: 0 0 10px rgba(0 0 0 0.1);
-  border-radius: 8px;
-  padding: 2rem;
+  box-shadow: 0 0 20px #e0e0e0;
+}
+
+.title {
+  display: flex;
+  gap: 1.2rem;
+  align-items: center;
+  text-wrap: nowrap;
 }
 
 a {
@@ -30,17 +50,23 @@ a {
 }
 
 h1 {
-  color: #333;
-  margin-top: 30px;
-  margin-bottom: 40px;
-  font-weight: normal;
+  margin: 0;
+  background-image: linear-gradient(to right, #7814ae, #d53);
+  color: transparent;
+  background-clip: text;
+  font-size: 1.8rem;
+  font-weight: 500;
+}
+
+.header-container {
+  display: flex;
+  text-align: start;
 }
 
 h2 {
   color: #e15e49;
   font-weight: normal;
-  font-size: 1.5rem;
-  text-align: start;
+  font-size: 1.6rem;
 }
 
 label {
@@ -56,12 +82,12 @@ input {
   box-sizing: border-box;
   text-align: center;
   border: none;
-  border: solid 1.5px #aaa;
+  border: solid 1.5px #e15e49;
   border-radius: 6px;
 }
 
 input:focus {
-  outline: 1px solid #0000ff;
+  outline: 1px solid #e15e49;
 }
 
 input::placeholder {
@@ -73,10 +99,14 @@ select {
   padding: 8px;
   box-sizing: border-box;
   border: none;
-  border: solid 1.5px #aaa;
+  border: solid 1.5px #e15e49;
   border-radius: 6px;
   background: none;
   cursor: pointer;
+}
+
+select:open {
+  outline: 1px solid #e15e49;
 }
 
 .setting-group:nth-child(n + 2) {
@@ -155,14 +185,18 @@ button svg {
 }
 
 .form {
-  width: 75%;
+  width: 35vw;
   margin: 0 auto;
-  box-sizing: border-box;
+  background-color: #fff;
+  box-shadow: 0 0 10px #ebebeb;
+  border-radius: 8px;
+  padding: 2rem 5rem;
 }
 
-.back-container {
-  font-size: 0.9rem;
-  text-align: left;
+#back {
+  display: flex;
+  align-items: center;
+  transform: scale(0.9);
 }
 
 .setting-container {
@@ -211,27 +245,43 @@ button svg {
   width: 5%;
   height: 0.5rem;
   border-radius: 5px;
-  background: #e15e49;
+  background-image: linear-gradient(to right, #af376b, #d53);
 }
 
-@media screen and (width < 1000px) {
+@media screen and (width < 1100px) {
   html {
-    background-color: white;
+    background-color: #f5f5f5;
   }
 
   .container {
     max-width: 100%;
+    display: flex;
+    flex-direction: column;
     margin: 0;
-    padding: 0 0 50px;
-    box-shadow: none;
+    padding: 0;
+  }
+
+  #header {
+    height: 4.5rem;
+    padding: 0px 20px;
+  }
+
+  .title {
+    gap: 1rem;
+  }
+
+  #back {
+    transform: scale(0.8);
+  }
+
+  h1 {
+    font-size: 1.5rem;
   }
 
   .form {
-    width: 90%;
-  }
-
-  .back-container {
-    padding: 20px;
+    width: 95vw;
+    padding: 0.5rem 2rem;
+    box-sizing: border-box;
   }
 
   .button-label {
