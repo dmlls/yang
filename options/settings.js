@@ -159,7 +159,7 @@ if (!window.matchMedia("(hover: none)").matches) {
     );
   })();
 }
-document.body.style.opacity = "1";
+document.body.style.opacity = 1;
 const saveButton = document.getElementById("save");
 saveButton.addEventListener("click", saveSettings, false);
 
