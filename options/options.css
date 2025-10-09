@@ -10,24 +10,53 @@ body {
   opacity: 0; /* Set to 1 when the contents are loaded. */
   font-family: InterVariable, sans-serif;
   font-size: 1.1rem;
+  background-color: #f5f5f5;
   margin: 0;
   padding: 0;
-  background-color: #f5f5f5;
 }
 
 .container {
   display: flex;
+  min-height: 100dvh;
   flex-direction: column;
   align-items: center;
-  max-width: 60%;
-  min-height: 80vh;
-  margin: 50px auto;
   text-align: center;
-  background-color: #fff;
-  box-shadow: 0 0 10px #ebebeb;
-  border-radius: 8px;
-  padding: 2rem;
+  background-color: #f5f5f5;
   overflow-x: hidden;
+}
+
+.inner-container {
+  max-width: 70vw;
+}
+
+#header {
+  display: flex;
+  width: 100vw;
+  height: 5rem;
+  box-sizing: border-box;
+  padding: 0 40px;
+  margin-bottom: 20px;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #fff;
+  box-shadow: 0 0 20px #e0e0e0;
+}
+
+#footer {
+  display: flex;
+  width: 100vw;
+  padding: 20px 30px;
+  margin-top: auto;
+  box-sizing: border-box;
+  justify-content: space-between;
+  font-size: 0.85rem;
+}
+
+.title {
+  display: flex;
+  gap: 1.2rem;
+  align-items: center;
+  text-wrap: nowrap;
 }
 
 a {
@@ -35,10 +64,12 @@ a {
 }
 
 h1 {
-  color: #333;
-  margin-top: 5px;
-  margin-bottom: 40px;
-  font-weight: normal;
+  margin: 0;
+  background-image: linear-gradient(to right, #7814ae, #d53);
+  color: transparent;
+  background-clip: text;
+  font-size: 1.8rem;
+  font-weight: 500;
 }
 
 .button-container {
@@ -63,6 +94,7 @@ h1 {
 }
 
 #add-bang {
+  margin-left: auto;
   background: #e15e49;
   color: #fff;
   padding: 15px 20px;
@@ -82,6 +114,7 @@ h1 {
 #settings {
   color: #454545;
   fill: #454545;
+  margin-top: 8px;
   border: none;
   background: none;
 }
@@ -94,8 +127,7 @@ h1 {
 }
 
 #yang-logo {
-  width: 15%;
-  margin-top: 20px;
+  width: 3.2rem;
 }
 
 .table-container {
@@ -112,8 +144,9 @@ h1 {
   font-size: 0.95rem;
   font-family: sans-serif;
   text-align: left;
-  box-shadow: 0 0 20px #ebebeb;
+  box-shadow: 0 0 20px #e0e0e0;
   overflow: hidden;
+  background-color: #fff;
 }
 
 #bangs-table thead tr {
@@ -123,7 +156,7 @@ h1 {
 
 #bangs-table th,
 #bangs-table td {
-  padding: 12px 15px;
+  padding: 12px 35px;
   white-space: nowrap;
 }
 
@@ -137,7 +170,7 @@ h1 {
 #bangs-table th:last-child,
 #bangs-table td:last-child {
   text-align: end;
-  padding-right: 10px;
+  padding-right: 25px;
   padding-left: 0;
   overflow: visible;
 }
@@ -147,7 +180,7 @@ h1 {
 }
 
 #bangs-table tbody tr:nth-of-type(even) {
-  background-color: #f3f3f3;
+  background-color: #fbfbfb;
 }
 
 #bangs-table tbody tr:last-of-type {
@@ -213,12 +246,38 @@ h1 {
   cursor: pointer;
 }
 
-.footer {
+#version {
+  font-size: 0.8rem;
+}
+
+#version a:link,
+#version a:visited {
+  color: #4e4e4e;
+}
+
+.toast-container {
+  position: fixed;
+  width: 50%;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #1a1a1a;
+  font-size: 0.95rem;
+  color: #fff;
+  padding: 15px;
+  border-radius: 5px;
   display: flex;
-  width: 100%;
-  margin-top: auto;
   justify-content: space-between;
-  font-size: 0.85rem;
+  align-items: center;
+}
+
+.toast-container button {
+  background-color: transparent;
+  color: yellow;
+  border: none;
+  text-decoration: underline;
+  font-size: 1rem;
+  cursor: pointer;
 }
 
 #version {
@@ -255,74 +314,42 @@ h1 {
   cursor: pointer;
 }
 
-.footer {
-  display: flex;
-  width: 100%;
-  margin-top: auto;
-  justify-content: space-between;
-  font-size: 0.85rem;
-}
-
-#version {
-  font-size: 0.8rem;
-}
-
-#version a:link,
-#version a:visited {
-  color: #4e4e4e;
-}
-
-.toast-container {
-  position: fixed;
-  width: 50%;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: #1a1a1a;
-  font-size: 0.95rem;
-  color: #fff;
-  padding: 15px;
-  border-radius: 5px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.toast-container button {
-  background-color: transparent;
-  color: yellow;
-  border: none;
-  text-decoration: underline;
-  font-size: 1rem;
-  cursor: pointer;
-}
-
-@media screen and (width < 1000px) {
-  h1 {
-    margin-bottom: 35px;
-  }
-
+@media screen and (width < 1100px) {
   .container {
     max-width: 100%;
-    height: 100dvh;
     display: flex;
     flex-direction: column;
     margin: 0;
     padding: 0;
   }
 
-  .footer {
-    width: 95%;
-    margin-bottom: 30px;
-  }
-
   .toast-container {
     width: 90%;
   }
 
+  #header {
+    height: 4.5rem;
+    padding: 0px 20px;
+  }
+
+  #footer {
+    padding: 20px;
+  }
+
+  .title {
+    gap: 1rem;
+  }
+
   #yang-logo {
-    width: 25%;
-    margin-top: 30px;
+    width: 3rem;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  .inner-container {
+    max-width: 100vw;
   }
 
   .table-container {
@@ -333,6 +360,11 @@ h1 {
   .button-container {
     justify-content: space-between;
     margin-bottom: 20px;
+  }
+
+  #bangs-table th,
+  #bangs-table td {
+    padding: 12px;
   }
 
   #bangs-table th:first-child,
