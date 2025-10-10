@@ -280,40 +280,6 @@ h1 {
   cursor: pointer;
 }
 
-#version {
-  font-size: 0.8rem;
-}
-
-#version a:link,
-#version a:visited {
-  color: #4e4e4e;
-}
-
-.toast-container {
-  position: fixed;
-  width: 50%;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: #1a1a1a;
-  font-size: 0.95rem;
-  color: #fff;
-  padding: 15px;
-  border-radius: 5px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.toast-container button {
-  background-color: transparent;
-  color: yellow;
-  border: none;
-  text-decoration: underline;
-  font-size: 1rem;
-  cursor: pointer;
-}
-
 @media screen and (width < 1100px) {
   .container {
     max-width: 100%;
@@ -329,7 +295,7 @@ h1 {
 
   #header {
     height: 4.5rem;
-    padding: 0px 20px;
+    padding: 0 20px;
   }
 
   #footer {
