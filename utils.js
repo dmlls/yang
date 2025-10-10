@@ -23,6 +23,7 @@ export {
   getPage,
   getBangKey,
   getBangName,
+  searchBangs,
   sortBangs,
 };
 
@@ -224,6 +225,37 @@ function sortBangs(bangs) {
         return a.bang.localeCompare(b.bang);
       }
       return comparison;
+    });
+}
+
+function getSearchScore(target, query) {
+  const processedTarget = target.toLowerCase();
+  const processedQuery = query.toLowerCase();
+  if (processedTarget === processedQuery) {
+    return 2;
+  } else if (processedTarget.startsWith(query)) {
+    return 1;
+  }
+  return 0;
+}
+
+function searchBangs(bangs, query) {
+  const processedQuery = query.toLowerCase();
+  return Object.entries(bangs)
+    .filter((entry) => entry[0].startsWith(PreferencePrefix.BANG))
+    .map((entry) => entry[1])
+    .filter(
+      (entry) =>
+        entry.name.toLowerCase().includes(processedQuery) ||
+        entry.bang.toLowerCase().includes(processedQuery),
+    )
+    .sort((a, b) => {
+      return (
+        getSearchScore(b.name, processedQuery) +
+        getSearchScore(b.bang, processedQuery) -
+        (getSearchScore(a.name, processedQuery) +
+          getSearchScore(a.bang, processedQuery))
+      );
     });
 }
 

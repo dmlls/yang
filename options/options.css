@@ -93,6 +93,82 @@ h1 {
   margin-right: 5px;
 }
 
+.toast-container button {
+  background-color: transparent;
+  color: yellow;
+  border: none;
+  text-decoration: underline;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+#search-bar {
+  display: flex;
+  width: 6.8rem;
+  height: 2.5rem;
+  padding: 0 0.6rem;
+  align-items: center;
+  box-sizing: border-box;
+  border: solid 1.5px #aaa;
+  border-radius: 6px;
+  background-color: #fff;
+}
+
+#search-bar:has(#query:focus) {
+  outline: 1px solid #7814ae;
+}
+
+#search-bar.searching {
+  width: 30%;
+}
+
+#query {
+  border: none;
+  height: 100%;
+  width: 100%;
+  text-align: start;
+  font-size: 0.95rem;
+  background-color: transparent;
+}
+
+#query:focus {
+  outline: none;
+}
+
+#query::placeholder {
+  opacity: 0.7;
+  color: #5c5c5c;
+}
+
+#search-bar button {
+  border: none;
+  background: none;
+}
+
+#search-button {
+  pointer-events: none;
+}
+
+#clear-button {
+  display: none;
+  cursor: pointer;
+}
+
+#search-bar svg {
+  color: #5c5c5c;
+  fill: currentcolor;
+}
+
+#search-button svg {
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
+#clear-button svg {
+  width: 0.92rem;
+  height: 0.92rem;
+}
+
 #add-bang {
   margin-left: auto;
   background: #e15e49;
@@ -128,6 +204,7 @@ h1 {
 
 #yang-logo {
   width: 3.2rem;
+  cursor: pointer;
 }
 
 .table-container {
@@ -271,15 +348,6 @@ h1 {
   align-items: center;
 }
 
-.toast-container button {
-  background-color: transparent;
-  color: yellow;
-  border: none;
-  text-decoration: underline;
-  font-size: 1rem;
-  cursor: pointer;
-}
-
 @media screen and (width < 1100px) {
   .container {
     max-width: 100%;
@@ -312,6 +380,10 @@ h1 {
 
   h1 {
     font-size: 1.5rem;
+  }
+
+  #search-bar.searching {
+    width: 50%;
   }
 
   .inner-container {
