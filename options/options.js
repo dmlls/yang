@@ -269,7 +269,7 @@ addBangButton.addEventListener("click", addBang, false);
 
 // Initial load.
 (async () => {
-  document.body.style.opacity = "0";
+  document.body.style.opacity = 0;
   await loadPage(pageNumber, false);
-  document.body.style.opacity = "1";
+  document.body.style.opacity = 1;
 })();
