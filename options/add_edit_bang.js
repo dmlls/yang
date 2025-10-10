@@ -304,10 +304,14 @@ function attachEventListeners() {
     if (checkbox.getAttribute("listener") !== "true") {
       checkbox.addEventListener("change", (event) => {
         if (event.currentTarget.checked) {
-          baseUrls[index].value =
-            urls[index].value.length > 0
-              ? new URL(urls[index].value).origin
-              : "";
+          let baseUrlValue = "";
+          try {
+            // Try to parse URL.
+            baseUrlValue = new URL(urls[index].value).origin;
+          } catch (_) {
+            // Do nothing.
+          }
+          baseUrls[index].value = baseUrlValue;
           baseUrls[index].style.display = "block";
         } else {
           baseUrls[index].style.display = "none";
@@ -367,6 +371,7 @@ function attachEventListeners() {
           expandButton.classList.remove("expanded");
         });
         reorderButtons.forEach((reorderButton) => {
+          // Opacity set to > 0 to prevent an image icon appearing.
           reorderButton.style.opacity = 0.000001;
         });
       });
@@ -374,6 +379,7 @@ function attachEventListeners() {
     }
     if (reorderButtons[index].getAttribute("dragEndListener") !== "true") {
       reorderButtons[index].addEventListener("dragend", () => {
+        document.body.style.cursor = "auto";
         urlContainer.classList.remove("dragging");
         reorderButtons.forEach((reorderButton) => {
           reorderButton.style.opacity = 1;
@@ -561,7 +567,7 @@ document.body.addEventListener("pageloaded", () => {
   saveButton.addEventListener("click", () => {
     window.removeEventListener("beforeunload", beforeUnloadHandler);
   });
-  document.getElementById("cancel").addEventListener("click", () => {
+  document.getElementById("back").addEventListener("click", () => {
     window.removeEventListener("beforeunload", beforeUnloadHandler);
   });
   const keyHandler = async (e) => {
@@ -593,7 +599,7 @@ document.body.addEventListener("pageloaded", () => {
 
 let bangKey;
 if (mode === "edit") {
-  const title = document.getElementById("title");
+  const title = document.getElementById("title-label");
   title.innerHTML = "Edit Custom Bang";
   document.title = "Yang! – Edit Bang";
   bangKey = getBangKey(urlParams.get("bang"));
@@ -632,7 +638,7 @@ if (mode === "edit") {
       });
       attachEventListeners();
       // Display page once everything is loaded.
-      document.body.style.opacity = "1";
+      document.body.style.opacity = 1;
       document.body.dispatchEvent(new Event("pageloaded"));
     },
     function onError(error) {
@@ -643,7 +649,7 @@ if (mode === "edit") {
   attachEventListeners();
   document.querySelector(`.${FORM_FIELDS.NAME}`).focus(); // focus first field;
   // Display page once everything is loaded.
-  document.body.style.opacity = "1";
+  document.body.style.opacity = 1;
   document.body.dispatchEvent(new Event("pageloaded"));
 }
 

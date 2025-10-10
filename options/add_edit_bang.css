@@ -15,27 +15,75 @@ body {
   background-color: #f5f5f5;
 }
 
+.container {
+  display: flex;
+  min-height: 100dvh;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  background-color: #f5f5f5;
+  overflow-x: hidden;
+}
+
+#header {
+  display: flex;
+  width: 100vw;
+  height: 5rem;
+  box-sizing: border-box;
+  padding: 0 40px;
+  margin-bottom: 20px;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #fff;
+  box-shadow: 0 0 20px #e0e0e0;
+}
+
+.title {
+  display: flex;
+  gap: 1.2rem;
+  align-items: center;
+  text-wrap: nowrap;
+}
+
 a {
   color: #0000ff;
 }
 
 h1 {
-  color: #333;
-  margin-top: 30px;
-  margin-bottom: 40px;
-  font-weight: normal;
+  margin: 0;
+  background-image: linear-gradient(to right, #7814ae, #d53);
+  color: transparent;
+  background-clip: text;
+  font-size: 1.8rem;
+  font-weight: 500;
+}
+
+#custom-bang-form {
+  display: flex;
+  flex-direction: column;
+  width: 35vw;
+  margin: 0 auto;
+  background-color: #fff;
+  box-shadow: 0 0 10px #ebebeb;
+  border-radius: 8px;
+  padding: 3rem 5rem;
 }
 
 label {
   display: block;
   margin-bottom: 10px;
   text-align: start;
-  width: 30vw;
+}
+
+.section-label {
+  color: #e15e49;
+  font-size: 13pt;
+  font-weight: 600;
 }
 
 input {
-  width: 30vw;
-  min-width: 30vw;
+  width: 35vw;
+  max-width: 35vw;
   padding: 8px;
   box-sizing: border-box;
   border: none;
@@ -44,8 +92,20 @@ input {
   font-size: 0.95rem;
 }
 
+.error-message {
+  display: block;
+  margin-top: 4px;
+  text-align: start;
+  color: red;
+  font-size: 0.87rem;
+}
+
+.target-url ~ .error-message {
+  width: 35vw;
+}
+
 input:focus {
-  outline: 1px solid #0000ff;
+  outline: 1px solid #e15e49;
 }
 
 input::placeholder {
@@ -63,16 +123,6 @@ code {
   font-weight: bold;
 }
 
-.container {
-  max-width: 40%;
-  margin: 50px auto;
-  text-align: center;
-  background-color: #fff;
-  box-shadow: 0 0 10px rgba(0 0 0 / 10%);
-  border-radius: 8px;
-  padding: 2em;
-}
-
 .button-container {
   display: flex;
   justify-content: center;
@@ -84,6 +134,7 @@ code {
   display: flex;
   align-items: center;
   justify-content: center;
+  align-self: center;
   border-radius: 8px;
   cursor: pointer;
   transition:
@@ -109,7 +160,7 @@ code {
 
 #add-url.disabled-button {
   opacity: 0.6;
-  cursor: default;
+  cursor: not-allowed;
 }
 
 #add-url.disabled-button:hover {
@@ -118,7 +169,7 @@ code {
 }
 
 #save {
-  margin: 0 auto 15px;
+  margin: 0 auto;
   padding: 15px 25px;
   font-size: 1rem;
   border: none;
@@ -131,12 +182,6 @@ code {
   border-radius: 12px;
 }
 
-#custom-bang-form {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
 .back-container {
   font-size: 0.9rem;
   text-align: left;
@@ -145,7 +190,6 @@ code {
 .input-container {
   display: flex;
   flex-direction: column;
-  align-items: center;
   margin-bottom: 40px;
 }
 
@@ -155,7 +199,6 @@ code {
 
 .checkbox-container {
   display: flex;
-  width: 30vw;
   margin-bottom: 10px;
 }
 
@@ -165,13 +208,19 @@ code {
 
 .base-url {
   display: none;
-  width: 100%;
-  min-width: 100%;
+  width: 33.5vw;
 }
 
-#urls-container,
-#draggable-container {
+#urls-container {
   width: 100%;
+}
+
+#draggable-container {
+  width: calc(100% + 140px);
+  margin-left: -70px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .bang-option-label {
@@ -183,19 +232,11 @@ code {
   width: auto;
   min-width: auto;
   margin-right: 10px;
+  outline: none;
 }
 
 .checkbox-container label {
   margin: 0;
-}
-
-.error-message {
-  display: block;
-  margin-top: 4px;
-  text-align: start;
-  width: 30vw;
-  color: red;
-  font-size: 0.87rem;
 }
 
 .tooltip {
@@ -234,7 +275,6 @@ code {
 }
 
 .target-url-container {
-  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -242,10 +282,13 @@ code {
 }
 
 .target-url-wrapper {
+  width: 100%;
   margin-bottom: 10px;
 }
 
 .target-url {
+  width: calc(100% + 50px);
+  margin-left: -25px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -256,12 +299,12 @@ code {
   opacity: 0.5;
   transform: scale(1.05);
   box-shadow: 0 4px 10px rgba(0 0 0 / 20%);
+  cursor: grabbing;
 }
 
 .url-options-container {
   display: none;
-  padding-left: 1vw;
-  width: 29vw;
+  width: 32vw;
   opacity: 0;
 }
 
@@ -282,14 +325,21 @@ code {
   }
 }
 
+.zero-width {
+  display: flex;
+  align-items: center;
+  width: 0;
+}
+
 .action-container {
   display: none;
-  width: 10vw;
+  position: absolute;
+  width: 3%;
+  margin-top: 6px;
 }
 
 .action-container.left {
-  justify-content: end;
-  margin-right: 8px;
+  margin-left: -30px;
 }
 
 .action-container.right {
@@ -300,13 +350,9 @@ code {
   padding: 0;
 }
 
-.target-url:hover > .action-container {
+.target-url:hover .action-container {
   display: flex;
   gap: 8px;
-}
-
-.target-url:hover ~ .error-message {
-  margin-left: calc(10vw + 8px);
 }
 
 .move-up-button,
@@ -328,7 +374,11 @@ code {
 }
 
 .reorder-button {
-  cursor: move;
+  cursor: grab;
+}
+
+.reorder-button:active {
+  cursor: grabbing;
 }
 
 .move-up-button > svg {
@@ -369,12 +419,12 @@ code {
 }
 
 .label-wrapper {
+  width: 100%;
   position: relative;
   display: flex;
   flex-direction: column;
   text-align: start;
   align-items: center;
-  width: 30vw;
 }
 
 .label-wrapper label {
@@ -382,41 +432,56 @@ code {
   width: auto;
 }
 
-@media screen and (width < 1000px) {
+@media screen and (width < 1100px) {
   html {
-    background-color: white;
-  }
-
-  input,
-  label,
-  .label-wrapper,
-  .url-options-container,
-  .checkbox-container,
-  .error-message {
-    width: 65vw;
-  }
-
-  input {
-    min-width: 65vw;
+    background-color: #f5f5f5;
   }
 
   .container {
     max-width: 100%;
+    display: flex;
+    flex-direction: column;
     margin: 0;
-    padding: 0 0 50px;
-    box-shadow: none;
+    padding: 0;
   }
 
-  .form {
-    width: 90%;
+  #header {
+    height: 4.5rem;
+    padding: 0 20px;
   }
 
-  .back-container {
-    padding: 20px;
+  .title {
+    gap: 1rem;
+  }
+
+  #back {
+    transform: scale(0.8);
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  #custom-bang-form {
+    width: 95vw;
+    padding: 2.5rem 4rem;
+    box-sizing: border-box;
+  }
+
+  input {
+    min-width: calc(95vw - 8rem);
   }
 
   .target-url ~ .error-message {
-    margin-left: calc(10vw + 8px);
+    width: calc(95vw - 8rem);
+  }
+
+  .base-url {
+    min-width: calc(95vw - 9rem);
+  }
+
+  .url-options-container {
+    width: calc(95vw - 10rem);
   }
 
   .tooltip-text {
@@ -435,6 +500,10 @@ code {
   .action-container {
     display: flex;
     gap: 8px;
+  }
+
+  .action-container.left {
+    margin-left: -55px;
   }
 
   .move-up-button,
