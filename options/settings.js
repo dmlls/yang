@@ -165,9 +165,9 @@ saveButton.addEventListener("click", saveSettings, false);
 
 const keyHandler = (e) => {
   // Save on Ctrl/Cmd + Enter.
-  if ((e.ctrlKey || e.metaKey) && (e.keyCode === 13 || e.keyCode === 10)) {
+  if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
     saveSettings();
-  } else if (e.keyCode === 13 || e.keyCode === 10) {
+  } else if (e.key === "Enter") {
     e.preventDefault();
   }
   // Exit on Escape.

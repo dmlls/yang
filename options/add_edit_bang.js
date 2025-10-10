@@ -572,7 +572,7 @@ document.body.addEventListener("pageloaded", () => {
   });
   const keyHandler = async (e) => {
     // Save on Ctrl/Cmd + Enter.
-    if ((e.ctrlKey || e.metaKey) && (e.keyCode === 13 || e.keyCode === 10)) {
+    if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
       window.removeEventListener("beforeunload", beforeUnloadHandler);
       e.preventDefault();
       const bang = await saveCustomBang();
