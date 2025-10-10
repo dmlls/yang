@@ -17,10 +17,10 @@
  */
 
 import {
-  PreferencePrefix,
   fetchSettings,
   getPage,
   getBangKey,
+  searchBangs,
   sortBangs,
 } from "../utils.js";
 
@@ -32,12 +32,12 @@ if (typeof browser === "undefined") {
 function displayBangs(totalPages, bangs) {
   const tableBody = document.querySelector("#bangs-table tbody");
   tableBody.innerHTML = "";
+  // Show pagination numbers (only if more than 1 page).
+  const paginationDiv = document.getElementById("pagination");
+  paginationDiv.innerHTML = "";
   if (totalPages > 0 && bangs.length > 0) {
-    document.getElementById("no-bangs").style.display = "none";
+    toggleNoBangsMessage(false);
 
-    // Show pagination numbers (only if more than 1 page).
-    const paginationDiv = document.getElementById("pagination");
-    paginationDiv.innerHTML = "";
     if (totalPages > 1) {
       for (let i = 1; i <= totalPages; i++) {
         const page = document.createElement("a");
@@ -86,7 +86,7 @@ function displayBangs(totalPages, bangs) {
       actionsCell.appendChild(deleteButton);
     }
   } else {
-    document.getElementById("no-bangs").style.display = "block";
+    toggleNoBangsMessage(true);
   }
 }
 
@@ -242,18 +242,50 @@ function copyBang(element) {
     });
 }
 
+function toggleNoBangsMessage(visible) {
+  const noBangsMessage = document.getElementById("no-bangs");
+  let searching = url.searchParams.get("q") !== null;
+  if (visible) {
+    if (searching) {
+      noBangsMessage.textContent = "No results found";
+    } else {
+      noBangsMessage.textContent = "Click on + Add Bang to get started";
+    }
+    noBangsMessage.style.display = "block";
+  } else {
+    noBangsMessage.style.display = "none";
+  }
+}
+
+// Pagination.
 const url = new URL(window.location.href);
 let pageNumber = Number(url.searchParams.get("page") ?? 1);
 
-async function loadPage(pageNumber, updateURL = true) {
-  await browser.storage.sync.get().then((allBangs) => {
-    // Get only the bang values, sorted alphabetically (by name and bang).
-    const sortedBangs = sortBangs(allBangs);
-    if (updateURL) {
-      url.searchParams.set("page", pageNumber);
-      history.pushState({}, "", url);
+async function loadPage(pageNumber, updateURL = true, fullLoad = false) {
+  browser.storage.sync.get().then((allBangs) => {
+    let processedBangs = [];
+    const query = url.searchParams.get("q") ?? "";
+    if (query !== "") {
+      if (fullLoad) {
+        searchBar.classList.add("searching");
+        clearButton.style.display = "block";
+        // If we are doing a full load, set the search query in the input.
+        queryInput.value = query;
+      }
+      processedBangs = searchBangs(allBangs, query);
+    } else {
+      if (document.activeElement !== queryInput) {
+        clearButton.style.display = "none";
+        searchBar.classList.remove("searching");
+      }
+      // Get only the bang values, sorted alphabetically (by name and bang).
+      processedBangs = sortBangs(allBangs);
+      if (updateURL) {
+        url.searchParams.set("page", pageNumber);
+        history.pushState({}, "", url);
+      }
     }
-    const bangs = getPage(sortedBangs, pageNumber);
+    const bangs = getPage(processedBangs, pageNumber);
     displayBangs(bangs.totalPages, bangs.page);
   }, onError);
 }
@@ -264,12 +296,87 @@ async function changePage(e) {
   window.location.assign(url);
 }
 
+function debounce(func, delay) {
+  let timeout;
+  return function (...args) {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func.apply(this, args), delay);
+  };
+}
+
+function runSearch(query) {
+  if (query !== "") {
+    url.searchParams.set("q", query);
+    history.pushState({}, "", url);
+  } else {
+    url.searchParams.delete("q");
+  }
+  loadPage(pageNumber, false);
+}
+
+function clearSearch(focusInput = true) {
+  debouncedSearch("");
+  clearButton.style.display = "none";
+  queryInput.value = "";
+  loadPage(pageNumber, false);
+  url.searchParams.delete("q");
+  history.pushState({}, "", url);
+  if (focusInput) {
+    queryInput.focus();
+  }
+}
+
+// Focus search with F3 or Ctrl + F.
+window.addEventListener("keydown", (e) => {
+  if (e.key === "F3" || (e.ctrlKey && e.key === "f")) {
+    queryInput.focus();
+    e.preventDefault();
+  } else if (e.key === "Escape") {
+    queryInput.blur();
+    e.preventDefault();
+  }
+});
+window.onpopstate = (e) => {
+  clearSearch();
+  queryInput.blur();
+  e.preventDefault();
+};
+
 const addBangButton = document.getElementById("add-bang");
 addBangButton.addEventListener("click", addBang, false);
+
+// Search bar (expand/shrink animation).
+const queryInput = document.getElementById("query");
+const searchBar = queryInput.parentNode;
+const clearButton = document.getElementById("clear-button");
+queryInput.addEventListener("focus", () => {
+  searchBar.classList.add("searching");
+});
+queryInput.addEventListener("focusout", () => {
+  if (queryInput.value === "") {
+    searchBar.classList.remove("searching");
+  }
+});
+// Wait to run search for a small time after the user has stopped typing.
+const debouncedSearch = debounce(runSearch, 300); // delay in ms
+queryInput.addEventListener("input", () => {
+  if (query !== "") {
+    clearButton.style.display = "block";
+  } else {
+    clearButton.style.display = "none";
+  }
+  debouncedSearch(queryInput.value);
+});
+clearButton.addEventListener("click", clearSearch);
+document.getElementById("yang-logo").addEventListener("click", () => {
+  pageNumber = 1;
+  clearSearch(false);
+  loadPage(pageNumber);
+});
 
 // Initial load.
 (async () => {
   document.body.style.opacity = 0;
-  await loadPage(pageNumber, false);
+  await loadPage(pageNumber, false, true);
   document.body.style.opacity = 1;
 })();
