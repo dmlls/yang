@@ -87,7 +87,7 @@ input {
 }
 
 input:focus {
-  outline: 1px solid #e15e49;
+  outline: 1px solid #7814ae;
 }
 
 input::placeholder {
@@ -106,7 +106,7 @@ select {
 }
 
 select:open {
-  outline: 1px solid #e15e49;
+  outline: 1px solid #7814ae;
 }
 
 .setting-group:nth-child(n + 2) {
