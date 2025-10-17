@@ -170,7 +170,7 @@ async function getAndValidateInputtedBang(mode) {
   let bang = validateEmptyOrTooLong(
     bangInput,
     bangInput.parentNode,
-    LIMITS.MAX_LENGTH_NAME,
+    LIMITS.MAX_LENGTH_BANG,
   )?.toLowerCase();
   if (mode === "add" || saveButton.bangKey !== getBangKey(bang)) {
     bang = await validateBangKey(saveButton.bangKey, getBangKey(bang));
