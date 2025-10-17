@@ -105,7 +105,7 @@ browser.webRequest.onBeforeRequest.addListener(
     browser.storage.session.get(PreferencePrefix.BANG_SYMBOL).then(
       function onGot(item) {
         const bangSymbol =
-          item[PreferencePrefix.BANG_SYMBOL] || Defaults.BANG_SYMBOL;
+          item[PreferencePrefix.BANG_SYMBOL] ?? Defaults.BANG_SYMBOL;
         let bang = null;
         let query = null;
         const searchTerms = searchQuery.split(" ");
@@ -126,27 +126,48 @@ browser.webRequest.onBeforeRequest.addListener(
             function onGot(item) {
               // Any matches?
               if (Object.hasOwn(item, bangKey)) {
-                const bangTargets = item[bangKey];
-                let targetUrl;
-                bangTargets.forEach((target, index) => {
-                  if (query.length === 0 && target.baseUrl != null) {
-                    targetUrl = target.baseUrl;
-                  } else {
-                    if (target.urlEncodeQuery) {
-                      query = encodeURIComponent(query);
-                    }
-                    targetUrl = new URL(
-                      target.url.replace("{{{s}}}", query),
-                    ).toString();
-                  }
-                  // Open first target URL in current tab...
-                  if (index === 0) {
-                    updateTab(details.tabId, targetUrl);
-                  } else {
-                    // ...and the rest in new tabs.
-                    browser.tabs.create({ url: targetUrl, active: false });
-                  }
-                });
+                browser.storage.session
+                  .get(PreferencePrefix.INACTIVE_BANGS)
+                  .then(
+                    function onGot(inactiveBangs) {
+                      if (
+                        !(
+                          item[bangKey].default &&
+                          inactiveBangs[
+                            PreferencePrefix.INACTIVE_BANGS
+                          ].includes(bang)
+                        )
+                      ) {
+                        const bangTargets = item[bangKey].targets;
+                        let targetUrl;
+                        bangTargets.forEach((target, index) => {
+                          if (query.length === 0 && target.baseUrl != null) {
+                            targetUrl = target.baseUrl;
+                          } else {
+                            if (target.urlEncodeQuery) {
+                              query = encodeURIComponent(query);
+                            }
+                            targetUrl = new URL(
+                              target.url.replace("{{{s}}}", query),
+                            ).toString();
+                          }
+                          // Open first target URL in current tab...
+                          if (index === 0) {
+                            updateTab(details.tabId, targetUrl);
+                          } else {
+                            // ...and the rest in new tabs.
+                            browser.tabs.create({
+                              url: targetUrl,
+                              active: false,
+                            });
+                          }
+                        });
+                      }
+                    },
+                    function onError(error) {
+                      // TODO: Handle error.
+                    },
+                  );
               }
             },
             function onError(error) {
@@ -192,7 +213,8 @@ async function updateStorageSchema() {
           !bangKey.startsWith(PreferencePrefix.BANG) &&
           !bangKey.startsWith(PreferencePrefix.BANG_SYMBOL) &&
           !bangKey.startsWith(PreferencePrefix.BANG_PROVIDER) &&
-          !bangKey.startsWith(PreferencePrefix.SEARCH_ENGINE)
+          !bangKey.startsWith(PreferencePrefix.SEARCH_ENGINE) &&
+          !bangKey.startsWith(PreferencePrefix.INACTIVE_BANGS)
         ) {
           bangKey = getBangKey(bang.bang);
         }
@@ -217,6 +239,9 @@ async function updateStorageSchema() {
     }
     if (!Object.hasOwn(processedBangs, PreferencePrefix.BANG_PROVIDER)) {
       processedBangs[PreferencePrefix.BANG_PROVIDER] = Defaults.BANG_PROVIDER;
+    }
+    if (!Object.hasOwn(processedBangs, PreferencePrefix.INACTIVE_BANGS)) {
+      processedBangs[PreferencePrefix.INACTIVE_BANGS] = Defaults.INACTIVE_BANGS;
     }
     await browser.storage.sync.clear().then(
       async function onCleared() {

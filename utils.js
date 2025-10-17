@@ -18,6 +18,7 @@
 
 export {
   PreferencePrefix,
+  BangProviders,
   Defaults,
   fetchSettings,
   getPage,
@@ -33,6 +34,7 @@ const PreferencePrefix = Object.freeze({
   BANG: "#bang#",
   BANG_PROVIDER: "#provider#",
   BANG_SYMBOL: "#symbol#",
+  INACTIVE_BANGS: "#inactive#",
   SEARCH_ENGINE: "#engine#",
 });
 
@@ -62,6 +64,7 @@ const Defaults = Object.freeze({
   BANG_PROVIDER: BangProviders.KAGI.id,
   BANG_SYMBOL: "!",
   ITEMS_PER_PAGE: 25,
+  INACTIVE_BANGS: [],
 });
 
 async function fetchSettings(update = false) {
@@ -88,7 +91,7 @@ async function fetchSettings(update = false) {
   // Fetch settings and store them in the session storage.
   const result = await browser.storage.sync.get().then(
     async function onGot(storedSettings) {
-      const settings = {};
+      let settings = {};
       // Fetch default bangs.
       let defaultBangs = [];
       settings[PreferencePrefix.BANG_PROVIDER] =
@@ -96,75 +99,78 @@ async function fetchSettings(update = false) {
         Defaults.BANG_PROVIDER;
       const provider =
         BangProviders[settings[PreferencePrefix.BANG_PROVIDER].toUpperCase()];
-      for (const api of provider.endpoints) {
-        try {
-          const res = await fetch(new Request(api));
-          defaultBangs = defaultBangs.concat(await res.json());
-        } catch (error) {
-          return error;
-        }
-      }
-      for (const bang of defaultBangs) {
-        // Bang providers do not specify the origin for bangs targeting their own
-        // site, so we add it.
-        if (bang.u.startsWith("/")) {
-          bang.u = `${provider.url}${bang.u}`;
-        }
-        const bangTargets = [
-          {
-            url: bang.u,
-            baseUrl:
-              Object.hasOwn(bang, "fmt") && !bang.fmt.includes("open_base_path")
-                ? null
-                : new URL(bang.u).origin,
-            urlEncodeQuery: Object.hasOwn(bang, "fmt")
-              ? bang.fmt.includes("url_encode_placeholder")
-              : true,
-          },
-        ];
-        settings[getBangKey(bang.t)] = bangTargets;
-        // Add Kagi aliases.
-        if (bang.ts && bang.ts.length > 0) {
-          for (const alias of bang.ts) {
-            settings[getBangKey(alias)] = bangTargets;
+      if (provider.id !== BangProviders.NONE.id) {
+        for (const api of provider.endpoints) {
+          try {
+            const res = await fetch(new Request(api));
+            defaultBangs = defaultBangs.concat(await res.json());
+          } catch (error) {
+            return error;
           }
         }
-      }
-      // Exceptions for URL encoding of default bangs (unfortunately, they do
-      // not expose this info).
-      const urlEncodingExceptions = [
-        "archived",
-        "archiveweb",
-        "ia",
-        "wayback",
-        "waybackmachine",
-        "wbm",
-        "webarchive",
-      ];
-      for (const exc of urlEncodingExceptions) {
-        const exc_bang = settings[getBangKey(exc)];
-        if (exc_bang && exc_bang.length > 0) {
-          exc_bang[0].urlEncodeQuery = false;
+        for (const bang of defaultBangs) {
+          // Bang providers do not specify the origin for bangs targeting their own
+          // site, so we add it.
+          if (bang.u.startsWith("/")) {
+            bang.u = `${provider.url}${bang.u}`;
+          }
+          const bangData = {
+            bang: bang.t,
+            name: bang.s.trim(),
+            targets: [
+              {
+                url: bang.u.trim(),
+                baseUrl:
+                  Object.hasOwn(bang, "fmt") &&
+                  !bang.fmt.includes("open_base_path")
+                    ? null
+                    : new URL(bang.u).origin,
+                urlEncodeQuery: Object.hasOwn(bang, "fmt")
+                  ? bang.fmt.includes("url_encode_placeholder")
+                  : true,
+              },
+            ],
+            default: true,
+          };
+          settings[getBangKey(bang.t)] = bangData;
+          // Add Kagi aliases.
+          if (bang.ts && bang.ts.length > 0) {
+            for (const alias of bang.ts) {
+              settings[getBangKey(alias)] = { ...bangData, bang: alias };
+            }
+          }
+        }
+        // Exceptions for URL encoding of default bangs (unfortunately, they do
+        // not expose this info).
+        const urlEncodingExceptions = [
+          "archived",
+          "archiveweb",
+          "ia",
+          "wayback",
+          "waybackmachine",
+          "wbm",
+          "webarchive",
+        ];
+        for (const exc of urlEncodingExceptions) {
+          const exc_bang = settings[getBangKey(exc)];
+          if (exc_bang && exc_bang.length > 0) {
+            exc_bang[0].urlEncodeQuery = false;
+          }
+        }
+        // Exceptions to point default bangs to different targets.
+        const targetExceptions = {
+          m: settings[getBangKey("gm")],
+          map: settings[getBangKey("gm")],
+          maps: settings[getBangKey("gm")],
+        };
+        for (const [bang, data] of Object.entries(targetExceptions)) {
+          settings[getBangKey(bang)] = data;
         }
       }
-      // Exceptions to point default bangs to different targets.
-      const targetExceptions = {
-        m: settings[getBangKey("gm")],
-        map: settings[getBangKey("gm")],
-        maps: settings[getBangKey("gm")],
-      };
-      for (const [bang, target] of Object.entries(targetExceptions)) {
-        settings[getBangKey(bang)] = target;
-      }
-      // Retrieve custom settings (IMPORTANT: This must be done after loading
+      // Update with custom settings (IMPORTANT: This must be done after loading
       // the default bangs, otherwise those would override the custom bangs and
       // not vice versa).
-      for (const [key, item] of Object.entries(storedSettings)) {
-        // In the session storage, for the bangs we only need the targets.
-        settings[key] = key.startsWith(PreferencePrefix.BANG)
-          ? item.targets
-          : item;
-      }
+      settings = { ...settings, ...storedSettings };
       if (
         !Object.hasOwn(settings, PreferencePrefix.BANG_SYMBOL) ||
         !settings[PreferencePrefix.BANG_SYMBOL]
@@ -172,10 +178,10 @@ async function fetchSettings(update = false) {
         settings[PreferencePrefix.BANG_SYMBOL] = Defaults.BANG_SYMBOL;
       }
       if (
-        !Object.hasOwn(settings, PreferencePrefix.BANG_PROVIDER) ||
-        !settings[PreferencePrefix.BANG_PROVIDER]
+        !Object.hasOwn(settings, PreferencePrefix.INACTIVE_BANGS) ||
+        !settings[PreferencePrefix.INACTIVE_BANGS]
       ) {
-        settings[PreferencePrefix.BANG_PROVIDER] = Defaults.BANG_PROVIDER;
+        settings[PreferencePrefix.INACTIVE_BANGS] = [];
       }
       browser.storage.session.clear().then(
         function onCleared() {
@@ -195,7 +201,7 @@ async function fetchSettings(update = false) {
 function getPage(items, pageNumber, itemsPerPage = Defaults.ITEMS_PER_PAGE) {
   if (items.length === 0) {
     return {
-      totalPages: 0,
+      totalPages: 1,
       page: [],
     };
   }
@@ -215,17 +221,14 @@ function getPage(items, pageNumber, itemsPerPage = Defaults.ITEMS_PER_PAGE) {
 }
 
 function sortBangs(bangs) {
-  return Object.entries(bangs)
-    .filter((entry) => entry[0].startsWith(PreferencePrefix.BANG))
-    .map((entry) => entry[1])
-    .sort((a, b) => {
-      const comparison = a.name.localeCompare(b.name);
-      // If equal names, sort by bang.
-      if (comparison === 0) {
-        return a.bang.localeCompare(b.bang);
-      }
-      return comparison;
-    });
+  return bangs.sort((a, b) => {
+    const comparison = a.name.localeCompare(b.name);
+    // If equal names, sort by bang.
+    if (comparison === 0) {
+      return a.bang.localeCompare(b.bang);
+    }
+    return comparison;
+  });
 }
 
 function getSearchScore(target, query) {
@@ -241,13 +244,11 @@ function getSearchScore(target, query) {
 
 function searchBangs(bangs, query) {
   const processedQuery = query.toLowerCase();
-  return Object.entries(bangs)
-    .filter((entry) => entry[0].startsWith(PreferencePrefix.BANG))
-    .map((entry) => entry[1])
+  return bangs
     .filter(
-      (entry) =>
-        entry.name.toLowerCase().includes(processedQuery) ||
-        entry.bang.toLowerCase().includes(processedQuery),
+      (bang) =>
+        bang.name.toLowerCase().includes(processedQuery) ||
+        bang.bang.toLowerCase().includes(processedQuery),
     )
     .sort((a, b) => {
       return (
