@@ -54,13 +54,88 @@ body {
 
 .title {
   display: flex;
-  gap: 1.2rem;
+  gap: 0.5rem;
   align-items: center;
   text-wrap: nowrap;
 }
 
 a {
   color: #0000ff;
+}
+
+.select-custom-default-bangs {
+  width: 15.8rem;
+  cursor: pointer;
+}
+
+.select-custom-default-bangs .select-button {
+  display: flex;
+  padding: 1rem;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 12px;
+}
+
+.select-custom-default-bangs .select-options {
+  position: absolute;
+  display: none;
+  width: 14.35rem;
+  margin: 0;
+  padding: 0.7rem;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+.select-custom-default-bangs.active .select-options {
+  display: block;
+  opacity: 1;
+  animation: fade 0.2s;
+}
+
+@keyframes fade {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.select-custom-default-bangs svg {
+  margin-top: 4px;
+}
+
+.select-custom-default-bangs.active svg {
+  transform: rotate(180deg);
+}
+
+.select-options .option {
+  display: flex;
+  height: 2rem;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  background: #fff;
+}
+
+.select-custom-default-bangs .select-button:hover,
+.select-custom-default-bangs.active .select-button,
+.select-options .option:hover,
+#settings:hover {
+  background: #f5f0f8;
+}
+
+.select-custom-default-bangs .select-button:active,
+.select-options .option:active,
+#settings:active {
+  background: #e6e0ea;
+}
+
+.select-options .option-text {
+  font-size: 1.2rem;
 }
 
 h1 {
@@ -109,7 +184,7 @@ h1 {
   padding: 0 0.6rem;
   align-items: center;
   box-sizing: border-box;
-  border: solid 1.5px #aaa;
+  border: solid 1px #aaa;
   border-radius: 6px;
   background-color: #fff;
 }
@@ -190,16 +265,15 @@ h1 {
 #settings {
   color: #454545;
   fill: #454545;
-  margin-top: 8px;
+  padding: 1rem;
   border: none;
+  border-radius: 12px;
   background: none;
+  cursor: pointer;
 }
 
-#settings:hover {
-  color: #2a2a2a;
-  fill: #2a2a2a;
-  text-decoration: underline;
-  cursor: pointer;
+#settings svg {
+  margin-top: 8px;
 }
 
 #yang-logo {
@@ -370,12 +444,20 @@ h1 {
     padding: 20px;
   }
 
-  .title {
-    gap: 1rem;
-  }
-
   #yang-logo {
     width: 3rem;
+  }
+
+  .select-custom-default-bangs {
+    width: 14rem;
+  }
+
+  .select-custom-default-bangs .select-options {
+    width: 12.55rem;
+  }
+
+  .select-options .option-text {
+    font-size: 1.1rem;
   }
 
   h1 {

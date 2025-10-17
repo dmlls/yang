@@ -374,6 +374,27 @@ document.getElementById("yang-logo").addEventListener("click", () => {
   loadPage(pageNumber);
 });
 
+// Custom / Default Bangs Menu
+const optionMenu = document.querySelector(".select-custom-default-bangs");
+const selectButton = optionMenu.querySelector(".select-button");
+const selectText = optionMenu.querySelector(".select-text");
+const options = optionMenu.querySelectorAll(".option");
+selectButton.addEventListener("click", (e) => {
+  optionMenu.classList.toggle("active");
+  e.stopPropagation();
+});
+options.forEach((option) => {
+  option.addEventListener("click", () => {
+    let selectedOption = option.querySelector(".option-text").textContent;
+    selectText.textContent = selectedOption;
+    optionMenu.classList.remove("active");
+  });
+});
+// Close the menu when clicking outside of it.
+window.addEventListener("click", () => {
+  optionMenu.classList.remove("active");
+});
+
 // Initial load.
 (async () => {
   document.body.style.opacity = 0;
