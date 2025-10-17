@@ -83,7 +83,8 @@ function saveSettings() {
           const result = await fetchSettings(true);
           if (result != null) {
             alert(
-              "There was an error fetching the default bangs. Please, check your internet connection and try again.",
+              "There was an error fetching the default bangs. Please, check " +
+                "your internet connection and try again.",
             );
           }
         }

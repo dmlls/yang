@@ -246,7 +246,7 @@ async function saveCustomBang() {
       function onSet() {
         browser.storage.session
           .set({
-            [inputtedBangKey]: inputtedBang.targets,
+            [inputtedBangKey]: inputtedBang,
           })
           .then(
             () => {

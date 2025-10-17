@@ -13,7 +13,30 @@
       <div id="header">
         <div class="title">
           <img id="yang-logo" src="../icons/icon.svg" />
-          <h1>Custom Bangs</h1>
+          <div class="select-custom-default-bangs">
+            <div class="select-button">
+              <h1 class="select-text">Custom Bangs</h1>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 18 18"
+              >
+                <path
+                  d="M2.328 3.482c-.369 0-.72.15-.969.41l-.793.796-.003.003-.004.004a1.35 1.35 0 0 0 .006 1.947L8.02 14.1c.255.267.61.42.976.418.37.001.726-.15.975-.41l7.46-7.465.005-.004a1.35 1.35 0 0 0 .003-1.944l-.003-.004-.004-.004-.784-.787a1.353 1.353 0 0 0-1.951-.008l-5.699 5.7L3.307 3.9l-.004-.004a1.342 1.342 0 0 0-.973-.414Z"
+                  style="fill: #e15e49"
+                />
+              </svg>
+            </div>
+            <ul class="select-options">
+              <li class="option">
+                <span id="custom" class="option-text">Custom Bangs</span>
+              </li>
+              <li class="option">
+                <span id="default" class="option-text">Default Bangs</span>
+              </li>
+            </ul>
+          </div>
         </div>
         <a href="settings.html">
           <button type="button" title="Settings" id="settings">
@@ -58,23 +81,39 @@
                 </svg>
               </button>
             </div>
-            <button type="button" id="add-bang">
-              <svg
-                class="icon"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                width="24"
-                height="24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <line x1="12" y1="5" x2="12" y2="19"></line>
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-              </svg>
-              Add Bang
+            <button type="button" id="action-button">
+              <div id="add-bang">
+                <svg
+                  class="icon"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  width="24"
+                  height="24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+                <span>Add Bang</span>
+              </div>
+              <div id="show-inactive">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M3.04.667c-.64 0-1.26.228-1.703.669-.443.44-.67 1.059-.67 1.698 0 .577.196 1.039.386 1.417a.95.95 0 0 0 .14.21l7.752 8.697v7.608c0 .64.229 1.26.67 1.702.444.442 1.065.665 1.704.665.589 0 1.007-.246 1.281-.383a.952.952 0 0 0 .12-.069l1.512-1.057v-.003c.637-.482.889-1.235.889-1.85V13.21l7.617-8.7a2.194 2.194 0 0 0 .586-1.71 2.593 2.593 0 0 0-.772-1.573 1.935 1.935 0 0 0-.914-.502c-.299-.064-.547-.058-.757-.058Zm-.06 1.89h17.9c.167 0 .295.008.335.01a.772.772 0 0 1 .224.42v.007l.002.01a.226.226 0 0 1-.076.207l-.005.006-.008.005c-.018.018-.033.037-.041.047l-7.85 8.967a.942.942 0 0 0-.234.62v7.116a.63.63 0 0 1-.027.228c-.016.037-.036.068-.119.123l-.022.014-.001.002-1.354.943h-.002a3.745 3.745 0 0 1-.386.16l-.006.001-.005.002H11.3a.67.67 0 0 1-.224-.036.327.327 0 0 1-.199-.199.676.676 0 0 1-.038-.244v-7.97a.947.947 0 0 0-.24-.626L2.725 3.536l-.002-.002a3.91 3.91 0 0 1-.157-.49l-.002-.008-.002-.006v-.005l-.002-.004v-.005l-.002-.002v-.003h.002a.65.65 0 0 1 .036-.217.322.322 0 0 1 .082-.121.323.323 0 0 1 .12-.08.594.594 0 0 1 .181-.036z"
+                    style="fill: #fff"
+                  />
+                </svg>
+                <span>Show Inactive</span>
+              </div>
             </button>
           </div>
           <table id="bangs-table">
@@ -89,6 +128,20 @@
           </table>
           <span id="no-bangs"></span>
         </div>
+      </div>
+      <div id="button-spinner">
+        <svg viewBox="0 0 50 50">
+          <circle
+            cx="25"
+            cy="25"
+            r="20"
+            fill="none"
+            stroke="#aa3471"
+            stroke-width="4"
+            stroke-linecap="round"
+            stroke-dasharray="60 120"
+          ></circle>
+        </svg>
       </div>
       <div id="pagination"></div>
       <div id="footer">
