@@ -46,7 +46,7 @@ browser.webRequest.onBeforeRequest.addListener(
       "/dsearch", // Startpage add-on
       "/web", // swisscows & ask.com
       "qwant.com/",
-      "/entry/should-show-feedback", // perplexity
+      "perplexity_ask", // Perplexity AI
       "/s", // Baidu
       "/meta", // metaGer
       "/serp", // dogpile
@@ -72,7 +72,7 @@ browser.webRequest.onBeforeRequest.addListener(
       return null;
     }
     // Different search engines use different params for the query.
-    const params = ["q", "p", "query", "text", "eingabe", "wd"];
+    const params = ["q", "p", "query", "query_str", "text", "eingabe", "wd"];
     let searchQuery = null;
     for (const param of params) {
       searchQuery = url.searchParams.get(param);
