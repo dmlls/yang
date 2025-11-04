@@ -36,17 +36,20 @@ browser.runtime.onStartup.addListener(async () => {
   await fetchSettings(false);
 });
 
+let lastTriggerTime = new Date();
+
 browser.webRequest.onBeforeRequest.addListener(
   async (details) => {
     const url = new URL(details.url);
     // Only consider certain requests.
     const include = [
       "/search",
-      "duckduckgo.com/",
+      "duckduckgo.com/?",
       "/dsearch", // Startpage add-on
-      "/web", // swisscows & ask.com
+      "/web?", // swisscows & ask.com
       "qwant.com/",
       "perplexity_ask", // Perplexity AI
+      "https://www.qwant.com/?q=",
       "/s", // Baidu
       "/meta", // metaGer
       "/serp", // dogpile
@@ -56,7 +59,7 @@ browser.webRequest.onBeforeRequest.addListener(
     if (!include) {
       return null;
     }
-    // Skip requests for suggestions.
+    // Skip requests for suggestions and requests not related to search.
     const skip =
       [
         "/ac",
@@ -66,11 +69,53 @@ browser.webRequest.onBeforeRequest.addListener(
         "/autocompleter",
         "/autocomplete",
         "/sugrec",
+        "/favicon",
+        ".js",
+        ".css",
+        ".svg",
+        ".png",
+        ".jpg",
+        ".jpeg",
+        ".woff2",
+        "/ia",
+        "/asset", // Kagi
+        "/socket", // Kagi
+        "/static-assets", // DuckDuckGo
+        "/_next", // DuckDuckGo
+        "/dist", // DuckDuckGo
+        "/xjs", // Google
+        "/async", // Google
+        "/searchbox", // Google
+        "/speech-api", // Google
+        "/httpservice", // Google
+        "/cdn", // StartPage
+        "/dplpxs", // StartPage
+        "/sxpra", // StartPage
+        "/afs", // StartPage
+        "/jst", // StartPage
+        "/atq", // StartPage
+        "/ep1", // StartPage
+        "/sa", // Bing
+        "/sbi", // Bing
+        "/auth", // Bing
+        "/exploremore", // Bing
+        "/svctrlpack", // Bing
+        "/sugg", // Yahoo!
+        "/beacon", // Yahoo!
+        "/static", // Ecosia
+        "/events", // Qwant
       ].some((path) => url.pathname.includes(path)) ||
       url.searchParams.get("mod") === "1"; // hack for Baidu
     if (skip) {
       return null;
     }
+    const currentTime = new Date();
+    // Ensure we only trigger the bang once.
+    if (currentTime - lastTriggerTime < 500) {
+      lastTriggerTime = currentTime;
+      return null;
+    }
+    lastTriggerTime = currentTime;
     // Different search engines use different params for the query.
     const params = ["q", "p", "query", "query_str", "text", "eingabe", "wd"];
     let searchQuery = null;
