@@ -65,7 +65,7 @@ async function displayBangs(totalPages, bangs) {
     url.searchParams.set("page", pageNumber);
     history.replaceState({}, "", url);
   }
-  if (totalPages > 0 && bangs.length > 0) {
+  if (bangs.length > 0) {
     toggleNoBangsMessage(false);
     const inactiveBangs =
       bangType === BangType.CUSTOM
@@ -194,11 +194,6 @@ async function displayBangs(totalPages, bangs) {
   }
 }
 
-// TODO: Handle errors.
-function onError(error) {
-  console.error(`Error: ${error}`);
-}
-
 async function actionButtonHandler() {
   if (bangType === BangType.CUSTOM) {
     window.location.assign(`add_edit_bang.html?mode=add`);
@@ -206,6 +201,7 @@ async function actionButtonHandler() {
     pageNumber = 1;
     toggleSpinner(true);
     if (!showInactive.filtered) {
+      url.searchParams.set("inactive", true);
       await loadPage(false, false, true, true);
       showInactive.firstElementChild.innerHTML = `
         <svg
@@ -226,8 +222,8 @@ async function actionButtonHandler() {
         </svg>
       `;
       showInactive.lastElementChild.textContent = "Show All";
-      url.searchParams.set("inactive", true);
     } else {
+      url.searchParams.delete("inactive");
       await loadPage(false, false, true, false);
       showInactive.firstElementChild.innerHTML = `
         <svg
@@ -243,7 +239,6 @@ async function actionButtonHandler() {
         </svg>
       `;
       showInactive.lastElementChild.textContent = "Show Inactive";
-      url.searchParams.delete("inactive");
     }
     showInactive.filtered = !showInactive.filtered;
     history.pushState({}, "", url);
@@ -396,10 +391,16 @@ function copyBang(element) {
 
 function toggleNoBangsMessage(visible) {
   const noBangsMessage = document.getElementById("no-bangs");
-  let searching = url.searchParams.get("q") !== null;
+  const searching = url.searchParams.get("q") !== null;
+  const inactiveFiltered = url.searchParams.get("inactive");
+  const defaultBangs = url.searchParams.get("bangs") === "default";
   if (visible) {
     if (searching) {
       noBangsMessage.textContent = "No results found";
+    } else if (inactiveFiltered) {
+      noBangsMessage.textContent = "No inactive bangs";
+    } else if (defaultBangs) {
+      noBangsMessage.textContent = "Default bangs could not be loaded";
     } else {
       noBangsMessage.textContent = "Click on + Add Bang to get started";
     }
@@ -537,6 +538,7 @@ function bangTypeSelectedHandler(e) {
     bangType = selectedOption.id;
     url.searchParams.set("page", pageNumber);
     url.searchParams.set("bangs", bangType);
+    url.searchParams.delete("q");
     url.searchParams.delete("inactive");
     window.location.assign(url);
   }

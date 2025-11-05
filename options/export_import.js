@@ -22,6 +22,7 @@ import {
   PreferencePrefix,
   fetchSettings,
   getBangKey,
+  sortBangs,
 } from "../utils.js";
 
 // Support for Chromium.
@@ -34,13 +35,36 @@ const BACKUP_VERSION = "1.3";
 const BackupFields = Object.freeze({
   BACKUP_VERSION: "backupVersion",
   BANGS: "bangs",
+  INACTIVE_BANGS: "inactiveBangs",
   SETTINGS: "settings",
   BANG_SYMBOL: "bangSymbol",
   BANG_PROVIDER: "bangProvider",
-  SEARCH_ENGINES: "searchEngines",
 });
 
-function exportSettings(settings) {
+async function exportSettings() {
+  const settings = await browser.storage.sync.get().then(
+    function onGot(storedData) {
+      const loadedSettings = {};
+      loadedSettings[BackupFields.BACKUP_VERSION] = BACKUP_VERSION;
+      loadedSettings[BackupFields.SETTINGS] = {};
+      loadedSettings[BackupFields.SETTINGS][BackupFields.BANG_SYMBOL] =
+        storedData[PreferencePrefix.BANG_SYMBOL] ?? Defaults.BANG_SYMBOL;
+      loadedSettings[BackupFields.SETTINGS][BackupFields.BANG_PROVIDER] =
+        storedData[PreferencePrefix.BANG_PROVIDER] ?? Defaults.BANG_PROVIDER;
+      const sortedBangs = sortBangs(
+        Object.entries(storedData)
+          .filter((entry) => entry[0].startsWith(PreferencePrefix.BANG))
+          .map((entry) => entry[1]),
+      );
+      loadedSettings[BackupFields.BANGS] = sortedBangs;
+      loadedSettings[BackupFields.INACTIVE_BANGS] =
+        storedData[PreferencePrefix.INACTIVE_BANGS] ?? Defaults.INACTIVE_BANGS;
+      return loadedSettings;
+    },
+    function onError(error) {
+      // TODO: Handle errors.
+    },
+  );
   const jsonString = JSON.stringify(settings, null, 2);
   const timestamp = new Date().toISOString().replace(/[-T:.Z]/g, "");
   const filename = `yang-backup_${timestamp}.json`;
@@ -85,6 +109,8 @@ async function importSettings(file) {
         bangProvider =
           settings[BackupFields.BANG_PROVIDER] ?? Defaults.BANG_PROVIDER;
       }
+      const inactiveBangs =
+        readBackup[BackupFields.INACTIVE_BANGS] ?? Defaults.INACTIVE_BANGS;
       const neededFields =
         backupVersion >= 1.2
           ? ["name", "bang", "targets"]
@@ -120,6 +146,7 @@ async function importSettings(file) {
       }
       preferences.set(PreferencePrefix.BANG_SYMBOL, bangSymbol);
       preferences.set(PreferencePrefix.BANG_PROVIDER, bangProvider);
+      preferences.set(PreferencePrefix.INACTIVE_BANGS, inactiveBangs);
       browser.storage.sync.set(Object.fromEntries(preferences)).then(
         async function onSet() {
           await fetchSettings(true);

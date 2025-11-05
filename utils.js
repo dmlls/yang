@@ -35,7 +35,6 @@ const PreferencePrefix = Object.freeze({
   BANG_PROVIDER: "#provider#",
   BANG_SYMBOL: "#symbol#",
   INACTIVE_BANGS: "#inactive#",
-  SEARCH_ENGINE: "#engine#",
 });
 
 const BangProviders = Object.freeze({
