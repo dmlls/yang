@@ -258,7 +258,6 @@ async function updateStorageSchema() {
           !bangKey.startsWith(PreferencePrefix.BANG) &&
           !bangKey.startsWith(PreferencePrefix.BANG_SYMBOL) &&
           !bangKey.startsWith(PreferencePrefix.BANG_PROVIDER) &&
-          !bangKey.startsWith(PreferencePrefix.SEARCH_ENGINE) &&
           !bangKey.startsWith(PreferencePrefix.INACTIVE_BANGS)
         ) {
           bangKey = getBangKey(bang.bang);
@@ -275,6 +274,10 @@ async function updateStorageSchema() {
           delete bang.url;
           delete bang.openBaseUrl;
           delete bang.urlEncodeQuery;
+        }
+        // v2.0.0
+        if (bang.order != null) {
+          delete bang.order;
         }
         return [bangKey, bang];
       }),
