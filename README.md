@@ -1,11 +1,9 @@
 <p align="center">
    <a href="https://addons.mozilla.org/addon/yang-addon/">
-      <img width="150" src="https://user-images.githubusercontent.com/22967053/218319779-f000b2b7-d083-4d19-89dc-ef1d60e2c8c2.png" alt="Yang! - Yet Another Bangs anywhere Firefox extension">
+      <img width="700" src="https://github.com/user-attachments/assets/25552298-976b-4051-b884-bc6b35337d64" alt="Yang! - Yet Another Bangs anywhere Firefox extension">
    </a>
 </p>
-<p align="center">
-   <img width="750px" src="https://github.com/user-attachments/assets/f1a55ea4-5f39-4621-901c-aacb7683dc6d">
-</p>
+
 <h1 align="center">Yang!</h1>
 <p align="center"><b>Yet Another Bangs anywhere extension</b></p>
 <br>
@@ -34,7 +32,10 @@ Citing DuckDuckGo, who first introduced them back in 2008:
 ## 2. How does the extension work?
 
 Simply install the extension and use any of the supported [Kagi
-Bangs](https://kbe.smaertness.net/).
+Bangs](https://kbe.smaertness.net/). If you prefer
+[DuckDuckGo Bangs](https://duckduckgo.com/bangs), you
+can change them in the settings. You can of course also add your
+custom bangs!
 
 <br>
 
@@ -55,7 +56,7 @@ here to closest restaurant !gm
 Bangs can also be triggered without any query, serving as a bookmark shortcut:
 
 ```console
-!bbc
+!weather
 ```
 
 <br>
@@ -64,7 +65,8 @@ Bangs can also be triggered without any query, serving as a bookmark shortcut:
 
 |Done? | Feature| Description |
 |:-:|:-|:-|
-|✅|**Kagi Bangs**| More than 13,500 default bangs included. |
+|✅|**Kagi or DuckDuckGo Bangs**| More than 13,500 default bangs included. |
+|✅|**Browse Default Bangs**| Browse, search or deactivate default bangs. |
 |✅|**Custom Bangs**| You can create your own bangs or override defaults. |
 |✅|**Custom Bang Symbol**| Define your own custom symbol(s) to trigger the bangs. |
 |✅|**Multiple Target URLs**| Open multiple websites with a single bang. |
@@ -73,8 +75,7 @@ Bangs can also be triggered without any query, serving as a bookmark shortcut:
 |✅|**Address Bar Trigger**| You can use bangs directly in the URL bar. |
 |✅|**Search Engine Trigger**| Bangs also work from the search bar of your favorite search engine. |
 |✅|**Backup and Restore**| Never lose your bangs. |
-|✅|**Mobile Support**| Yang! is also available on [Firefox Android](https://addons.mozilla.org/en-US/android/addon/yang-addon/). |
-|🔜|**Custom Search Engines**| Soon you will be able to add your own custom search engines. |
+|✅|**Mobile Support**| Yang is also available on [Firefox Android](https://addons.mozilla.org/en-US/android/addon/yang-addon/). |
 
 <sub><sup>1</sup> This greatly reduces the redirection times, as shown by
 [DuckDuckGo !Bangs but
@@ -86,7 +87,7 @@ Faster](https://bangs-but-faster.inclushe.com/).</small></sub>
 
 ## 4. Supported Engines
 
-Yang! will be triggered directly from your **address bar** and the **following
+Yang will be triggered directly from your **address bar** and the **following
 sites**:
 
 | Name | URL |
@@ -115,7 +116,6 @@ sites**:
 | Ask.com | https://www.ask.com/
 | Seznam.cz | https://search.seznam.cz/
 | Karma Search | https://karmasearch.org/
-| Mullvad Leta | https://leta.mullvad.net/
 | Good Search | https://good-search.org/
 | Marginalia Search | https://marginalia-search.com/
 
@@ -132,14 +132,18 @@ issue](https://github.com/dmlls/yang/issues/new/choose) and we'll add it!
 </details>
 
 <details>
-  <summary><b>Why does Yang! need permissions on a 300+ sites?</b></summary>
+  <summary><b>Why does Yang need permissions on a 300+ sites?</b></summary>
   <p>Instead of requesting data access on <i>all</i> sites, we granularly
-  specify the search-engine sites that Yang! supports (which yeah, they're quite
+  specify the search-engine sites that Yang supports (which yeah, they're quite
   a few). You can find which sites we request permissions for in the
   <a href="https://github.com/dmlls/yang/blob/main/manifest.json">
   <code>manifest.json</code></a>.</p>
 </details>
 
+<details>
+  <summary><b>Does Yang collect any data?</b></summary>
+  <p>Yang does not collect any kind of data and never ever will!</p>
+</details>
 <br>
 
 ## 6. Contributing
@@ -152,9 +156,9 @@ guidelines](https://github.com/dmlls/yang/blob/main/CONTRIBUTING.md).
 
 ## 7. Related Extensions
 
-If you don't like Yang!, there are many [other
+If you don't like Yang, there are many [other
 options](https://addons.mozilla.org/en-US/firefox/search/?q=bangs), but these
-were the most inspiring in the early development of Yang!:
+were the most inspiring in the early development of Yang:
 
 - [`sophie-glk/bang`](https://github.com/sophie-glk/bang)
 - [`Inclushe/duckduckgo-bangs-but-faster`](https://gitlab.com/Inclushe/duckduckgo-bangs-but-faster)
@@ -164,7 +168,7 @@ were the most inspiring in the early development of Yang!:
 <p align="center"><sub>-</sub></p>
 <br>
 
-<sub>Yang! logo is a modification of the original DuckDuckGo logo. Its use is
+<sub>Yang logo is a modification of the original DuckDuckGo logo. Its use is
 solely transformative, i.e., intended with a further purpose or different
 character, and does not substitute under any circumstance for the original use
 of the work.</sub>
