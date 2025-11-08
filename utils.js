@@ -214,7 +214,7 @@ function getPage(items, pageNumber, itemsPerPage = Defaults.ITEMS_PER_PAGE) {
     return items.slice(start, start + itemsPerPage);
   });
   return {
-    totalPages: totalPages,
+    totalPages,
     page: pages[pageNumber - 1],
   };
 }
