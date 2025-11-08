@@ -16,18 +16,8 @@
  * For license information on the libraries used, see LICENSE.
  */
 
-import {
-  Defaults,
-  fetchSettings,
-  PreferencePrefix,
-  sortBangs,
-} from "../utils.js";
-import {
-  BACKUP_VERSION,
-  BackupFields,
-  exportSettings,
-  importSettings,
-} from "./export_import.js";
+import { Defaults, fetchSettings, PreferencePrefix } from "../utils.js";
+import { exportSettings, importSettings } from "./export_import.js";
 
 const LIMITS = Object.freeze({
   // Maximum total amount (in bytes) of data that can be stored in sync storage.
@@ -180,7 +170,7 @@ const keyHandler = (e) => {
 document.body.addEventListener("keydown", keyHandler);
 
 const exportButton = document.getElementById("export-button");
-exportButton.addEventListener("click", async () => {
+exportButton.addEventListener("click", () => {
   exportSettings();
 });
 

@@ -37,6 +37,22 @@ if (typeof browser === "undefined") {
   globalThis.browser = chrome;
 }
 
+const url = new URL(window.location.href);
+let pageNumber = Number(url.searchParams.get("page") ?? 1);
+let bangType = url.searchParams.get("bangs") ?? BangType.CUSTOM;
+
+const queryInput = document.getElementById("query");
+const searchBar = queryInput.parentNode;
+const clearButton = document.getElementById("clear-button");
+
+const optionMenu = document.querySelector(".select-custom-default-bangs");
+const selectButton = optionMenu.querySelector(".select-button");
+const selectText = optionMenu.querySelector(".select-text");
+const options = optionMenu.querySelectorAll(".option");
+
+const actionButton = document.getElementById("action-button");
+const showInactive = document.getElementById("show-inactive");
+
 function addPageIndicator(indicator) {
   const paginationDiv = document.getElementById("pagination");
   const page = document.createElement("a");
@@ -177,14 +193,14 @@ async function displayBangs(totalPages, bangs) {
       } else if (totalPages > 9 && pageNumber < totalPages - 4) {
         end = pageNumber + 2;
       }
-      if (start != 1) {
+      if (start !== 1) {
         addPageIndicator(1);
         addPageIndicator("…");
       }
       for (let i = start; i <= end; i++) {
         addPageIndicator(i);
       }
-      if (end != totalPages) {
+      if (end !== totalPages) {
         addPageIndicator("…"); // ellipsis
         addPageIndicator(totalPages);
       }
@@ -196,7 +212,7 @@ async function displayBangs(totalPages, bangs) {
 
 async function actionButtonHandler() {
   if (bangType === BangType.CUSTOM) {
-    window.location.assign(`add_edit_bang.html?mode=add`);
+    window.location.assign("add_edit_bang.html?mode=add");
   } else {
     pageNumber = 1;
     toggleSpinner(true);
@@ -417,7 +433,7 @@ async function loadBangs(onlyInactive = false) {
       : (await browser.storage.session.get(PreferencePrefix.INACTIVE_BANGS))[
           PreferencePrefix.INACTIVE_BANGS
         ];
-  let allBangs =
+  const allBangs =
     bangType === BangType.CUSTOM
       ? await browser.storage.sync.get()
       : await browser.storage.session.get();
@@ -483,7 +499,7 @@ async function loadPage(
   displayBangs(pageBangs.totalPages, pageBangs.page);
 }
 
-async function changePage(e) {
+function changePage(e) {
   pageNumber = Number(e.target.textContent);
   url.searchParams.set("page", pageNumber);
   url.searchParams.set("bangs", bangType);
@@ -508,7 +524,7 @@ function debounce(func, delay) {
   };
 }
 
-async function runSearch(query) {
+function runSearch(query) {
   if (query !== "") {
     url.searchParams.set("q", query);
     history.pushState({}, "", url);
@@ -531,10 +547,10 @@ function clearSearch(focusInput = true, fullLoad = false) {
 }
 
 function bangTypeSelectedHandler(e) {
-  let selectedOption =
+  const selectedOption =
     e.target.id === "" ? e.target.querySelector(".option-text") : e.target;
   pageNumber = 1;
-  if (bangType != selectedOption.id) {
+  if (bangType !== selectedOption.id) {
     bangType = selectedOption.id;
     url.searchParams.set("page", pageNumber);
     url.searchParams.set("bangs", bangType);
@@ -561,10 +577,6 @@ window.onpopstate = (e) => {
   e.preventDefault();
 };
 
-const url = new URL(window.location.href);
-let pageNumber = Number(url.searchParams.get("page")) ?? 1;
-let bangType = url.searchParams.get("bangs") ?? BangType.CUSTOM;
-
 if (bangType === BangType.CUSTOM) {
   document.getElementById("show-inactive").style.display = "none";
   document.getElementById("add-bang").style.display = "flex";
@@ -574,9 +586,6 @@ if (bangType === BangType.CUSTOM) {
 }
 
 // Search bar (expand/shrink animation).
-const queryInput = document.getElementById("query");
-const searchBar = queryInput.parentNode;
-const clearButton = document.getElementById("clear-button");
 queryInput.addEventListener("focus", () => {
   searchBar.classList.add("searching");
 });
@@ -594,10 +603,6 @@ if (query !== "") {
 }
 
 // Custom / Default Bangs Menu
-const optionMenu = document.querySelector(".select-custom-default-bangs");
-const selectButton = optionMenu.querySelector(".select-button");
-const selectText = optionMenu.querySelector(".select-text");
-const options = optionMenu.querySelectorAll(".option");
 selectText.textContent = document.getElementById(bangType).textContent;
 selectButton.addEventListener("click", (e) => {
   optionMenu.classList.toggle("active");
@@ -613,9 +618,7 @@ window.addEventListener("click", (e) => {
   }
 });
 
-const actionButton = document.getElementById("action-button");
 actionButton.addEventListener("click", actionButtonHandler, false);
-const showInactive = document.getElementById("show-inactive");
 showInactive.filtered = url.searchParams.get("inactive") ?? false;
 if (showInactive.filtered) {
   showInactive.lastElementChild.textContent = "Show All";
