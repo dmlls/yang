@@ -111,7 +111,6 @@ browser.webRequest.onBeforeRequest.addListener(
     const currentTime = new Date();
     // Ensure we only trigger the bang once.
     if (currentTime - lastTriggerTime < 500) {
-      lastTriggerTime = currentTime;
       return null;
     }
     // Different search engines use different params for the query.
