@@ -462,7 +462,6 @@ async function loadPage(
       (await browser.storage.sync.get(PreferencePrefix.BANG_PROVIDER))[
         PreferencePrefix.BANG_PROVIDER
       ] ?? Defaults.BANG_PROVIDER;
-    console.log(bangProvider);
     const defaultBangsOption = document.getElementById(
       BangType.DEFAULT,
     ).parentElement;

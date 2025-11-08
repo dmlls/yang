@@ -3,7 +3,7 @@
   "name": "Yang! - Yet Another Bangs anywhere extension",
   "description": "An open-source, lightweight extension that allows using DuckDuckGo-like bangs anywhere.",
   "homepage_url": "https://github.com/dmlls/yang",
-  "version": "2.0.0",
+  "version": "2.0.1",
 
   "browser_specific_settings": {
     "gecko": {
