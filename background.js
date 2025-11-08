@@ -114,7 +114,6 @@ browser.webRequest.onBeforeRequest.addListener(
       lastTriggerTime = currentTime;
       return null;
     }
-    lastTriggerTime = currentTime;
     // Different search engines use different params for the query.
     const params = ["q", "p", "query", "query_str", "text", "eingabe", "wd"];
     let searchQuery = null;
@@ -206,6 +205,7 @@ browser.webRequest.onBeforeRequest.addListener(
                             });
                           }
                         });
+                        lastTriggerTime = currentTime;
                       }
                     },
                     function onError(error) {
