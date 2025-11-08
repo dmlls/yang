@@ -147,6 +147,7 @@ browser.webRequest.onBeforeRequest.addListener(
     if (!searchQuery) {
       return null;
     }
+    lastTriggerTime = new Date();
     browser.storage.session.get(PreferencePrefix.BANG_SYMBOL).then(
       function onGot(item) {
         const bangSymbol =
@@ -207,7 +208,6 @@ browser.webRequest.onBeforeRequest.addListener(
                             });
                           }
                         });
-                        lastTriggerTime = currentTime;
                       }
                     },
                     function onError(error) {
