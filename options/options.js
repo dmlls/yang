@@ -459,8 +459,10 @@ async function loadPage(
   // Sync contains only custom bangs, while session contains also default bangs.
   if (fullLoad) {
     const bangProvider =
-      (await browser.storage.sync.get(PreferencePrefix.BANG_PROVIDER)) ??
-      Defaults.BANG_PROVIDER;
+      (await browser.storage.sync.get(PreferencePrefix.BANG_PROVIDER))[
+        PreferencePrefix.BANG_PROVIDER
+      ] ?? Defaults.BANG_PROVIDER;
+    console.log(bangProvider);
     const defaultBangsOption = document.getElementById(
       BangType.DEFAULT,
     ).parentElement;
