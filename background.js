@@ -36,7 +36,7 @@ browser.runtime.onStartup.addListener(async () => {
   await fetchSettings(false);
 });
 
-let lastTriggerTime = new Date();
+let lastTriggerTime = new Date(0);
 
 browser.webRequest.onBeforeRequest.addListener(
   async (details) => {
