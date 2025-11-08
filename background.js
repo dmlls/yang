@@ -68,6 +68,7 @@ browser.webRequest.onBeforeRequest.addListener(
         "/autocompleter",
         "/autocomplete",
         "/sugrec",
+        "/maps",
         "/favicon",
         ".js",
         ".css",
@@ -82,6 +83,8 @@ browser.webRequest.onBeforeRequest.addListener(
         "/static-assets", // DuckDuckGo
         "/_next", // DuckDuckGo
         "/dist", // DuckDuckGo
+        "/spice", // DuckDuckGo
+        "/s", // Google
         "/xjs", // Google
         "/async", // Google
         "/searchbox", // Google
@@ -113,7 +116,6 @@ browser.webRequest.onBeforeRequest.addListener(
     if (currentTime - lastTriggerTime < 500) {
       return null;
     }
-    lastTriggerTime = currentTime;
     // Different search engines use different params for the query.
     const params = ["q", "p", "query", "query_str", "text", "eingabe", "wd"];
     let searchQuery = null;
@@ -205,6 +207,7 @@ browser.webRequest.onBeforeRequest.addListener(
                             });
                           }
                         });
+                        lastTriggerTime = currentTime;
                       }
                     },
                     function onError(error) {
