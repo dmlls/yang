@@ -59,56 +59,59 @@ browser.webRequest.onBeforeRequest.addListener(
       return null;
     }
     // Skip requests for suggestions and requests not related to search.
-    const skip =
-      [
-        "/ac",
-        "suggest",
-        "/autosuggest",
-        "/complete",
-        "/autocompleter",
-        "/autocomplete",
-        "/sugrec",
-        "/maps",
-        "/favicon",
-        ".js",
-        ".css",
-        ".svg",
-        ".png",
-        ".jpg",
-        ".jpeg",
-        ".woff2",
-        "/ia",
-        "/asset", // Kagi
-        "/socket", // Kagi
-        "/static-assets", // DuckDuckGo
-        "/_next", // DuckDuckGo
-        "/dist", // DuckDuckGo
-        "/spice", // DuckDuckGo
-        "/s", // Google
-        "/xjs", // Google
-        "/async", // Google
-        "/searchbox", // Google
-        "/speech-api", // Google
-        "/httpservice", // Google
-        "/cdn", // StartPage
-        "/dplpxs", // StartPage
-        "/sxpra", // StartPage
-        "/afs", // StartPage
-        "/jst", // StartPage
-        "/atq", // StartPage
-        "/ep1", // StartPage
-        "/sa", // Bing
-        "/sbi", // Bing
-        "/auth", // Bing
-        "/exploremore", // Bing
-        "/svctrlpack", // Bing
-        "/sugg", // Yahoo!
-        "/beacon", // Yahoo!
-        "/static", // Ecosia
-        "/events", // Qwant
-      ].some((path) => url.pathname.includes(path)) ||
-      url.searchParams.get("mod") === "1"; // hack for Baidu
-    if (skip) {
+    const skip = [
+      "/ac",
+      "suggest",
+      "/autosuggest",
+      "/complete",
+      "/autocompleter",
+      "/autocomplete",
+      "/sugrec",
+      "/map",
+      "/maps",
+      "/favicon",
+      ".js",
+      ".css",
+      ".svg",
+      ".png",
+      ".jpg",
+      ".jpeg",
+      ".woff2",
+      "/ia",
+      "/asset", // Kagi
+      "/socket", // Kagi
+      "/static-assets", // DuckDuckGo
+      "/_next", // DuckDuckGo
+      "/dist", // DuckDuckGo
+      "/spice", // DuckDuckGo
+      "/xjs", // Google
+      "/async", // Google
+      "/searchbox", // Google
+      "/speech-api", // Google
+      "/httpservice", // Google
+      "/cdn", // StartPage
+      "/dplpxs", // StartPage
+      "/sxpra", // StartPage
+      "/afs", // StartPage
+      "/jst", // StartPage
+      "/atq", // StartPage
+      "/ep1", // StartPage
+      "/sa", // Bing
+      "/sbi", // Bing
+      "/auth", // Bing
+      "/exploremore", // Bing
+      "/svctrlpack", // Bing
+      "/sugg", // Yahoo!
+      "/beacon", // Yahoo!
+      "/static", // Ecosia
+      "/events", // Qwant
+    ].some((path) => url.pathname.includes(path));
+    if (
+      skip ||
+      url.searchParams.get("mod") === "1" || // Baidu
+      url.searchParams.get("suggest") != null ||
+      url.searchParams.get("tbm") === "map" // Google Maps
+    ) {
       return null;
     }
     const currentTime = new Date();
