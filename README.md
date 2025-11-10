@@ -104,7 +104,6 @@ sites**:
 | Mojeek | https://www.mojeek.com/
 | Qwant | https://www.qwant.com/
 | Kagi | https://kagi.com/
-| You.com | https://you.com/
 | Perplexity AI | https://www.perplexity.ai/
 | Naver | https://www.naver.com/
 | Baidu | https://www.baidu.com/

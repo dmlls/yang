@@ -371,8 +371,6 @@
     "*://www.qwant.com/",
     "*://api.qwant.com/*/search*",
 
-    "*://you.com/search*",
-
     "*://kagi.com/search*",
 
     "*://search.naver.com/search.naver*",
