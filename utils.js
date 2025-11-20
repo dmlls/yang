@@ -44,7 +44,6 @@ const BangProviders = Object.freeze({
     endpoints: [
       "https://raw.githubusercontent.com/kagisearch/bangs/main/data/bangs.json",
       "https://raw.githubusercontent.com/kagisearch/bangs/main/data/kagi_bangs.json",
-      "https://raw.githubusercontent.com/kagisearch/bangs/main/data/assistant_bangs.json",
     ],
   },
   DDG: {
