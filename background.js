@@ -79,7 +79,6 @@ browser.webRequest.onBeforeRequest.addListener(
       ".woff2",
       "/ia",
       "/asset", // Kagi
-      "/socket", // Kagi
       "/static-assets", // DuckDuckGo
       "/_next", // DuckDuckGo
       "/dist", // DuckDuckGo
