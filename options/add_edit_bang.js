@@ -69,6 +69,14 @@ function validateUrl(inputElement, containerElement) {
   const urlString = inputElement.value.trim();
   try {
     url = decodeURIComponent(new URL(urlString));
+    if (url.startsWith("about:")) {
+      showErrorMessage(
+        inputElement,
+        containerElement,
+        "Privileged URLs (about:) are not allowed for security reasons.",
+      );
+      return null;
+    }
   } catch (_) {
     showErrorMessage(
       inputElement,
