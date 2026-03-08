@@ -140,6 +140,15 @@ issue](https://github.com/dmlls/yang/issues/new/choose) and we'll add it!
 </details>
 
 <details>
+  <summary><b>Why is it not allowed to set an <code>about:</code> page as the target URL?</b></summary>
+  <p>
+     This restriction comes from the browser itself. <code>about:</code> pages
+     are considered priviledged URLs and are not allowed for security reasons
+     (<a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/update#url">docs</a>).
+  </p>
+</details>
+
+<details>
   <summary><b>Does Yang collect any data?</b></summary>
   <p>Yang does not collect any kind of data and never ever will!</p>
 </details>
