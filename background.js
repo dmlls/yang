@@ -169,54 +169,67 @@ browser.webRequest.onBeforeRequest.addListener(
           }
         }
         if (bang) {
-          const bangKey = getBangKey(bang);
-          browser.storage.session.get(bangKey).then(
-            function onGot(item) {
-              // Any matches?
-              if (Object.hasOwn(item, bangKey)) {
-                browser.storage.session
-                  .get(PreferencePrefix.INACTIVE_BANGS)
-                  .then(
-                    function onGot(inactiveBangs) {
-                      if (
-                        !(
-                          item[bangKey].default &&
-                          inactiveBangs[
-                            PreferencePrefix.INACTIVE_BANGS
-                          ].includes(bang)
-                        )
-                      ) {
-                        const bangTargets = item[bangKey].targets;
-                        let targetUrl;
-                        bangTargets.forEach((target, index) => {
-                          if (query.length === 0 && target.baseUrl != null) {
-                            targetUrl = target.baseUrl;
-                          } else {
-                            if (target.urlEncodeQuery) {
-                              query = encodeURIComponent(query);
-                            }
-                            targetUrl = new URL(
-                              target.url.replace("{{{s}}}", query),
-                            ).toString();
-                          }
-                          // Open first target URL in current tab...
-                          if (index === 0) {
-                            updateTab(details.tabId, targetUrl);
-                          } else {
-                            // ...and the rest in new tabs.
-                            browser.tabs.create({
-                              url: targetUrl,
-                              active: false,
-                            });
-                          }
-                        });
-                      }
-                    },
-                    function onError(error) {
-                      // TODO: Handle error.
-                    },
-                  );
+          // Support multiple bangs separated by the bang symbol,
+          // e.g. "!google!duckduckgo" triggers both !google and !duckduckgo.
+          const bangNames = bang.split(bangSymbol).filter((b) => b.length > 0);
+          const bangKeys = bangNames.map((b) => getBangKey(b));
+          browser.storage.session.get(bangKeys).then(
+            function onGot(items) {
+              // Filter to only found bangs.
+              const foundBangNames = bangNames.filter((b) =>
+                Object.hasOwn(items, getBangKey(b)),
+              );
+              if (foundBangNames.length === 0) {
+                return;
               }
+              browser.storage.session
+                .get(PreferencePrefix.INACTIVE_BANGS)
+                .then(
+                  function onGot(inactiveBangs) {
+                    let isFirstTarget = true;
+                    for (const bangName of foundBangNames) {
+                      const bangKey = getBangKey(bangName);
+                      const bangData = items[bangKey];
+                      if (
+                        bangData.default &&
+                        inactiveBangs[
+                          PreferencePrefix.INACTIVE_BANGS
+                        ].includes(bangName)
+                      ) {
+                        continue;
+                      }
+                      const bangTargets = bangData.targets;
+                      let targetUrl;
+                      bangTargets.forEach((target) => {
+                        if (query.length === 0 && target.baseUrl != null) {
+                          targetUrl = target.baseUrl;
+                        } else {
+                          let encodedQuery = query;
+                          if (target.urlEncodeQuery) {
+                            encodedQuery = encodeURIComponent(query);
+                          }
+                          targetUrl = new URL(
+                            target.url.replace("{{{s}}}", encodedQuery),
+                          ).toString();
+                        }
+                        // Open first target URL in current tab...
+                        if (isFirstTarget) {
+                          updateTab(details.tabId, targetUrl);
+                          isFirstTarget = false;
+                        } else {
+                          // ...and the rest in new tabs.
+                          browser.tabs.create({
+                            url: targetUrl,
+                            active: false,
+                          });
+                        }
+                      });
+                    }
+                  },
+                  function onError(error) {
+                    // TODO: Handle error.
+                  },
+                );
             },
             function onError(error) {
               // TODO: Handle error.
