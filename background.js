@@ -45,6 +45,8 @@ browser.webRequest.onBeforeRequest.addListener(
     const include = [
       "/search",
       "duckduckgo.com/?",
+      "duckduckgo.com/lite",
+      "duckduckgo.com/html",
       "/dsearch", // Startpage add-on
       "/web?", // swisscows & ask.com
       "qwant.com/",
