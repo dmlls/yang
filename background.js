@@ -51,7 +51,6 @@ browser.webRequest.onBeforeRequest.addListener(
       "/web?", // swisscows & ask.com
       "qwant.com/",
       "perplexity_ask", // Perplexity AI
-      "https://www.qwant.com/?q=",
       "/s", // Baidu
       "/meta", // metaGer
       "/serp", // dogpile
