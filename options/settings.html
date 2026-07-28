@@ -43,6 +43,22 @@
           </div>
           <div class="setting-container">
             <div class="setting-label">
+              <div class="setting-label-row">
+                <label for="multi-bang">Multiple Bangs</label>
+                <input type="checkbox" id="multi-bang" name="multi-bang" />
+              </div>
+              <p>
+                Enable space-separated bangs anywhere in the query (e.g., "!a !g
+                test" or "test !a !g"). Without this, only the first or last
+                word starting with the bang symbol is used. Note: a bang symbol
+                like "ace" can cause false positives, e.g. "acea" → !a (Amazon)
+                and "acer" → !r (Reddit) would trigger instead of the expected
+                search for "acer computer" on Amazon.
+              </p>
+            </div>
+          </div>
+          <div class="setting-container">
+            <div class="setting-label">
               <label for="bang-provider">Bang Provider</label>
             </div>
             <select name="bang-providers" id="bang-provider">

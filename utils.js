@@ -35,6 +35,7 @@ const PreferencePrefix = Object.freeze({
   BANG_PROVIDER: "#provider#",
   BANG_SYMBOL: "#symbol#",
   INACTIVE_BANGS: "#inactive#",
+  MULTI_BANG: "#multi_bang#",
 });
 
 const BangProviders = Object.freeze({
@@ -63,6 +64,7 @@ const Defaults = Object.freeze({
   BANG_SYMBOL: "!",
   ITEMS_PER_PAGE: 25,
   INACTIVE_BANGS: [],
+  MULTI_BANG: false,
 });
 
 async function fetchSettings(update = false) {
@@ -180,6 +182,9 @@ async function fetchSettings(update = false) {
         !settings[PreferencePrefix.INACTIVE_BANGS]
       ) {
         settings[PreferencePrefix.INACTIVE_BANGS] = [];
+      }
+      if (!Object.hasOwn(settings, PreferencePrefix.MULTI_BANG)) {
+        settings[PreferencePrefix.MULTI_BANG] = Defaults.MULTI_BANG;
       }
       browser.storage.session.clear().then(
         function onCleared() {
