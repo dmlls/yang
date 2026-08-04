@@ -163,17 +163,31 @@ browser.webRequest.onBeforeRequest.addListener(
           const searchTerms = searchQuery.split(" ");
           if (searchTerms) {
             if (multiBang) {
-              const bangTerms = searchTerms.filter((t) =>
-                t.startsWith(bangSymbol),
-              );
-              const nonBangTerms = searchTerms.filter(
-                (t) => !t.startsWith(bangSymbol),
-              );
+              let prefixEnd = 0;
+              let suffixStart = searchTerms.length;
+              while (
+                prefixEnd < searchTerms.length &&
+                searchTerms[prefixEnd].startsWith(bangSymbol)
+              ) {
+                prefixEnd++;
+              }
+              while (
+                suffixStart > prefixEnd &&
+                searchTerms[suffixStart - 1].startsWith(bangSymbol)
+              ) {
+                suffixStart--;
+              }
+              const bangTerms = [
+                ...searchTerms.slice(0, prefixEnd),
+                ...searchTerms.slice(suffixStart),
+              ];
               if (bangTerms.length > 0) {
                 bangNames = bangTerms.map((t) =>
                   t.substring(bangSymbol.length),
                 );
-                query = nonBangTerms.join(" ");
+                query = searchTerms
+                  .slice(prefixEnd, suffixStart)
+                  .join(" ");
               }
             } else {
               const firstTerm = searchTerms[0].trim();
