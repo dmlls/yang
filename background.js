@@ -21,6 +21,7 @@ import {
   Defaults,
   fetchSettings,
   getBangKey,
+  parseBangs,
 } from "./utils.js";
 
 // Support for Chromium.
@@ -158,51 +159,10 @@ browser.webRequest.onBeforeRequest.addListener(
             item[PreferencePrefix.BANG_SYMBOL] ?? Defaults.BANG_SYMBOL;
           const multiBang =
             item[PreferencePrefix.MULTI_BANG] ?? Defaults.MULTI_BANG;
-          let query = null;
-          let bangNames = null;
-          const searchTerms = searchQuery.split(" ");
-          if (searchTerms) {
-            if (multiBang) {
-              let prefixEnd = 0;
-              let suffixStart = searchTerms.length;
-              while (
-                prefixEnd < searchTerms.length &&
-                searchTerms[prefixEnd].startsWith(bangSymbol)
-              ) {
-                prefixEnd++;
-              }
-              while (
-                suffixStart > prefixEnd &&
-                searchTerms[suffixStart - 1].startsWith(bangSymbol)
-              ) {
-                suffixStart--;
-              }
-              const bangTerms = [
-                ...searchTerms.slice(0, prefixEnd),
-                ...searchTerms.slice(suffixStart),
-              ];
-              if (bangTerms.length > 0) {
-                bangNames = bangTerms.map((t) =>
-                  t.substring(bangSymbol.length),
-                );
-                query = searchTerms
-                  .slice(prefixEnd, suffixStart)
-                  .join(" ");
-              }
-            } else {
-              const firstTerm = searchTerms[0].trim();
-              const lastTerm = searchTerms[searchTerms.length - 1].trim();
-              if (firstTerm.startsWith(bangSymbol)) {
-                bangNames = [firstTerm.substring(bangSymbol.length)];
-                query = searchTerms.slice(1).join(" ");
-              } else if (lastTerm.startsWith(bangSymbol)) {
-                bangNames = [lastTerm.substring(bangSymbol.length)];
-                query = searchTerms.slice(0, -1).join(" ");
-              }
-            }
-          }
+          const parsed = parseBangs(searchQuery, bangSymbol, multiBang);
+          const query = parsed?.query ?? null;
+          const bangNames = parsed?.bangNames ?? null;
           if (bangNames) {
-            bangNames = bangNames.filter((b) => b.length > 0);
             const bangKeys = bangNames.map((b) => getBangKey(b));
             browser.storage.session.get(bangKeys).then(
               function onGot(items) {

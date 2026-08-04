@@ -24,6 +24,7 @@ export {
   getPage,
   getBangKey,
   getBangName,
+  parseBangs,
   searchBangs,
   sortBangs,
 };
@@ -275,4 +276,55 @@ function getBangName(bangKey) {
     return null;
   }
   return bangKey.slice(PreferencePrefix.BANG.length);
+}
+
+function parseBangs(searchQuery, bangSymbol, multiBang) {
+  const searchTerms = searchQuery.split(" ");
+  let bangNames = null;
+  let query = null;
+  if (searchTerms) {
+    if (multiBang) {
+      let prefixEnd = 0;
+      let suffixStart = searchTerms.length;
+      while (
+        prefixEnd < searchTerms.length &&
+        searchTerms[prefixEnd].startsWith(bangSymbol)
+      ) {
+        prefixEnd++;
+      }
+      while (
+        suffixStart > prefixEnd &&
+        searchTerms[suffixStart - 1].startsWith(bangSymbol)
+      ) {
+        suffixStart--;
+      }
+      const bangTerms = [
+        ...searchTerms.slice(0, prefixEnd),
+        ...searchTerms.slice(suffixStart),
+      ];
+      if (bangTerms.length > 0) {
+        bangNames = bangTerms.map((t) =>
+          t.substring(bangSymbol.length),
+        );
+        query = searchTerms
+          .slice(prefixEnd, suffixStart)
+          .join(" ");
+      }
+    } else {
+      const firstTerm = searchTerms[0].trim();
+      const lastTerm = searchTerms[searchTerms.length - 1].trim();
+      if (firstTerm.startsWith(bangSymbol)) {
+        bangNames = [firstTerm.substring(bangSymbol.length)];
+        query = searchTerms.slice(1).join(" ");
+      } else if (lastTerm.startsWith(bangSymbol)) {
+        bangNames = [lastTerm.substring(bangSymbol.length)];
+        query = searchTerms.slice(0, -1).join(" ");
+      }
+    }
+  }
+  if (!bangNames) {
+    return null;
+  }
+  bangNames = bangNames.filter((b) => b.length > 0);
+  return { bangNames, query };
 }
