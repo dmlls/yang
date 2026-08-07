@@ -2,30 +2,86 @@ import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import { parseBangs } from "./utils.js";
 
+const sharedBangCases = [
+  ["single bang at start", "!google foo", "!", { bangNames: ["google"], query: "foo" }],
+  ["single bang at end", "foo !google", "!", { bangNames: ["google"], query: "foo" }],
+  [
+    "middle bang is treated as query text when a leading bang exists",
+    "!google foo !amazon bar",
+    "!",
+    { bangNames: ["google"], query: "foo !amazon bar" },
+  ],
+  [
+    "middle bang is treated as query text when a trailing bang exists",
+    "foo !google bar !amazon",
+    "!",
+    { bangNames: ["amazon"], query: "foo !google bar" },
+  ],
+  ["middle bang alone is treated as query text", "foo !google bar", "!", null],
+  [
+    "single bang at start and end — leading wins, trailing stays in query",
+    "!google foo bar !amazon",
+    "!",
+    { bangNames: ["google"], query: "foo bar !amazon" },
+  ],
+  [
+    "concatenated bangs stay as one name",
+    "!g!a",
+    "!",
+    { bangNames: ["g!a"], query: "" },
+  ],
+  ["no bangs returns null", "foo bar", "!", null],
+  ["empty search query returns null", "", "!", null],
+  ["bare bang symbol returns null", "!", "!", null],
+  ["empty bang name at start returns null", "! foo", "!", null],
+  ["empty bang name at end returns null", "foo !", "!", null],
+  ["trailing space defeats end bang", "foo !bar ", "!", null],
+  ["leading space defeats leading bang", " !bar foo", "!", null],
+  [
+    "custom symbol bang at start",
+    "acea foo",
+    "ace",
+    { bangNames: ["a"], query: "foo" },
+  ],
+  [
+    "custom symbol bang at end",
+    "foo aces",
+    "ace",
+    { bangNames: ["s"], query: "foo" },
+  ],
+  [
+    "custom symbol — first wins over last",
+    "acer computer acea",
+    "ace",
+    { bangNames: ["r"], query: "computer acea" },
+  ],
+];
+
 describe("parseBangs", () => {
-  describe("multi-bang mode", () => {
+  describe("both modes", () => {
+    for (const multiBang of [true, false]) {
+      describe(multiBang ? "multi-bang mode" : "single-bang mode", () => {
+        for (const [title, input, symbol, expected] of sharedBangCases) {
+          it(title, () => {
+            assert.deepStrictEqual(
+              parseBangs(input, symbol, multiBang),
+              expected,
+            );
+          });
+        }
+      });
+    }
+  });
+
+  describe("multi-bang mode only", () => {
     const multiBang = true;
     const symbol = "!";
-
-    it("single bang at start", () => {
-      assert.deepStrictEqual(parseBangs("!google foo", symbol, multiBang), {
-        bangNames: ["google"],
-        query: "foo",
-      });
-    });
 
     it("multiple bangs at start", () => {
       assert.deepStrictEqual(
         parseBangs("!google !amazon foo bar", symbol, multiBang),
         { bangNames: ["google", "amazon"], query: "foo bar" },
       );
-    });
-
-    it("single bang at end", () => {
-      assert.deepStrictEqual(parseBangs("foo !google", symbol, multiBang), {
-        bangNames: ["google"],
-        query: "foo",
-      });
     });
 
     it("multiple bangs at end", () => {
@@ -35,22 +91,25 @@ describe("parseBangs", () => {
       );
     });
 
-    it("rejects scattered bangs — prefix only wins", () => {
+    it("bangs at both ends — leading wins, trailing stays in query", () => {
       assert.deepStrictEqual(
-        parseBangs("!google foo !amazon bar", symbol, multiBang),
-        { bangNames: ["google"], query: "foo !amazon bar" },
+        parseBangs("!gm !osm Paris !m", symbol, multiBang),
+        { bangNames: ["gm", "osm"], query: "Paris !m" },
       );
     });
 
-    it("rejects scattered bangs — suffix when end has bang", () => {
+    it("non-existent trailing bang stays in query", () => {
       assert.deepStrictEqual(
-        parseBangs("foo !google bar !amazon", symbol, multiBang),
-        { bangNames: ["amazon"], query: "foo !google bar" },
+        parseBangs("!gm Paris !upss", symbol, multiBang),
+        { bangNames: ["gm"], query: "Paris !upss" },
       );
     });
 
-    it("no bangs returns null", () => {
-      assert.strictEqual(parseBangs("foo bar", symbol, multiBang), null);
+    it("end-only bangs still work when no leading bang", () => {
+      assert.deepStrictEqual(
+        parseBangs("test !a !g", symbol, multiBang),
+        { bangNames: ["a", "g"], query: "test" },
+      );
     });
 
     it("only bangs, no query", () => {
@@ -60,65 +119,32 @@ describe("parseBangs", () => {
       );
     });
 
-    it("empty search query returns null", () => {
-      assert.strictEqual(parseBangs("", symbol, multiBang), null);
-    });
-  });
-
-  describe("single-bang mode (multiBang: false)", () => {
-    const multiBang = false;
-    const symbol = "!";
-
-    it("single bang at start", () => {
-      assert.deepStrictEqual(parseBangs("!google foo", symbol, multiBang), {
-        bangNames: ["google"],
-        query: "foo",
-      });
+    it("large leading run consumes all contiguous bangs", () => {
+      assert.deepStrictEqual(
+        parseBangs("!a !b !c !d !e foo", symbol, multiBang),
+        { bangNames: ["a", "b", "c", "d", "e"], query: "foo" },
+      );
     });
 
-    it("single bang at end", () => {
-      assert.deepStrictEqual(parseBangs("foo !google", symbol, multiBang), {
-        bangNames: ["google"],
-        query: "foo",
-      });
+    it("trailing run stays in query when a leading run wins", () => {
+      assert.deepStrictEqual(
+        parseBangs("!a !b foo !c !d", symbol, multiBang),
+        { bangNames: ["a", "b"], query: "foo !c !d" },
+      );
     });
 
-    it("concatenated bangs stay as one name", () => {
-      assert.deepStrictEqual(parseBangs("!g!a", symbol, multiBang), {
-        bangNames: ["g!a"],
-        query: "",
-      });
+    it("large trailing run consumes all contiguous bangs", () => {
+      assert.deepStrictEqual(
+        parseBangs("foo !a !b !c !d !e", symbol, multiBang),
+        { bangNames: ["a", "b", "c", "d", "e"], query: "foo" },
+      );
     });
 
-    it("no bangs returns null", () => {
-      assert.strictEqual(parseBangs("foo bar", symbol, multiBang), null);
-    });
-
-    it("empty search query returns null", () => {
-      assert.strictEqual(parseBangs("", symbol, multiBang), null);
-    });
-  });
-
-  describe("custom bang symbol", () => {
-    it('multi-bang with "ace" symbol — false-positive on "acer"', () => {
+    it('custom symbol — false-positive on "acer"', () => {
       assert.deepStrictEqual(parseBangs("acea acer computer", "ace", true), {
         bangNames: ["a", "r"],
         query: "computer",
       });
-    });
-
-    it('single-bang with "ace" symbol — only first word', () => {
-      assert.deepStrictEqual(
-        parseBangs("acea acer computer", "ace", false),
-        { bangNames: ["a"], query: "acer computer" },
-      );
-    });
-
-    it('single-bang with "ace" symbol — first wins over last', () => {
-      assert.deepStrictEqual(
-        parseBangs("acer computer acea", "ace", false),
-        { bangNames: ["r"], query: "computer acea" },
-      );
     });
   });
 });
