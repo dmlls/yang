@@ -44,13 +44,23 @@ storedSettings.set(PreferencePrefix.BANG_PROVIDER, {
   element: document.getElementById("bang-provider"),
   default: Defaults.BANG_PROVIDER,
 });
+storedSettings.set(PreferencePrefix.MULTI_BANG, {
+  element: document.getElementById("multi-bang"),
+  default: Defaults.MULTI_BANG,
+  type: "checkbox",
+});
 let initialBangProvider = null;
 
 function saveSettings() {
   const settings = {};
   let fetchNeeded = false;
   for (const [settingName, settingValue] of storedSettings) {
-    settings[settingName] = settingValue.element.value || settingValue.default;
+    if (settingValue.type === "checkbox") {
+      settings[settingName] = settingValue.element.checked;
+    } else {
+      settings[settingName] =
+        settingValue.element.value || settingValue.default;
+    }
     if (
       settingName === PreferencePrefix.BANG_PROVIDER &&
       initialBangProvider !== settings[settingName]
@@ -90,7 +100,15 @@ function onError(error) {}
 browser.storage.sync.get(Array.from(storedSettings.keys())).then(
   function onGot(items) {
     for (const [settingName, settingValue] of storedSettings) {
-      if (Object.hasOwn(items, settingName) && items[settingName] != null) {
+      if (settingValue.type === "checkbox") {
+        settingValue.element.checked =
+          Object.hasOwn(items, settingName) && items[settingName] != null
+            ? items[settingName]
+            : settingValue.default;
+      } else if (
+        Object.hasOwn(items, settingName) &&
+        items[settingName] != null
+      ) {
         settingValue.element.value = items[settingName];
       } else {
         settingValue.element.value = settingValue.default;

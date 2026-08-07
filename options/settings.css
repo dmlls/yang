@@ -90,6 +90,12 @@ input:focus {
   outline: 1px solid #7814ae;
 }
 
+input[type="checkbox"] {
+  width: auto;
+  cursor: pointer;
+  accent-color: #e15e49;
+}
+
 input::placeholder {
   opacity: 0.7;
   color: #5c5c5c;
@@ -214,7 +220,14 @@ button svg {
 
 .setting-label p {
   margin: 7px 0 0;
-  color: #454545;
+  color: #888;
+  font-size: 0.82rem;
+}
+
+.setting-label-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .setting-detail,

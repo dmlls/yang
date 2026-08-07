@@ -30,7 +30,7 @@ if (typeof browser === "undefined") {
   globalThis.browser = chrome;
 }
 
-const BACKUP_VERSION = "1.3";
+const BACKUP_VERSION = "1.4";
 
 const BackupFields = Object.freeze({
   BACKUP_VERSION: "backupVersion",
@@ -39,6 +39,7 @@ const BackupFields = Object.freeze({
   SETTINGS: "settings",
   BANG_SYMBOL: "bangSymbol",
   BANG_PROVIDER: "bangProvider",
+  BANG_MULTI_BANG: "multiBang",
 });
 
 async function exportSettings() {
@@ -51,6 +52,8 @@ async function exportSettings() {
         storedData[PreferencePrefix.BANG_SYMBOL] ?? Defaults.BANG_SYMBOL;
       loadedSettings[BackupFields.SETTINGS][BackupFields.BANG_PROVIDER] =
         storedData[PreferencePrefix.BANG_PROVIDER] ?? Defaults.BANG_PROVIDER;
+      loadedSettings[BackupFields.SETTINGS][BackupFields.BANG_MULTI_BANG] =
+        storedData[PreferencePrefix.MULTI_BANG] ?? Defaults.MULTI_BANG;
       const sortedBangs = sortBangs(
         Object.entries(storedData)
           .filter((entry) => entry[0].startsWith(PreferencePrefix.BANG))
@@ -101,6 +104,7 @@ async function importSettings(file) {
       }
       let bangSymbol = Defaults.BANG_SYMBOL;
       let bangProvider = Defaults.BANG_PROVIDER;
+      let multiBang = Defaults.MULTI_BANG;
       // Backup version >= 1.1.
       if (backupKeys.includes(BackupFields.SETTINGS)) {
         const settings = readBackup[BackupFields.SETTINGS];
@@ -108,6 +112,9 @@ async function importSettings(file) {
         // Backup version >= 1.3.
         bangProvider =
           settings[BackupFields.BANG_PROVIDER] ?? Defaults.BANG_PROVIDER;
+        // Backup version >= 1.4.
+        multiBang =
+          settings[BackupFields.BANG_MULTI_BANG] ?? Defaults.MULTI_BANG;
       }
       const inactiveBangs =
         readBackup[BackupFields.INACTIVE_BANGS] ?? Defaults.INACTIVE_BANGS;
@@ -147,6 +154,7 @@ async function importSettings(file) {
       preferences.set(PreferencePrefix.BANG_SYMBOL, bangSymbol);
       preferences.set(PreferencePrefix.BANG_PROVIDER, bangProvider);
       preferences.set(PreferencePrefix.INACTIVE_BANGS, inactiveBangs);
+      preferences.set(PreferencePrefix.MULTI_BANG, multiBang);
       browser.storage.sync.set(Object.fromEntries(preferences)).then(
         async function onSet() {
           await fetchSettings(true);
