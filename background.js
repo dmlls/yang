@@ -22,6 +22,7 @@ import {
   fetchSettings,
   getBangKey,
   parseBangs,
+  addSnapToUrl as addSnapToQuery,
 } from "./utils.js";
 
 // Support for Chromium.
@@ -153,69 +154,107 @@ browser.webRequest.onBeforeRequest.addListener(
     }
     lastTriggerTime = new Date();
     browser.storage.session
-      .get([PreferencePrefix.BANG_SYMBOL, PreferencePrefix.MULTI_BANG])
+      .get([
+        PreferencePrefix.BANG_SYMBOL,
+        PreferencePrefix.SNAP_SYMBOL,
+        PreferencePrefix.MULTI_BANG,
+      ])
       .then(
         function onGot(item) {
           const bangSymbol =
             item[PreferencePrefix.BANG_SYMBOL] ?? Defaults.BANG_SYMBOL;
+          const snapSymbol =
+            item[PreferencePrefix.SNAP_SYMBOL] ?? Defaults.SNAP_SYMBOL;
           const multiBang =
             item[PreferencePrefix.MULTI_BANG] ?? Defaults.MULTI_BANG;
-          const parsed = parseBangs(searchQuery, bangSymbol, multiBang);
-          const query = parsed?.query ?? null;
-          const bangNames = parsed?.bangNames ?? null;
-          if (bangNames) {
-            const bangKeys = bangNames.map((b) => getBangKey(b));
+          let { bangs, snap, query } = parseBangs(
+            searchQuery,
+            bangSymbol,
+            snapSymbol,
+            multiBang,
+          );
+          if (bangs.length > 0 || snap != null) {
+            const bangKeys = bangs.map((b) => getBangKey(b));
+            if (snap != null) {
+              bangKeys.push(getBangKey(snap));
+            }
             browser.storage.session.get(bangKeys).then(
               function onGot(items) {
-                // Filter to only found bangs.
-                const foundBangNames = bangNames.filter((b) =>
+                // Filter to only found bangs and snap.
+                const foundBangs = bangs.filter((b) =>
                   Object.hasOwn(items, getBangKey(b)),
                 );
-                if (foundBangNames.length === 0) {
+                const snapData = Object.hasOwn(items, getBangKey(snap))
+                  ? items[getBangKey(snap)]
+                  : null;
+                if (foundBangs.length === 0 && snapData === null) {
                   return;
                 }
                 browser.storage.session
                   .get(PreferencePrefix.INACTIVE_BANGS)
                   .then(
                     function onGot(inactiveBangs) {
-                      let isFirstTarget = true;
-                      for (const bangName of foundBangNames) {
-                        const bangKey = getBangKey(bangName);
-                        const bangData = items[bangKey];
-                        if (
-                          bangData.default &&
+                      let snapUrl = null;
+                      if (
+                        snapData != null &&
+                        !(
+                          snapData.default &&
                           inactiveBangs[
                             PreferencePrefix.INACTIVE_BANGS
-                          ].includes(bangName)
-                        ) {
-                          continue;
-                        }
-                        const bangTargets = bangData.targets;
-                        let targetUrl;
-                        bangTargets.forEach((target) => {
-                          if (query.length === 0 && target.baseUrl != null) {
-                            targetUrl = target.baseUrl;
-                          } else {
-                            let encodedQuery = query;
-                            if (target.urlEncodeQuery) {
-                              encodedQuery = encodeURIComponent(query);
-                            }
-                            targetUrl = new URL(
-                              target.url.replace("{{{s}}}", encodedQuery),
-                            ).toString();
-                          }
-                          // Open first target URL in current tab...
-                          if (isFirstTarget) {
-                            updateTab(details.tabId, targetUrl);
-                            isFirstTarget = false;
-                          } else {
-                            // ...and the rest in new tabs.
-                            browser.tabs.create({
-                              url: targetUrl,
-                              active: false,
-                            });
-                          }
+                          ].includes(snap)
+                        )
+                      ) {
+                        // For bangs that have multiple target URLs defined,
+                        // we only consider the first one.
+                        snapUrl = new URL(snapData.targets[0].url).host;
+                        query = addSnapToQuery(query, snapUrl);
+                      }
+                      // Only snap, without bangs -> Issue a search with the snap.
+                      if (foundBangs.length === 0 && snapUrl != null) {
+                        browser.search.query({
+                          tabId: details.tabId,
+                          text: query,
                         });
+                      } else {
+                        let isFirstTarget = true;
+                        for (const bangName of foundBangs) {
+                          const bangKey = getBangKey(bangName);
+                          const bangData = items[bangKey];
+                          if (
+                            bangData.default &&
+                            inactiveBangs[
+                              PreferencePrefix.INACTIVE_BANGS
+                            ].includes(bangName)
+                          ) {
+                            continue;
+                          }
+                          const bangTargets = bangData.targets;
+                          let targetUrl = null;
+                          bangTargets.forEach((target) => {
+                            if (query.length === 0 && target.baseUrl != null) {
+                              targetUrl = target.baseUrl;
+                            } else {
+                              let encodedQuery = query;
+                              if (target.urlEncodeQuery) {
+                                encodedQuery = encodeURIComponent(query);
+                              }
+                              targetUrl = new URL(
+                                target.url.replace("{{{s}}}", encodedQuery),
+                              ).toString();
+                            }
+                            // Open first target URL in current tab...
+                            if (isFirstTarget) {
+                              updateTab(details.tabId, targetUrl);
+                              isFirstTarget = false;
+                            } else {
+                              // ...and the rest in new tabs.
+                              browser.tabs.create({
+                                url: targetUrl,
+                                active: false,
+                              });
+                            }
+                          });
+                        }
                       }
                     },
                     function onError(error) {

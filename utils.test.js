@@ -3,8 +3,18 @@ import assert from "node:assert/strict";
 import { parseBangs } from "./utils.js";
 
 const sharedBangCases = [
-  ["single bang at start", "!google foo", "!", { bangNames: ["google"], query: "foo" }],
-  ["single bang at end", "foo !google", "!", { bangNames: ["google"], query: "foo" }],
+  [
+    "single bang at start",
+    "!google foo",
+    "!",
+    { bangNames: ["google"], query: "foo" },
+  ],
+  [
+    "single bang at end",
+    "foo !google",
+    "!",
+    { bangNames: ["google"], query: "foo" },
+  ],
   [
     "middle bang is treated as query text when a leading bang exists",
     "!google foo !amazon bar",
@@ -99,24 +109,24 @@ describe("parseBangs", () => {
     });
 
     it("non-existent trailing bang stays in query", () => {
-      assert.deepStrictEqual(
-        parseBangs("!gm Paris !upss", symbol, multiBang),
-        { bangNames: ["gm"], query: "Paris !upss" },
-      );
+      assert.deepStrictEqual(parseBangs("!gm Paris !upss", symbol, multiBang), {
+        bangNames: ["gm"],
+        query: "Paris !upss",
+      });
     });
 
     it("end-only bangs still work when no leading bang", () => {
-      assert.deepStrictEqual(
-        parseBangs("test !a !g", symbol, multiBang),
-        { bangNames: ["a", "g"], query: "test" },
-      );
+      assert.deepStrictEqual(parseBangs("test !a !g", symbol, multiBang), {
+        bangNames: ["a", "g"],
+        query: "test",
+      });
     });
 
     it("only bangs, no query", () => {
-      assert.deepStrictEqual(
-        parseBangs("!google !amazon", symbol, multiBang),
-        { bangNames: ["google", "amazon"], query: "" },
-      );
+      assert.deepStrictEqual(parseBangs("!google !amazon", symbol, multiBang), {
+        bangNames: ["google", "amazon"],
+        query: "",
+      });
     });
 
     it("large leading run consumes all contiguous bangs", () => {
@@ -127,10 +137,10 @@ describe("parseBangs", () => {
     });
 
     it("trailing run stays in query when a leading run wins", () => {
-      assert.deepStrictEqual(
-        parseBangs("!a !b foo !c !d", symbol, multiBang),
-        { bangNames: ["a", "b"], query: "foo !c !d" },
-      );
+      assert.deepStrictEqual(parseBangs("!a !b foo !c !d", symbol, multiBang), {
+        bangNames: ["a", "b"],
+        query: "foo !c !d",
+      });
     });
 
     it("large trailing run consumes all contiguous bangs", () => {
