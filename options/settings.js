@@ -44,14 +44,14 @@ storedSettings.set(PreferencePrefix.SNAP_SYMBOL, {
   element: document.getElementById("snap-symbol"),
   default: Defaults.SNAP_SYMBOL,
 });
-storedSettings.set(PreferencePrefix.BANG_PROVIDER, {
-  element: document.getElementById("bang-provider"),
-  default: Defaults.BANG_PROVIDER,
-});
 storedSettings.set(PreferencePrefix.MULTI_BANG, {
   element: document.getElementById("multi-bang"),
   default: Defaults.MULTI_BANG,
   type: "checkbox",
+});
+storedSettings.set(PreferencePrefix.BANG_PROVIDER, {
+  element: document.getElementById("bang-provider"),
+  default: Defaults.BANG_PROVIDER,
 });
 let initialBangProvider = null;
 

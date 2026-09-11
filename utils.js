@@ -284,7 +284,10 @@ function getBangName(bangKey) {
 // Whitespace tokenization.
 function tokenizeQuery(searchQuery) {
   // Remove extra whitespaces to ensure the next split works correctly.
-  return searchQuery.replace(/\s+/g, " ").split(" ").filter(i => i);
+  return searchQuery
+    .replace(/\s+/g, " ")
+    .split(" ")
+    .filter((i) => i);
 }
 
 function parseBangs(searchQuery, bangSymbol, snapSymbol, multiBang) {
