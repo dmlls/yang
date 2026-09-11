@@ -157,7 +157,7 @@ a {
   margin-right: 2px;
   text-decoration: none;
   cursor: pointer;
-  background: #ffffff;
+  background: #fff;
   padding: 8px;
   border-radius: 8px;
   color: #afa2b6;
@@ -176,7 +176,7 @@ a {
 }
 
 #pagination > a.ellipses {
-  background: #ffffff;
+  background: #fff;
 }
 
 .select-custom-default-bangs .select-button:active,
@@ -227,13 +227,14 @@ h1 {
   padding: 0 0.6rem;
   align-items: center;
   box-sizing: border-box;
-  border: solid 1px #aaa;
+  border: 1.5px solid #aaa;
   border-radius: 6px;
   background-color: #fff;
 }
 
 #search-bar:has(#query:focus) {
-  outline: 1px solid #7814ae;
+  border: 2px solid #7814ae;
+  outline: none;
 }
 
 #search-bar.searching {

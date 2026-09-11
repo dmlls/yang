@@ -105,7 +105,8 @@ input {
 }
 
 input:focus {
-  outline: 1px solid #7814ae;
+  border: solid 2px #e15e50;
+  outline: none;
 }
 
 input::placeholder {

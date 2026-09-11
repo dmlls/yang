@@ -83,7 +83,7 @@ input {
   box-sizing: border-box;
   text-align: center;
   border: none;
-  border: solid 2px #cfcfcf;
+  border: 1.5px solid #aaa;
   border-radius: 6px;
 }
 
@@ -106,7 +106,7 @@ select {
   padding: 8px;
   box-sizing: border-box;
   border: none;
-  border: 2px solid #cfcfcf;
+  border: 1.5px solid #aaa;
   border-radius: 6px;
   background: none;
   cursor: pointer;
