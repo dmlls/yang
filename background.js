@@ -173,7 +173,7 @@ browser.webRequest.onBeforeRequest.addListener(
             snapSymbol,
             multiBang,
           );
-          if (bangs.length > 0 || snap != null) {
+          if (bangs?.length > 0 || snap != null) {
             const bangKeys = bangs.map((b) => getBangKey(b));
             if (snap != null) {
               bangKeys.push(getBangKey(snap));

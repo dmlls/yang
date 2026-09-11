@@ -77,23 +77,19 @@ label {
 }
 
 input {
-  width: 15%;
+  width: 3.3rem;
+  margin-left: 1rem;
   padding: 8px;
   box-sizing: border-box;
   text-align: center;
   border: none;
-  border: solid 1.5px #e15e49;
+  border: solid 2px #cfcfcf;
   border-radius: 6px;
 }
 
 input:focus {
-  outline: 1px solid #7814ae;
-}
-
-input[type="checkbox"] {
-  width: auto;
-  cursor: pointer;
-  accent-color: #e15e49;
+  border: 2px solid #e15e49;
+  outline: none;
 }
 
 input::placeholder {
@@ -101,18 +97,24 @@ input::placeholder {
   color: #5c5c5c;
 }
 
+input:focus::placeholder {
+  color: transparent;
+}
+
 select {
+  margin-left: 1rem;
   padding: 8px;
   box-sizing: border-box;
   border: none;
-  border: solid 1.5px #e15e49;
+  border: 2px solid #cfcfcf;
   border-radius: 6px;
   background: none;
   cursor: pointer;
 }
 
 select:open {
-  outline: 1px solid #7814ae;
+  border: 2px solid #e15e49;
+  outline: none;
 }
 
 .setting-group:nth-child(n + 2) {
@@ -171,23 +173,15 @@ button svg {
 }
 
 .setting-button {
-  padding: 5px 10px;
-  margin-left: 15px;
+  width: 8.5rem;
+  padding: 0.5rem 1rem;
+  margin-left: 1rem;
   font-size: 0.9rem;
-  background: none;
-  border: solid 2px #e15e49;
-  color: #e15e49;
   white-space: nowrap;
 }
 
 .setting-button svg {
   width: 1.1rem;
-}
-
-.setting-button:hover {
-  background: #e15e49;
-  color: white;
-  border-radius: 8px;
 }
 
 .form {
@@ -230,9 +224,48 @@ button svg {
   gap: 10px;
 }
 
+.setting-switch {
+  accent-color: #e15e49;
+  appearance: none;
+  width: 3rem;
+  height: 1.7rem;
+  background: #e3e3e3;
+  border: 2px solid #d5d5d5;
+  border-radius: 1rem;
+  position: relative;
+  cursor: pointer;
+  outline: none;
+}
+
+.setting-switch:focus {
+  border: 2px solid #d5d5d5;
+}
+
+.setting-switch:after {
+  position: absolute;
+  content: "";
+  width: 1.2rem;
+  height: 1.2rem;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 0.25em rgba(0, 0, 0, 0.3);
+  left: 0.1rem;
+  top: 0.15rem;
+}
+
+.setting-switch:checked {
+  background: #e15e49;
+  border: 2px solid #e15e49;
+}
+
+.setting-switch:checked:after {
+  left: calc(100% - 1.3rem);
+}
+
 .setting-detail,
 .storage-label {
   font-size: 0.82rem;
+  color: #5c5c5c;
 }
 
 .storage-container {
@@ -299,6 +332,11 @@ button svg {
 
   .button-label {
     display: none;
+  }
+
+  .setting-button {
+    width: 3.3rem;
+    padding: 0.7rem 1rem;
   }
 
   .setting-button svg {

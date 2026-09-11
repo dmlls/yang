@@ -40,6 +40,10 @@ storedSettings.set(PreferencePrefix.BANG_SYMBOL, {
   element: document.getElementById("bang-symbol"),
   default: Defaults.BANG_SYMBOL,
 });
+storedSettings.set(PreferencePrefix.SNAP_SYMBOL, {
+  element: document.getElementById("snap-symbol"),
+  default: Defaults.SNAP_SYMBOL,
+});
 storedSettings.set(PreferencePrefix.BANG_PROVIDER, {
   element: document.getElementById("bang-provider"),
   default: Defaults.BANG_PROVIDER,
@@ -97,6 +101,21 @@ function saveSettings() {
 
 function onError(error) {}
 
+// Resize selects to the selected option.
+function resizeSelect(selectElement) {
+  const selectedOption = selectElement.options[selectElement.selectedIndex];
+  const tmpSpan = document.createElement("span");
+  tmpSpan.style.visibility = "hidden";
+  tmpSpan.style.whiteSpace = "nowrap";
+  tmpSpan.style.font = getComputedStyle(selectElement).font; // Match the font style
+  tmpSpan.textContent = selectedOption.text; // Get the text of the selected option
+  document.body.appendChild(tmpSpan);
+
+  // Set the width of the select to the width of the selected option
+  selectElement.style.width = `${tmpSpan.offsetWidth + 35}px`; // Add some padding
+  document.body.removeChild(tmpSpan);
+}
+
 browser.storage.sync.get(Array.from(storedSettings.keys())).then(
   function onGot(items) {
     for (const [settingName, settingValue] of storedSettings) {
@@ -121,6 +140,17 @@ browser.storage.sync.get(Array.from(storedSettings.keys())).then(
       // Resize on change
       select.addEventListener("change", () => resizeSelect(select));
     });
+    // Handle setting switch animations.
+    var styleSheet = window.document.styleSheets[0];
+    styleSheet.insertRule(
+      ".setting-switch { transition: all .2s ease-in-out; }",
+      styleSheet.cssRules.length,
+    );
+    styleSheet.insertRule(
+      ".setting-switch:after { transition: all .2s ease-in-out; }",
+      styleSheet.cssRules.length,
+    );
+
     initialBangProvider = storedSettings.get(PreferencePrefix.BANG_PROVIDER)
       .element.value;
   },
@@ -168,7 +198,6 @@ if (!window.matchMedia("(hover: none)").matches) {
     );
   })();
 }
-document.body.style.opacity = 1;
 const saveButton = document.getElementById("save");
 saveButton.addEventListener("click", saveSettings, false);
 
@@ -203,18 +232,4 @@ fileInput.addEventListener("change", (event) => {
     importSettings(file);
   }
 });
-
-// Resize selects to the selected option.
-function resizeSelect(selectElement) {
-  const selectedOption = selectElement.options[selectElement.selectedIndex];
-  const tmpSpan = document.createElement("span");
-  tmpSpan.style.visibility = "hidden";
-  tmpSpan.style.whiteSpace = "nowrap";
-  tmpSpan.style.font = getComputedStyle(selectElement).font; // Match the font style
-  tmpSpan.textContent = selectedOption.text; // Get the text of the selected option
-  document.body.appendChild(tmpSpan);
-
-  // Set the width of the select to the width of the selected option
-  selectElement.style.width = `${tmpSpan.offsetWidth + 35}px`; // Add some padding
-  document.body.removeChild(tmpSpan);
-}
+document.body.style.opacity = 1;
