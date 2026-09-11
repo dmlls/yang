@@ -290,11 +290,26 @@ function tokenizeQuery(searchQuery) {
     .filter((i) => i);
 }
 
+// Used to check for potential bangs / snaps.
+function matchesSymbol(tk, symbol) {
+  if (symbol != null) {
+    return tk.startsWith(symbol) && tk.length > symbol.length;
+  }
+  return false;
+}
+
 function parseBangs(searchQuery, bangSymbol, snapSymbol, multiBang) {
+  if (searchQuery.startsWith(" ") || searchQuery.endsWith(" ")) {
+    return {
+      bangs: [],
+      snap: null,
+      query: searchQuery,
+    }
+  }
   const queryTokens = tokenizeQuery(searchQuery);
   if (queryTokens.length == 0) {
     return {
-      bangs: null,
+      bangs: [],
       snap: null,
       query: null,
     };
@@ -305,27 +320,27 @@ function parseBangs(searchQuery, bangSymbol, snapSymbol, multiBang) {
   let fromIndex = 0;
   let untilIndex = queryTokens.length;
   let bangsAtBeginning =
-    queryTokens[0].startsWith(bangSymbol) ||
-    queryTokens[0].startsWith(snapSymbol);
+    matchesSymbol(queryTokens[0], bangSymbol) ||
+    matchesSymbol(queryTokens[0], snapSymbol);
   for (const [i, tk] of queryTokens.entries()) {
     if (
       !bangsAtBeginning &&
       bangs.length === 0 &&
       snap === null &&
-      !tk.startsWith(bangSymbol) &&
-      !tk.startsWith(snapSymbol)
+      !matchesSymbol(tk, bangSymbol) &&
+      !matchesSymbol(tk, snapSymbol)
     ) {
       continue;
     } else if (!bangsAtBeginning && untilIndex === queryTokens.length) {
       untilIndex = i;
     }
-    if (tk.startsWith(bangSymbol)) {
+    if (matchesSymbol(tk, bangSymbol)) {
       if (!multiBang && bangs.length > 0) {
         done = true;
       } else {
         bangs.push(tk);
       }
-    } else if (tk.startsWith(snapSymbol)) {
+    } else if (matchesSymbol(tk, snapSymbol)) {
       if (snap != null) {
         done = true;
       } else {
