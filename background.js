@@ -333,7 +333,11 @@ async function updateStorageSchema() {
       processedBangs[PreferencePrefix.BANG_SYMBOL] = Defaults.BANG_SYMBOL;
     }
     if (!Object.hasOwn(processedBangs, PreferencePrefix.SNAP_SYMBOL)) {
-      processedBangs[PreferencePrefix.SNAP_SYMBOL] = Defaults.SNAP_SYMBOL;
+      // If the bang is not set to "@", set as snap symbol. Otherwise leave empty.
+      processedBangs[PreferencePrefix.SNAP_SYMBOL] =
+        processedBangs[PreferencePrefix.BANG_SYMBOL] === "@"
+          ? Defaults.SNAP_SYMBOL
+          : "@";
     }
     if (!Object.hasOwn(processedBangs, PreferencePrefix.MULTI_BANG)) {
       processedBangs[PreferencePrefix.MULTI_BANG] = Defaults.MULTI_BANG;
