@@ -304,7 +304,7 @@ function parseBangs(searchQuery, bangSymbol, snapSymbol, multiBang) {
       bangs: [],
       snap: null,
       query: searchQuery,
-    }
+    };
   }
   const queryTokens = tokenizeQuery(searchQuery);
   if (queryTokens.length == 0) {
