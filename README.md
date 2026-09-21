@@ -61,23 +61,33 @@ Bangs can also be triggered without any query, serving as a bookmark shortcut:
 
 <br>
 
+You can also activate the multi-bang mode in the settings to trigger multiple bangs at once:
+
+```console
+!osm !gm !m Munich
+```
+
+<br>
+
 ## 3. Features
 
 |Done? | Feature| Description |
 |:-:|:-|:-|
-|✅|**Kagi or DuckDuckGo Bangs**| More than 13,500 default bangs included. |
-|✅|**Browse Default Bangs**| Browse, search or deactivate default bangs. |
-|✅|**Custom Bangs**| You can create your own bangs or override defaults. |
-|✅|**Custom Bang Symbol**| Define your own custom symbol(s) to trigger the bangs. |
-|✅|**Multiple Target URLs**| Open multiple websites with a single bang. |
-|✅|**Custom Base URL**| Specify which URL to open when the bang is triggered without arguments. |
-|✅|**Fast Redirections**| Bangs are resolved locally, without Kagi as intermediary<sup>1</sup>. |
-|✅|**Address Bar Trigger**| You can use bangs directly in the URL bar. |
-|✅|**Search Engine Trigger**| Bangs also work from the search bar of your favorite search engine. |
-|✅|**Backup and Restore**| Never lose your bangs. |
-|✅|**Mobile Support**| Yang is also available on [Firefox Android](https://addons.mozilla.org/en-US/android/addon/yang-addon/). |
+|✅|**Private**| Bangs are resolved locally, without the search engine as intermediary<sup>1</sup> |
+|✅|**Kagi or DuckDuckGo Bangs**| More than 13,500 default bangs included, you choose the provider |
+|✅|**Browse Default Bangs**| Browse, search or deactivate default bangs |
+|✅|**Custom Bangs**| You can create your own bangs or override defaults |
+|✅|**Custom Bang Symbol**| Define your own custom symbol(s) to trigger the bangs |
+|✅|**Multiple Target URLs**| Open multiple websites with a single bang |
+|✅|**Multi-bang Mode**| Use multiple bangs in the same query |
+|✅|**Snaps**| Scope your search to a specific site (see FAQs below) |
+|✅|**Custom Base URL**| Specify which URL to open when the bang is triggered without arguments |
+|✅|**Address Bar Trigger**| You can use bangs directly in the URL bar |
+|✅|**Search Engine Trigger**| Bangs also work from the search bar of your favorite search engine |
+|✅|**Backup and Restore**| Never lose your bangs |
+|✅|**Mobile Support**| Yang is also available on [Firefox Android](https://addons.mozilla.org/en-US/android/addon/yang-addon/) |
 
-<sub><sup>1</sup> This greatly reduces the redirection times, as shown by
+<sub><sup>1</sup> This also greatly reduces the redirection times, as shown by
 [DuckDuckGo !Bangs but
 Faster](https://bangs-but-faster.inclushe.com/).</small></sub>
 
@@ -126,6 +136,11 @@ issue](https://github.com/dmlls/yang/issues/new/choose) and we'll add it!
 ## 5. FAQs
 
 <details>
+  <summary><b>What are snaps?</b></summary>
+  <p>Snaps allow you to scope your search to a specific site. Simply use the bang name with the snap symbol (by default <code>@</code>) and the search will be limited to the site the bang name points to. For example, <code>!ddg !s !g @r linux</code> resolves to the query <code>linux site:www.reddit.com</code> which will be opened in DuckDuckGo, Startpage and Google. You can change the snap symbol in the settings, or leave it empty to turn this feature off.</p>
+</details>
+
+<details>
   <summary><b>Do bangs sync across devices?</b></summary>
   <p>Yes... and no. Bangs will sync across all the Firefox <i>desktop</i> browsers in which you are logged in with your Firefox account. However, the sync between desktop and mobile is <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1625257">currently unsupported</a>. As a workaround, you can create a backup on desktop and restore it on Android (or vice versa).</p>
 </details>
@@ -143,7 +158,7 @@ issue](https://github.com/dmlls/yang/issues/new/choose) and we'll add it!
   <summary><b>Why is it not allowed to set an <code>about:</code> page as the target URL?</b></summary>
   <p>
      This restriction comes from the browser itself. <code>about:</code> pages
-     are considered priviledged URLs and are not allowed for security reasons
+     are considered privileged URLs and are not allowed for security reasons
      (<a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/update#url">docs</a>).
   </p>
 </details>

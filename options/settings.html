@@ -30,7 +30,12 @@
           </div>
           <div class="setting-container">
             <div class="setting-label">
-              <label for="bang-symbol">Bang Symbol(s)</label>
+              <div class="setting-label-row">
+                <label for="bang-symbol">Bang Symbol</label>
+              </div>
+              <span class="setting-detail">
+                The symbol(s) used to trigger the bangs
+              </span>
             </div>
             <input
               type="text"
@@ -44,22 +49,45 @@
           <div class="setting-container">
             <div class="setting-label">
               <div class="setting-label-row">
-                <label for="multi-bang">Multiple Bangs</label>
-                <input type="checkbox" id="multi-bang" name="multi-bang" />
+                <label for="snap-symbol">Snap Symbol</label>
               </div>
-              <p>
-                Enable space-separated bangs anywhere in the query (e.g., "!a !g
-                test" or "test !a !g"). Without this, only the first or last
-                word starting with the bang symbol is used. Note: a bang symbol
-                like "ace" can cause false positives, e.g. "acea" → !a (Amazon)
-                and "acer" → !r (Reddit) would trigger instead of the expected
-                search for "acer computer" on Amazon.
-              </p>
+              <span class="setting-detail">
+                Snaps allow filtering results by site. Leave empty to turn off
+              </span>
             </div>
+            <input
+              type="text"
+              id="snap-symbol"
+              class="input-field"
+              name="snap-symbol"
+              placeholder="Off"
+              maxlength="3"
+            />
           </div>
           <div class="setting-container">
             <div class="setting-label">
-              <label for="bang-provider">Bang Provider</label>
+              <div class="setting-label-row">
+                <label for="multi-bang">Multiple Bangs</label>
+              </div>
+              <span class="setting-detail">
+                Trigger multiple bangs in the same query
+              </span>
+            </div>
+            <input
+              type="checkbox"
+              class="setting-switch"
+              id="multi-bang"
+              name="multi-bang"
+            />
+          </div>
+          <div class="setting-container">
+            <div class="setting-label">
+              <div class="setting-label-row">
+                <label for="bang-provider">Bang Provider</label>
+              </div>
+              <span class="setting-detail">
+                Provider to use for default bangs
+              </span>
             </div>
             <select name="bang-providers" id="bang-provider">
               <option value="kagi" selected>Kagi</option>

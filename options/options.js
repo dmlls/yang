@@ -59,7 +59,7 @@ function addPageIndicator(indicator) {
   page.textContent = indicator;
   if (typeof indicator !== "string") {
     if (indicator === pageNumber) {
-      page.style.setProperty("color", "#0000ff");
+      page.style.setProperty("color", "#7914ad");
       page.style.setProperty("background", "#ffffff");
     }
     page.addEventListener("click", changePage);

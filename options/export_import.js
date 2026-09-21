@@ -38,8 +38,9 @@ const BackupFields = Object.freeze({
   INACTIVE_BANGS: "inactiveBangs",
   SETTINGS: "settings",
   BANG_SYMBOL: "bangSymbol",
-  BANG_PROVIDER: "bangProvider",
+  SNAP_SYMBOL: "snapSymbol",
   BANG_MULTI_BANG: "multiBang",
+  BANG_PROVIDER: "bangProvider",
 });
 
 async function exportSettings() {
@@ -50,10 +51,12 @@ async function exportSettings() {
       loadedSettings[BackupFields.SETTINGS] = {};
       loadedSettings[BackupFields.SETTINGS][BackupFields.BANG_SYMBOL] =
         storedData[PreferencePrefix.BANG_SYMBOL] ?? Defaults.BANG_SYMBOL;
-      loadedSettings[BackupFields.SETTINGS][BackupFields.BANG_PROVIDER] =
-        storedData[PreferencePrefix.BANG_PROVIDER] ?? Defaults.BANG_PROVIDER;
+      loadedSettings[BackupFields.SETTINGS][BackupFields.SNAP_SYMBOL] =
+        storedData[PreferencePrefix.SNAP_SYMBOL] ?? Defaults.SNAP_SYMBOL;
       loadedSettings[BackupFields.SETTINGS][BackupFields.BANG_MULTI_BANG] =
         storedData[PreferencePrefix.MULTI_BANG] ?? Defaults.MULTI_BANG;
+      loadedSettings[BackupFields.SETTINGS][BackupFields.BANG_PROVIDER] =
+        storedData[PreferencePrefix.BANG_PROVIDER] ?? Defaults.BANG_PROVIDER;
       const sortedBangs = sortBangs(
         Object.entries(storedData)
           .filter((entry) => entry[0].startsWith(PreferencePrefix.BANG))
@@ -103,8 +106,9 @@ async function importSettings(file) {
         backupVersion = parseFloat(readBackup[BackupFields.BACKUP_VERSION]);
       }
       let bangSymbol = Defaults.BANG_SYMBOL;
-      let bangProvider = Defaults.BANG_PROVIDER;
+      let snapSymbol = Defaults.SNAP_SYMBOL;
       let multiBang = Defaults.MULTI_BANG;
+      let bangProvider = Defaults.BANG_PROVIDER;
       // Backup version >= 1.1.
       if (backupKeys.includes(BackupFields.SETTINGS)) {
         const settings = readBackup[BackupFields.SETTINGS];
@@ -113,6 +117,7 @@ async function importSettings(file) {
         bangProvider =
           settings[BackupFields.BANG_PROVIDER] ?? Defaults.BANG_PROVIDER;
         // Backup version >= 1.4.
+        snapSymbol = settings[BackupFields.SNAP_SYMBOL] ?? Defaults.SNAP_SYMBOL;
         multiBang =
           settings[BackupFields.BANG_MULTI_BANG] ?? Defaults.MULTI_BANG;
       }
@@ -152,9 +157,10 @@ async function importSettings(file) {
         preferences.set(key, bangInfo);
       }
       preferences.set(PreferencePrefix.BANG_SYMBOL, bangSymbol);
-      preferences.set(PreferencePrefix.BANG_PROVIDER, bangProvider);
+      preferences.set(PreferencePrefix.SNAP_SYMBOL, snapSymbol);
       preferences.set(PreferencePrefix.INACTIVE_BANGS, inactiveBangs);
       preferences.set(PreferencePrefix.MULTI_BANG, multiBang);
+      preferences.set(PreferencePrefix.BANG_PROVIDER, bangProvider);
       browser.storage.sync.set(Object.fromEntries(preferences)).then(
         async function onSet() {
           await fetchSettings(true);

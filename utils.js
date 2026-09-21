@@ -27,6 +27,8 @@ export {
   parseBangs,
   searchBangs,
   sortBangs,
+  addSnapToUrl,
+  removeWhitespaces,
 };
 
 // Prefixes added to the storage keys to differentiate between different types
@@ -35,6 +37,7 @@ const PreferencePrefix = Object.freeze({
   BANG: "#bang#",
   BANG_PROVIDER: "#provider#",
   BANG_SYMBOL: "#symbol#",
+  SNAP_SYMBOL: "#snap#",
   INACTIVE_BANGS: "#inactive#",
   MULTI_BANG: "#multi_bang#",
 });
@@ -63,6 +66,7 @@ const BangProviders = Object.freeze({
 const Defaults = Object.freeze({
   BANG_PROVIDER: BangProviders.KAGI.id,
   BANG_SYMBOL: "!",
+  SNAP_SYMBOL: null,
   ITEMS_PER_PAGE: 25,
   INACTIVE_BANGS: [],
   MULTI_BANG: false,
@@ -268,62 +272,113 @@ function getBangKey(bang) {
   if (bang == null) {
     return null;
   }
-  return `${PreferencePrefix.BANG}${bang.toLowerCase()}`;
+  return `${PreferencePrefix.BANG}${bang.trim().toLowerCase()}`;
 }
 
 function getBangName(bangKey) {
   if (bangKey == null) {
     return null;
   }
-  return bangKey.slice(PreferencePrefix.BANG.length);
+  return bangKey.trim().slice(PreferencePrefix.BANG.length);
 }
 
-function parseBangs(searchQuery, bangSymbol, multiBang) {
-  const searchTerms = searchQuery.split(" ");
-  let bangNames = null;
-  let query = null;
-  if (multiBang) {
-    let prefixEnd = 0;
-    while (
-      prefixEnd < searchTerms.length &&
-      searchTerms[prefixEnd].startsWith(bangSymbol)
+function removeWhitespaces(text) {
+  return text?.replace(/\s+/g, "");
+}
+
+// Whitespace tokenization.
+function tokenizeQuery(searchQuery) {
+  // Remove extra whitespaces to ensure the next split works correctly.
+  return searchQuery
+    .replace(/\s+/g, " ")
+    .split(" ")
+    .filter((i) => i);
+}
+
+// Used to check for potential bangs / snaps.
+function matchesSymbol(tk, symbol) {
+  if (symbol != null) {
+    return tk.startsWith(symbol) && tk.length > symbol.length;
+  }
+  return false;
+}
+
+function parseBangs(searchQuery, bangSymbol, snapSymbol, multiBang) {
+  if (searchQuery.startsWith(" ") || searchQuery.endsWith(" ")) {
+    return {
+      bangs: [],
+      snap: null,
+      query: searchQuery,
+    };
+  }
+  const queryTokens = tokenizeQuery(searchQuery);
+  if (queryTokens.length === 0) {
+    return {
+      bangs: [],
+      snap: null,
+      query: null,
+    };
+  }
+  let bangs = [];
+  let snap = null;
+  let done = false;
+  let fromIndex = 0;
+  let untilIndex = queryTokens.length;
+  const bangsAtBeginning =
+    matchesSymbol(queryTokens[0], bangSymbol) ||
+    matchesSymbol(queryTokens[0], snapSymbol);
+  for (const [i, tk] of queryTokens.entries()) {
+    if (
+      !bangsAtBeginning &&
+      bangs.length === 0 &&
+      snap === null &&
+      !matchesSymbol(tk, bangSymbol) &&
+      !matchesSymbol(tk, snapSymbol)
     ) {
-      prefixEnd++;
+      continue;
+    } else if (!bangsAtBeginning && untilIndex === queryTokens.length) {
+      untilIndex = i;
     }
-    if (prefixEnd > 0) {
-      bangNames = searchTerms
-        .slice(0, prefixEnd)
-        .map((t) => t.substring(bangSymbol.length));
-      query = searchTerms.slice(prefixEnd).join(" ");
+    if (matchesSymbol(tk, bangSymbol)) {
+      if (!multiBang && bangs.length > 0) {
+        done = true;
+      } else {
+        bangs.push(tk);
+      }
+    } else if (matchesSymbol(tk, snapSymbol)) {
+      if (snap != null) {
+        done = true;
+      } else {
+        snap = tk;
+      }
+    } else if (!bangsAtBeginning && (bangs.length > 0 || snap != null)) {
+      // "Sandwiched" bangs/snap (e.g., "nothing .s .g something") -> Reset bangs and snap.
+      bangs = [];
+      snap = null;
+      fromIndex = 0;
+      untilIndex = queryTokens.length;
     } else {
-      let suffixStart = searchTerms.length;
-      while (
-        suffixStart > 0 &&
-        searchTerms[suffixStart - 1].startsWith(bangSymbol)
-      ) {
-        suffixStart--;
-      }
-      if (suffixStart < searchTerms.length) {
-        bangNames = searchTerms
-          .slice(suffixStart)
-          .map((t) => t.substring(bangSymbol.length));
-        query = searchTerms.slice(0, suffixStart).join(" ");
-      }
+      done = true;
     }
-  } else {
-    const firstTerm = searchTerms[0].trim();
-    const lastTerm = searchTerms[searchTerms.length - 1].trim();
-    if (firstTerm.startsWith(bangSymbol)) {
-      bangNames = [firstTerm.substring(bangSymbol.length)];
-      query = searchTerms.slice(1).join(" ");
-    } else if (lastTerm.startsWith(bangSymbol)) {
-      bangNames = [lastTerm.substring(bangSymbol.length)];
-      query = searchTerms.slice(0, -1).join(" ");
+    fromIndex = i;
+    if (done) {
+      break;
+    } else if (i === queryTokens.length - 1) {
+      fromIndex += bangs.length + (snap != null);
     }
   }
-  if (!bangNames) {
-    return null;
+  return {
+    bangs: [...bangs.map((b) => b.trim().substring(bangSymbol.length))],
+    snap: snap != null ? snap.trim().substring(snapSymbol.length) : snap,
+    query: bangsAtBeginning
+      ? queryTokens.slice(fromIndex).join(" ")
+      : queryTokens.slice(0, untilIndex).join(" "),
+  };
+}
+
+function addSnapToUrl(query, snapUrl) {
+  if (snapUrl != null) {
+    return `${query ?? ""} site:${snapUrl}`.trim();
   }
-  bangNames = bangNames.filter((b) => b.length > 0);
-  return bangNames.length === 0 ? null : { bangNames, query };
+  return query ?? "";
 }
