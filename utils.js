@@ -312,7 +312,7 @@ function parseBangs(searchQuery, bangSymbol, snapSymbol, multiBang) {
     };
   }
   const queryTokens = tokenizeQuery(searchQuery);
-  if (queryTokens.length == 0) {
+  if (queryTokens.length === 0) {
     return {
       bangs: [],
       snap: null,
@@ -324,7 +324,7 @@ function parseBangs(searchQuery, bangSymbol, snapSymbol, multiBang) {
   let done = false;
   let fromIndex = 0;
   let untilIndex = queryTokens.length;
-  let bangsAtBeginning =
+  const bangsAtBeginning =
     matchesSymbol(queryTokens[0], bangSymbol) ||
     matchesSymbol(queryTokens[0], snapSymbol);
   for (const [i, tk] of queryTokens.entries()) {

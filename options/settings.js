@@ -151,7 +151,7 @@ browser.storage.sync.get(Array.from(storedSettings.keys())).then(
       select.addEventListener("change", () => resizeSelect(select));
     });
     // Handle setting switch animations.
-    var styleSheet = window.document.styleSheets[0];
+    const styleSheet = window.document.styleSheets[0];
     styleSheet.insertRule(
       ".setting-switch { transition: all .2s ease-in-out; }",
       styleSheet.cssRules.length,
