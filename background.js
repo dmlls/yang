@@ -23,6 +23,7 @@ import {
   getBangKey,
   parseBangs,
   addSnapToUrl as addSnapToQuery,
+  removeWhitespaces,
 } from "./utils.js";
 
 // Support for Chromium.
@@ -332,6 +333,10 @@ async function updateStorageSchema() {
     if (!Object.hasOwn(processedBangs, PreferencePrefix.BANG_SYMBOL)) {
       processedBangs[PreferencePrefix.BANG_SYMBOL] = Defaults.BANG_SYMBOL;
     }
+    // Remove whitespaces in bang symbols.
+    processedBangs[PreferencePrefix.BANG_SYMBOL] = removeWhitespaces(
+      processedBangs[PreferencePrefix.BANG_SYMBOL],
+    );
     if (!Object.hasOwn(processedBangs, PreferencePrefix.SNAP_SYMBOL)) {
       // If the bang is not set to "@", set as snap symbol. Otherwise leave empty.
       processedBangs[PreferencePrefix.SNAP_SYMBOL] =

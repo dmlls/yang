@@ -16,7 +16,12 @@
  * For license information on the libraries used, see LICENSE.
  */
 
-import { Defaults, fetchSettings, PreferencePrefix } from "../utils.js";
+import {
+  Defaults,
+  fetchSettings,
+  PreferencePrefix,
+  removeWhitespaces,
+} from "../utils.js";
 import { exportSettings, importSettings } from "./export_import.js";
 
 const LIMITS = Object.freeze({
@@ -39,10 +44,12 @@ let storedSettings = new Map();
 storedSettings.set(PreferencePrefix.BANG_SYMBOL, {
   element: document.getElementById("bang-symbol"),
   default: Defaults.BANG_SYMBOL,
+  type: "text",
 });
 storedSettings.set(PreferencePrefix.SNAP_SYMBOL, {
   element: document.getElementById("snap-symbol"),
   default: Defaults.SNAP_SYMBOL,
+  type: "text",
 });
 storedSettings.set(PreferencePrefix.MULTI_BANG, {
   element: document.getElementById("multi-bang"),
@@ -61,6 +68,9 @@ function saveSettings() {
   for (const [settingName, settingValue] of storedSettings) {
     if (settingValue.type === "checkbox") {
       settings[settingName] = settingValue.element.checked;
+    } else if (settingValue.type === "text") {
+      settings[settingName] =
+        removeWhitespaces(settingValue.element.value) || settingValue.default;
     } else {
       settings[settingName] =
         settingValue.element.value || settingValue.default;

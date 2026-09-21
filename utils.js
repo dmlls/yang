@@ -28,6 +28,7 @@ export {
   searchBangs,
   sortBangs,
   addSnapToUrl,
+  removeWhitespaces,
 };
 
 // Prefixes added to the storage keys to differentiate between different types
@@ -279,6 +280,10 @@ function getBangName(bangKey) {
     return null;
   }
   return bangKey.trim().slice(PreferencePrefix.BANG.length);
+}
+
+function removeWhitespaces(text) {
+  return text?.replace(/\s+/g, "");
 }
 
 // Whitespace tokenization.
