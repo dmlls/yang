@@ -243,6 +243,16 @@ browser.webRequest.onBeforeRequest.addListener(
                                 target.url.replace("{{{s}}}", encodedQuery),
                               ).toString();
                             }
+                            // Only allow http(s) targets to prevent malicious
+                            // bang providers from injecting dangerous
+                            // protocols (e.g. javascript:, data:, file:).
+                            if (
+                              !["http:", "https:"].includes(
+                                new URL(targetUrl).protocol,
+                              )
+                            ) {
+                              return;
+                            }
                             // Open first target URL in current tab...
                             if (isFirstTarget) {
                               updateTab(details.tabId, targetUrl);
