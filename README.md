@@ -1,6 +1,6 @@
 <p align="center">
    <a href="https://addons.mozilla.org/addon/yang-addon/">
-      <img width="700" src="https://github.com/user-attachments/assets/25552298-976b-4051-b884-bc6b35337d64" alt="Yang! - Yet Another Bangs anywhere Firefox extension">
+      <img width="700" src="https://github.com/user-attachments/assets/7a6aed12-0a74-4bd2-aedc-98704f56d3e4" alt="Yang! - Yet Another Bangs anywhere Firefox extension">
    </a>
 </p>
 
@@ -80,7 +80,7 @@ You can also activate the multi-bang mode in the settings to trigger multiple ba
 |✅|**Custom Bang Symbol**| Define your own custom symbol(s) to trigger the bangs |
 |✅|**Multiple Target URLs**| Open multiple websites with a single bang |
 |✅|**Multi-bang Mode**| Use multiple bangs in the same query |
-|✅|**Snaps**| Scope your search to a specific site (see FAQs below) |
+|✅|**Snaps**| Scope your search to a specific site (see [FAQs](https://github.com/dmlls/yang#5-faqs)) |
 |✅|**Custom Base URL**| Specify which URL to open when the bang is triggered without arguments |
 |✅|**Address Bar Trigger**| You can use bangs directly in the URL bar |
 |✅|**Search Engine Trigger**| Bangs also work from the search bar of your favorite search engine |
@@ -102,31 +102,32 @@ sites**:
 
 | Name | URL |
 |-|-|
-| Google | https://www.google.com/
-| Bing | https://www.bing.com/
-| Yahoo | https://www.yahoo.com/
-| Ecosia | https://www.ecosia.org/
-| DuckDuckGo | https://duckduckgo.com/
-| Brave Search | https://search.brave.com/
-| Startpage | https://www.startpage.com/
-| Swisscows | https://swisscows.com/
-| SearX(NG) | https://searx.space/
-| Mojeek | https://www.mojeek.com/
-| Qwant | https://www.qwant.com/
-| Kagi | https://kagi.com/
-| Perplexity AI | https://www.perplexity.ai/
-| Naver | https://www.naver.com/
-| Baidu | https://www.baidu.com/
-| Yandex | https://yandex.com/
-| AOL | https://www.aol.com/
-| Murena | https://spot.ecloud.global/ <br> https://spot.murena.io/
-| MetaGer | https://metager.de/
-| Dogpile | https://www.dogpile.com/
-| Ask.com | https://www.ask.com/
-| Seznam.cz | https://search.seznam.cz/
-| Karma Search | https://karmasearch.org/
-| Good Search | https://good-search.org/
-| Marginalia Search | https://marginalia-search.com/
+| Google | https://www.google.com/ |
+| Bing | https://www.bing.com/ |
+| Yahoo | https://www.yahoo.com/ |
+| Ecosia | https://www.ecosia.org/ |
+| DuckDuckGo | https://duckduckgo.com/ |
+| Brave Search | https://search.brave.com/ |
+| Startpage | https://www.startpage.com/ |
+| Swisscows | https://swisscows.com/ |
+| SearX(NG) | https://searx.space/ |
+| Mojeek | https://www.mojeek.com/ |
+| Qwant | https://www.qwant.com/ |
+| Kagi | https://kagi.com/ |
+| Perplexity AI | https://www.perplexity.ai/ |
+| Naver | https://www.naver.com/ |
+| Baidu | https://www.baidu.com/ |
+| Yandex | https://yandex.com/ |
+| AOL | https://www.aol.com/ |
+| Murena | https://spot.ecloud.global/ <br> https://spot.murena.io/ |
+| MetaGer | https://metager.de/ |
+| Dogpile | https://www.dogpile.com/ |
+| Ask.com | https://www.ask.com/ |
+| Seznam.cz | https://search.seznam.cz/ |
+| Karma Search | https://karmasearch.org/ |
+| Good Search | https://good-search.org/ |
+| Marginalia Search | https://marginalia-search.com/ |
+| Zapmeta | https://www.zapmeta.com/ |
 
 Is your favorite search engine not on the list? [Open an
 issue](https://github.com/dmlls/yang/issues/new/choose) and we'll add it!
@@ -147,11 +148,13 @@ issue](https://github.com/dmlls/yang/issues/new/choose) and we'll add it!
 
 <details>
   <summary><b>Why does Yang need permissions on a 300+ sites?</b></summary>
-  <p>Instead of requesting data access on <i>all</i> sites, we granularly
-  specify the search-engine sites that Yang supports (which yeah, they're quite
-  a few). You can find which sites we request permissions for in the
-  <a href="https://github.com/dmlls/yang/blob/main/manifest.json">
-  <code>manifest.json</code></a>.</p>
+  <p>These are the search-engine sites that Yang supports and from which
+  bangs can be triggered. Instead of requesting data access on <i>all</i> sites,
+  we granularly specify only the ones we need. You can find which sites we
+  request permissions for in the <a
+  href="https://github.com/dmlls/yang/blob/main/manifest.json">
+  <code>manifest.json</code></a>. Most of them are Google's and SearX(NG)'s
+  domains.</p>
 </details>
 
 <details>
