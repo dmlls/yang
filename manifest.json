@@ -402,7 +402,9 @@
     "*://good-search.org/*",
 
     "*://marginalia-search.com/search*",
-    "*://old-search.marginalia.nu/search*"
+    "*://old-search.marginalia.nu/search*",
+
+    "*://www.zapmeta.com/*"
   ],
 
   "background": {
