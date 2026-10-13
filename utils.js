@@ -63,6 +63,9 @@ const BangProviders = Object.freeze({
   },
 });
 
+// Fetched target URLs not complying with these schemes will be ignored.
+const ALLOWED_URL_SCHEMES = ["http", "https"];
+
 const Defaults = Object.freeze({
   BANG_PROVIDER: BangProviders.KAGI.id,
   BANG_SYMBOL: "!",
@@ -114,10 +117,14 @@ async function fetchSettings(update = false) {
           }
         }
         for (const bang of defaultBangs) {
-          // Bang providers do not specify the origin for bangs targeting their own
-          // site, so we add it.
+          // Bang providers do not specify the origin for bangs targeting their
+          // own site, so we add it.
           if (bang.u.startsWith("/")) {
             bang.u = `${provider.url}${bang.u}`;
+          } else if (
+            !ALLOWED_URL_SCHEMES.some((p) => bang.u.startsWith(`${p}://`))
+          ) {
+            continue;
           }
           const bangData = {
             bang: bang.t,
