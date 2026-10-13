@@ -64,7 +64,7 @@ const BangProviders = Object.freeze({
 });
 
 // Fetched target URLs not complying with these schemes will be ignored.
-const ALLOWED_URL_SCHEMES = ["http", "https"];
+const ALLOWED_URL_SCHEMES = Object.freeze(["http", "https"]);
 
 const Defaults = Object.freeze({
   BANG_PROVIDER: BangProviders.KAGI.id,
