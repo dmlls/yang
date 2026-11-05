@@ -311,13 +311,6 @@ function matchesSymbol(tk, symbol) {
 }
 
 function parseBangs(searchQuery, bangSymbol, snapSymbol, multiBang) {
-  if (searchQuery.startsWith(" ") || searchQuery.endsWith(" ")) {
-    return {
-      bangs: [],
-      snap: null,
-      query: searchQuery,
-    };
-  }
   const queryTokens = tokenizeQuery(searchQuery);
   if (queryTokens.length === 0) {
     return {

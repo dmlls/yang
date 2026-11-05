@@ -52,27 +52,6 @@ const basicBangCases = [
   ["bare bang symbol does nothing", "!", "!", null, hit([], "!")],
   ["empty bang name does nothing", "! foo", "!", null, hit([], "! foo")],
   ["empty bang name does nothing", "foo !", "!", null, hit([], "foo !")],
-  [
-    "trailing space(s) escape bang triggering",
-    "foo !bar ",
-    "!",
-    null,
-    hit([], "foo !bar "),
-  ],
-  [
-    "leading space(s) escape bang triggering",
-    " !bar foo",
-    "!",
-    null,
-    hit([], " !bar foo"),
-  ],
-  [
-    "leading and trailing space(s) escape bang triggering",
-    " !bar foo ",
-    "!",
-    null,
-    hit([], " !bar foo "),
-  ],
   // Custom symbols
   ["custom bang symbol at start", "#a foo", "#", null, hit(["a"], "foo")],
   ["custom bang symbol at end", "foo .s", ".", null, hit(["s"], "foo")],
@@ -257,32 +236,6 @@ describe("parseBangs", () => {
       assert.deepStrictEqual(
         parseBangs("!a .s !b !c foo !a .s", bangSymbol, snapSymbol, multiBang),
         hit(["a", "b", "c"], "foo !a .s", "s"),
-      );
-    });
-
-    it("leading space(s) escape bang and snap triggering", () => {
-      assert.deepStrictEqual(
-        parseBangs(" !a .s !b !c foo !a .s", bangSymbol, snapSymbol, multiBang),
-        hit([], " !a .s !b !c foo !a .s"),
-      );
-    });
-
-    it("trailing space(s) escape bang and snap triggering", () => {
-      assert.deepStrictEqual(
-        parseBangs("!a .s !b !c foo !a .s ", bangSymbol, snapSymbol, multiBang),
-        hit([], "!a .s !b !c foo !a .s "),
-      );
-    });
-
-    it("leading and trailing space(s) escape bang and snap triggering", () => {
-      assert.deepStrictEqual(
-        parseBangs(
-          " !a .s !b !c foo !a .s ",
-          bangSymbol,
-          snapSymbol,
-          multiBang,
-        ),
-        hit([], " !a .s !b !c foo !a .s "),
       );
     });
   });
